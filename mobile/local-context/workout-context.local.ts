@@ -41,6 +41,14 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     return mesocycle.getWorkoutStats(allRecentlyFinishedExercises)
   }
 
+  const getActivePlanSummary: WorkoutContext['getActivePlanSummary'] = async (session: Session) => {
+    const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
+    if (!mesocycleId) return null
+    const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    return mesocycle.getActivePlanSummary()
+  }
+
   const getWorkout: WorkoutContext['getWorkout'] = async (session: Session) => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
@@ -341,6 +349,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     getBalancedMuscleGroupPreference,
     finishWorkout,
     getCurrentMicrocycle,
+    getActivePlanSummary,
     proposeExerciseReplacement,
     replaceExercise,
     exerciseSetStateChanged,

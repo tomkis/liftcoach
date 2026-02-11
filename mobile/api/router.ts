@@ -51,6 +51,9 @@ const workout = trpcInstance.router({
   getCurrentMicrocycle: trpcProcedureAuthProcedure.input(z.void()).query(async ({ ctx }) => {
     return await ctx.workout.getCurrentMicrocycle(ctx.session)
   }),
+  getActivePlanSummary: trpcProcedureAuthProcedure.input(z.void()).query(async ({ ctx }) => {
+    return await ctx.workout.getActivePlanSummary(ctx.session)
+  }),
   getWorkoutStats: trpcProcedureAuthProcedure.input(z.void()).query(async ({ ctx }) => {
     return await ctx.workout.getWorkoutStats(ctx.session)
   }),

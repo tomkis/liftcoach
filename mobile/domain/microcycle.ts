@@ -103,3 +103,12 @@ export const cycleProgressSchema = z.array(
   })
 )
 export type CycleProgress = z.infer<typeof cycleProgressSchema>
+
+export type ActivePlanSummary = {
+  splitType: string
+  currentWeek: number
+  totalWeeks: number
+  trainingDaysPerWeek: number
+  workoutsCompleted: number
+  totalWorkouts: number
+}

@@ -1,4 +1,5 @@
 import {
+  ActivePlanSummary,
   CycleProgress,
   DashboardData,
   ExerciseAssesment,
@@ -45,6 +46,7 @@ export interface UserContext {
 
 export interface WorkoutContext {
   getCurrentMicrocycle: (session: Session) => Promise<Microcycle | null>
+  getActivePlanSummary: (session: Session) => Promise<ActivePlanSummary | null>
   getWorkout: (session: Session) => Promise<MicrocycleWorkout | null>
   getWorkoutStats: (session: Session) => Promise<WorkoutStats | null>
   startWorkout: (session: Session) => Promise<void>

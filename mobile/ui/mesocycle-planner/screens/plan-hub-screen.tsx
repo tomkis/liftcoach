@@ -4,19 +4,11 @@ import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { ActivePlanSummary } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
+import { trpc } from '@/mobile/trpc'
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
-import { trpc } from '@/mobile/trpc'
-
-type ActivePlanData = {
-  currentWeek: number
-  totalWeeks: number
-  splitType: string
-  trainingDaysPerWeek: number
-  workoutsCompleted: number
-  totalWorkouts: number
-}
 
 const DotGrid = ({ completed, total }: { completed: number; total: number }) => {
   const dots = Array.from({ length: total }, (_, i) => i < completed)
@@ -42,7 +34,7 @@ const PlanDashboard = ({
   onBuildNewPlan,
   isLoading,
 }: {
-  activePlan: ActivePlanData | null
+  activePlan: ActivePlanSummary | null
   onViewActivePlan: () => void
   onBuildNewPlan: () => void
   isLoading: boolean
@@ -57,9 +49,7 @@ const PlanDashboard = ({
     )
   }
 
-  const completionPct = activePlan
-    ? Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100)
-    : 0
+  const completionPct = activePlan ? Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100) : 0
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
@@ -90,10 +80,7 @@ const PlanDashboard = ({
             <View style={styles.statsGrid}>
               <KeyValue label="WEEK" value={`${activePlan.currentWeek}/${activePlan.totalWeeks}`} accent />
               <KeyValue label="FREQ" value={`${activePlan.trainingDaysPerWeek} days`} />
-              <KeyValue
-                label="DONE"
-                value={`${activePlan.workoutsCompleted}/${activePlan.totalWorkouts}`}
-              />
+              <KeyValue label="DONE" value={`${activePlan.workoutsCompleted}/${activePlan.totalWorkouts}`} />
             </View>
 
             <DotGrid completed={activePlan.workoutsCompleted} total={activePlan.totalWorkouts} />
@@ -159,19 +146,8 @@ const PlanDashboard = ({
 
 export const PlanHubScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
-  const { data: microcycle, isLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const { data: activePlan, isLoading } = trpc.workout.getActivePlanSummary.useQuery()
   const tracking = useTracking()
-
-  const activePlan: ActivePlanData | null = microcycle
-    ? {
-        splitType: 'Training Plan',
-        currentWeek: 1,
-        totalWeeks: 4,
-        trainingDaysPerWeek: microcycle.workouts.length,
-        workoutsCompleted: 0,
-        totalWorkouts: microcycle.workouts.length * 4,
-      }
-    : null
 
   const onViewActivePlan = () => {
     // TODO: navigate to active plan detail screen
@@ -184,7 +160,7 @@ export const PlanHubScreen = () => {
 
   return (
     <PlanDashboard
-      activePlan={activePlan}
+      activePlan={activePlan ?? null}
       onViewActivePlan={onViewActivePlan}
       onBuildNewPlan={onBuildNewPlan}
       isLoading={isLoading}

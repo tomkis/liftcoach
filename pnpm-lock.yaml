@@ -65,9 +65,6 @@ importers:
       lucide-react-native:
         specifier: ^0.441.0
         version: 0.441.0(react-native-svg@15.2.0(react-native@0.74.5(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
-      mixpanel-react-native:
-        specifier: ^3.1.2
-        version: 3.2.1(react-native@0.74.5(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@18.2.0))
       pino-pretty:
         specifier: ^11.2.2
         version: 11.3.0
@@ -4025,14 +4022,6 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
-  mixpanel-react-native@3.2.1:
-    resolution: {integrity: sha512-TVHk+kt+BIXcT4KVlSsKaUMpmIriFd45nWvawpVYHugG4DXQ4ylt27KijXu4ojsW/kJaBAFRmq3c/cClj074uQ==}
-    peerDependencies:
-      '@react-native-async-storage/async-storage': ^1.15.0 || ^2.0.0
-    peerDependenciesMeta:
-      '@react-native-async-storage/async-storage':
-        optional: true
-
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
@@ -5274,10 +5263,6 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
-
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
   valid-url@1.0.9:
@@ -10178,13 +10163,6 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  mixpanel-react-native@3.2.1(react-native@0.74.5(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@18.2.0)):
-    dependencies:
-      react-native-get-random-values: 1.11.0(react-native@0.74.5(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(@types/react@18.2.79)(react@18.2.0))
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - react-native
-
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
@@ -11517,8 +11495,6 @@ snapshots:
   uuid@7.0.3: {}
 
   uuid@8.3.2: {}
-
-  uuid@9.0.1: {}
 
   valid-url@1.0.9: {}
 

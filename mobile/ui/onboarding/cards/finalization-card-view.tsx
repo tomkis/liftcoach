@@ -14,7 +14,7 @@ import { OnboardingVerticalButtonContainer } from '@/mobile/ui/onboarding/cards/
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
 import { UnitSegmentedControl } from '@/mobile/ui/onboarding/cards/ux/unit-segmented-control'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 import { Checkbox } from '@/mobile/ui/components/checkbox'
 import { trpc } from '@/mobile/trpc'
@@ -67,7 +67,7 @@ export const FinalizationCardView = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
   const generateMicrocycle = trpc.workout.generateMicrocycle.useMutation()
 
   const onStart = useCallback(async () => {
@@ -75,29 +75,29 @@ export const FinalizationCardView = () => {
     const finalizedUser = onboardedUserSchema.parse(user)
 
     await generateMicrocycle.mutateAsync({ onboardedUser: finalizedUser })
-    mixpanel.onboarding.funnel.signUp('local')
+    tracking.onboarding.funnel.signUp('local')
     onboarding.finalize()
-  }, [onboarding, mixpanel, generateMicrocycle])
+  }, [onboarding, tracking, generateMicrocycle])
 
   const handleTermsToggle = useCallback(() => {
     const newValue = !agreedToTerms
-    mixpanel.onboarding.tocToggled(newValue)
+    tracking.onboarding.tocToggled(newValue)
     setAgreedToTerms(newValue)
-  }, [agreedToTerms, mixpanel])
+  }, [agreedToTerms, tracking])
 
   const handleTermsPress = useCallback(() => {
-    mixpanel.onboarding.tocDisplayed()
+    tracking.onboarding.tocDisplayed()
     setShowTermsModal(true)
-  }, [mixpanel])
+  }, [tracking])
 
   const handleCloseTerms = useCallback(() => {
     setShowTermsModal(false)
   }, [])
 
   const handlePrivacyPress = useCallback(() => {
-    mixpanel.onboarding.privacyPolicyDisplayed()
+    tracking.onboarding.privacyPolicyDisplayed()
     setShowPrivacyModal(true)
-  }, [mixpanel])
+  }, [tracking])
 
   const handlePrivacyClose = useCallback(() => {
     setShowPrivacyModal(false)

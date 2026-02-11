@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
 import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 
 import { useOnboardingContext } from '../hooks/use-onboarding-context'
@@ -108,11 +108,11 @@ const Logo = () => {
 export const IntroCardView = () => {
   const onboarding = useOnboardingContext()
   const insets = useSafeAreaInsets()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   useEffect(() => {
-    mixpanel.appStarted()
-  }, [mixpanel])
+    tracking.appStarted()
+  }, [tracking])
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>

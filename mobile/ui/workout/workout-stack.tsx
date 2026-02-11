@@ -4,7 +4,7 @@ import { Dimensions, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Swiper from 'react-native-swiper'
 
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ExerciseCard } from '@/mobile/ui/workout/components/exercise-card'
 import { LifestyleFeedbackModal } from '@/mobile/ui/workout/components/ux/lifestyle-feedback-modal'
 import { WorkoutStart } from '@/mobile/ui/workout/components/workout-start/workout-start'
@@ -58,10 +58,10 @@ export const WorkoutStack = () => {
   const { data: workoutStats, isLoading: isWorkoutStatsLoading } = trpc.workout.getWorkoutStats.useQuery()
   const { mutateAsync: startWorkout } = trpc.workout.startWorkout.useMutation()
   const trpcUtils = trpc.useUtils()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const onStartWorkout = async () => {
-    mixpanel.workoutStarted()
+    tracking.workoutStarted()
     await startWorkout()
     await trpcUtils.workout.getWorkout.invalidate()
   }

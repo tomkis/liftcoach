@@ -2,7 +2,7 @@ import { ExerciseAssesment, LoadingSet, WorkingSetState, WorkoutExerciseState } 
 import { useCallback, useMemo, useState } from 'react'
 import { match } from 'ts-pattern'
 
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ExerciseFinished } from '@/mobile/ui/workout/components/exercise-finished'
 import { ExerciseLoadTesting } from '@/mobile/ui/workout/components/exercise-load-testing'
 import { ExerciseLoadedAndTested } from '@/mobile/ui/workout/components/exercise-loaded-and-tested'
@@ -17,7 +17,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   const workoutContext = useWorkoutContext()
   const exercise = workoutContext.workout.exercises[exerciseIndex]
   const [showExtraActions, setShowExtraActions] = useState(false)
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const hasMoreExercises =
     workoutContext.workout.exercises.filter(e =>
@@ -50,10 +50,10 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   )
 
   const onExtraActions = useCallback(() => {
-    mixpanel.exerciseExtraActionsShowed()
+    tracking.exerciseExtraActionsShowed()
 
     setShowExtraActions(true)
-  }, [mixpanel])
+  }, [tracking])
 
   const handleExtraActionsCancel = useCallback(() => {
     setShowExtraActions(false)

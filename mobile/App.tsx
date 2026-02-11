@@ -4,7 +4,7 @@ import { localTRPCLink } from '@/mobile/local-trpc-link'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 import { RootStack } from '@/mobile/ui/root/root-stack'
-import { MixpanelProvider } from '@/mobile/ui/tracking/with-mixpanel'
+import { TrackingProvider } from '@/mobile/ui/tracking/tracking'
 import { NavigationContainer } from '@react-navigation/native'
 import * as Sentry from '@sentry/react-native'
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -82,7 +82,7 @@ const AppComponent = () => {
 
   return (
     <SafeAreaProvider>
-      <MixpanelProvider>
+      <TrackingProvider>
         <trpc.Provider client={trpcClient} queryClient={queryClient}>
           <QueryClientProvider client={queryClient}>
             <NavigationContainer>
@@ -91,7 +91,7 @@ const AppComponent = () => {
             </NavigationContainer>
           </QueryClientProvider>
         </trpc.Provider>
-      </MixpanelProvider>
+      </TrackingProvider>
     </SafeAreaProvider>
   )
 }

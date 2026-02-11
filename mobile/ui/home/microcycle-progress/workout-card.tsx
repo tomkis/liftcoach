@@ -7,7 +7,7 @@ import { match } from 'ts-pattern'
 
 import { DashboardCard } from '@/mobile/ui/home/dashboard/dashboard-card'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { Paragraph } from '@/mobile/ui/components/paragraph'
@@ -115,7 +115,7 @@ export const WorkoutCard = ({
   const animatedHeight = useRef(new Animated.Value(0)).current
   const headerRef = useRef<View>(null)
   const isFirstRender = useRef(true)
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const navigation = useNavigation<NativeStackNavigationProp<{ Workout: undefined }>>()
 
@@ -154,7 +154,7 @@ export const WorkoutCard = ({
 
   const startWorkout = async () => {
     if (!workoutQuery.data) {
-      mixpanel.workoutStarted()
+      tracking.workoutStarted()
       await startWorkoutMutation.mutateAsync()
       await trpcUtils.workout.invalidate()
     }

@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
 import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { TextContentHolder } from '@/mobile/ui/ui/text-content-holder'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
@@ -18,10 +18,10 @@ export const PlanningScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
   const { data: microcycle, isLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
   const insets = useSafeAreaInsets()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const onCreateNewCycle = () => {
-    mixpanel.newTrainingPlan()
+    tracking.newTrainingPlan()
     navigation.navigate('TrainingDays')
   }
 

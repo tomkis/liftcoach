@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { Animated, Pressable, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 import Calendar from '@/mobile/ui/icons/calendar'
 import CalendarFilled from '@/mobile/ui/icons/calendar-filled'
@@ -92,7 +92,7 @@ const MenuIcon = ({
 export const HomeTabBar = (props: BottomTabBarProps) => {
   const navigationState = props.navigation.getState()
   const safeInsets = useSafeAreaInsets()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   return (
     <View style={[styles.menuContainer, { paddingBottom: safeInsets.bottom }]}>
@@ -102,7 +102,7 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         text="Home"
         active={navigationState.index === 0}
         onPress={() => {
-          mixpanel.menuItemPressed('MicrocycleProgress')
+          tracking.menuItemPressed('MicrocycleProgress')
           props.navigation.navigate('MicrocycleProgress')
         }}
       />
@@ -112,7 +112,7 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         text="Workout"
         active={navigationState.index === 1}
         onPress={() => {
-          mixpanel.menuItemPressed('Workout')
+          tracking.menuItemPressed('Workout')
           props.navigation.navigate('Workout')
         }}
       />
@@ -122,7 +122,7 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         text="Planning"
         active={navigationState.index === 2}
         onPress={() => {
-          mixpanel.menuItemPressed('Planning')
+          tracking.menuItemPressed('Planning')
           props.navigation.navigate('Planning')
         }}
       />

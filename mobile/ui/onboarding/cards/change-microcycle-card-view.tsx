@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ProposeExerciseReplacementModal } from '@/mobile/ui/workout/components/ux/adjust-exercise-overlay'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
@@ -60,7 +60,7 @@ export const ChangeMicrocycleCardView = () => {
   const { data: microcycle, isLoading: isMicrocycleLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
   const insets = useSafeAreaInsets()
   const onboardingContext = useOnboardingContext()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const [selectedExercise, setSelectedExercise] = useState<{
     id: string
@@ -100,7 +100,7 @@ export const ChangeMicrocycleCardView = () => {
     await trpcUtils.workout.getCurrentMicrocycle.invalidate()
 
     handleCloseAdjustOverlay()
-    mixpanel.onboarding.exerciseReplaced(exerciseId, replacementExerciseId)
+    tracking.onboarding.exerciseReplaced(exerciseId, replacementExerciseId)
   }
 
   return (

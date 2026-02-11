@@ -1,7 +1,7 @@
 import { LiftingExperience, MuscleGroupPreference, OnboardedUser, TrainingFrequency, Unit } from '@/mobile/domain'
 import React, { useCallback } from 'react'
 
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { trpc } from '@/mobile/trpc'
 
 import { useOnboardingNavigation } from './use-onboarding-navigation'
@@ -26,7 +26,7 @@ export const OnboardingContext = React.createContext<null | OnboardingContextTyp
 
 export const useCreateOnboardingContext = (): OnboardingContextType => {
   const trpcUtils = trpc.useUtils()
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
   const { mutateAsync: confirmMesocycle } = trpc.user.confirmMesocycle.useMutation()
   const navigation = useOnboardingNavigation()
 
@@ -46,25 +46,25 @@ export const useCreateOnboardingContext = (): OnboardingContextType => {
 
   const start = useCallback(() => {
     navigation.navigate('Gender')
-    mixpanel.onboarding.funnel.onboardingStarted()
-  }, [navigation, mixpanel])
+    tracking.onboarding.funnel.onboardingStarted()
+  }, [navigation, tracking])
 
   const setGender = useCallback(
     (gender: 'male' | 'female') => {
       setUser(prev => ({ ...prev, gender }))
       navigation.navigate('LiftingExperience')
-      mixpanel.onboarding.funnel.genderSelected()
+      tracking.onboarding.funnel.genderSelected()
     },
-    [navigation, mixpanel]
+    [navigation, tracking]
   )
 
   const setLiftingExperience = useCallback(
     (experience: LiftingExperience) => {
       setUser(prev => ({ ...prev, liftingExperience: experience }))
-      mixpanel.onboarding.funnel.liftingExperienceSelected({ liftingExperience: experience })
+      tracking.onboarding.funnel.liftingExperienceSelected({ liftingExperience: experience })
       navigation.navigate('TrainingFrequencyCardView')
     },
-    [navigation, mixpanel]
+    [navigation, tracking]
   )
 
   const setTrainingFrequency = useCallback(
@@ -72,17 +72,17 @@ export const useCreateOnboardingContext = (): OnboardingContextType => {
       setUser(prev => ({ ...prev, trainingFrequency: frequency, trainingDays: days }))
 
       navigation.navigate('MuscleGroupPreferencesFirst')
-      mixpanel.onboarding.funnel.trainingFrequencyProvided()
+      tracking.onboarding.funnel.trainingFrequencyProvided()
     },
-    [navigation, mixpanel]
+    [navigation, tracking]
   )
 
   const prepareWellBalancedPlan = useCallback(() => {
     setUser(prev => ({ ...prev, muscleGroupPreference: null }))
 
     navigation.navigate('Finalization')
-    mixpanel.onboarding.funnel.musclePreferencesProvided({ type: 'well-balanced' })
-  }, [navigation, mixpanel])
+    tracking.onboarding.funnel.musclePreferencesProvided({ type: 'well-balanced' })
+  }, [navigation, tracking])
 
   const goWithMusclePreferences = useCallback(() => {
     navigation.navigate('MuscleGroupPreferencesSecond')
@@ -93,9 +93,9 @@ export const useCreateOnboardingContext = (): OnboardingContextType => {
       setUser(prev => ({ ...prev, muscleGroupPreference }))
 
       navigation.navigate('Finalization')
-      mixpanel.onboarding.funnel.musclePreferencesProvided({ type: 'custom' })
+      tracking.onboarding.funnel.musclePreferencesProvided({ type: 'custom' })
     },
-    [navigation, mixpanel]
+    [navigation, tracking]
   )
 
   const finalize = useCallback(async () => {
@@ -104,33 +104,31 @@ export const useCreateOnboardingContext = (): OnboardingContextType => {
       navigation.navigate('ApproveCycle')
     }
 
-    // TODO: add mixpanel pipeline
-    // mixpanel.onboardingFinished()
   }, [invalidateCacheAfterOnboarding, navigation])
 
   const changeMicrocycle = useCallback(() => {
     navigation.navigate('ChangeMicrocycle')
-    mixpanel.onboarding.funnel.changeMesocycle()
-  }, [mixpanel, navigation])
+    tracking.onboarding.funnel.changeMesocycle()
+  }, [tracking, navigation])
 
   const cycleReviewed = useCallback(async () => {
     await confirmMesocycle()
     await trpcUtils.user.me.invalidate()
-    mixpanel.onboarding.funnel.mesocycleApproved()
-  }, [confirmMesocycle, trpcUtils.user.me, mixpanel])
+    tracking.onboarding.funnel.mesocycleApproved()
+  }, [confirmMesocycle, trpcUtils.user.me, tracking])
 
   const cycleAdjusted = useCallback(async () => {
     await confirmMesocycle()
     await trpcUtils.user.me.invalidate()
-    mixpanel.onboarding.funnel.changesToMesoApproved()
-  }, [confirmMesocycle, trpcUtils.user.me, mixpanel])
+    tracking.onboarding.funnel.changesToMesoApproved()
+  }, [confirmMesocycle, trpcUtils.user.me, tracking])
 
   const unitsProvided = useCallback(
     (unit: Unit) => {
-      mixpanel.onboarding.systemOfMeasureChanged({ unit })
+      tracking.onboarding.systemOfMeasureChanged({ unit })
       setUser(prev => ({ ...prev, unit }))
     },
-    [mixpanel.onboarding]
+    [tracking.onboarding]
   )
 
   return {

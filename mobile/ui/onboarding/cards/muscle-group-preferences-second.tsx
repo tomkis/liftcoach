@@ -8,7 +8,7 @@ import { Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } f
 import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 
 const styles = StyleSheet.create({
@@ -165,7 +165,7 @@ const MuscleGroupPreferencesSecondCardViewInternal = (props: {
 }) => {
   const onboarding = useOnboardingContext()
   const [expanded, setExpanded] = useState({ legs: false, shoulders: false, arms: false })
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
 
   const { control, handleSubmit } = useForm<MuscleGroupPreference>({
     defaultValues: {
@@ -191,19 +191,19 @@ const MuscleGroupPreferencesSecondCardViewInternal = (props: {
   })
 
   const onToggleLegs = useCallback(() => {
-    mixpanel.showMoreMusclePreferences('legs')
+    tracking.showMoreMusclePreferences('legs')
     setExpanded(prev => ({ ...prev, legs: !prev.legs }))
-  }, [mixpanel, setExpanded])
+  }, [tracking, setExpanded])
 
   const onToggleShoulders = useCallback(() => {
-    mixpanel.showMoreMusclePreferences('shoulders')
+    tracking.showMoreMusclePreferences('shoulders')
     setExpanded(prev => ({ ...prev, shoulders: !prev.shoulders }))
-  }, [mixpanel, setExpanded])
+  }, [tracking, setExpanded])
 
   const onToggleArms = useCallback(() => {
-    mixpanel.showMoreMusclePreferences('arms')
+    tracking.showMoreMusclePreferences('arms')
     setExpanded(prev => ({ ...prev, arms: !prev.arms }))
-  }, [mixpanel, setExpanded])
+  }, [tracking, setExpanded])
 
   return (
     <View

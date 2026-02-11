@@ -16,7 +16,7 @@ import {
 import { NumericalInput } from '@/mobile/ui/onboarding/cards/ux/numerical-input'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
 import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
-import { useMixpanel } from '@/mobile/ui/tracking/with-mixpanel'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ButtonContainer } from '@/mobile/ui/ui/button-container'
 import { theme } from '@/mobile/theme/theme'
 import { Checkbox } from '@/mobile/ui/components/checkbox'
@@ -260,11 +260,11 @@ export const ExerciseLoadTesting = ({
   onExtraActions: () => void
   unit: Unit
 }) => {
-  const mixpanel = useMixpanel()
+  const tracking = useTracking()
   const [warmupCompleted, setWarmupCompleted] = useState(false)
   const toggleWarmupCompleted = () => {
     setWarmupCompleted(value => !value)
-    mixpanel.workout.warmupToggled()
+    tracking.workout.warmupToggled()
   }
 
   const [sets, setSets] = useState<Array<SetState>>([SetState.TryAnotherSet])
@@ -360,7 +360,7 @@ export const ExerciseLoadTesting = ({
   }, [pushToUndoStack])
 
   const onUndo = useCallback(() => {
-    mixpanel.exerciseLoadingUndo()
+    tracking.exerciseLoadingUndo()
 
     const stackCopy = [...undoStack]
     const lastOperation = stackCopy.pop()
@@ -388,7 +388,7 @@ export const ExerciseLoadTesting = ({
 
       setUndoStack(stack => stack.slice(0, -1))
     }
-  }, [mixpanel, undoStack])
+  }, [tracking, undoStack])
 
   const moveOnToWorkingSets = useCallback(
     (data: { weight: string; reps?: string }) => {
@@ -412,9 +412,9 @@ export const ExerciseLoadTesting = ({
   )
 
   const handleVideoOpen = useCallback(() => {
-    mixpanel.exerciseVideoOpened(loadingExercise.exercise.name)
+    tracking.exerciseVideoOpened(loadingExercise.exercise.name)
     setVideoModalVisible(true)
-  }, [mixpanel, loadingExercise.exercise.name])
+  }, [tracking, loadingExercise.exercise.name])
 
   const exerciseName = loadingExercise.exercise.name
 

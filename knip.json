@@ -2,7 +2,6 @@
   "project": ["mobile/**/*.{ts,tsx}", "types/**/*.ts"],
   "ignoreDependencies": [
     "pino-pretty",
-    "react-native-get-random-values",
     "@babel/core",
     "@babel/runtime",
     "@react-native/assets-registry",

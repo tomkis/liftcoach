@@ -31,7 +31,7 @@ export const MicrocycleProgressView = () => {
       <ScrollView ref={scrollViewRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Title style={styles.title}>Workout Plan</Title>
+            <Title style={styles.title}>Coming Up</Title>
           </View>
 
           <View style={styles.workoutsSection}>

@@ -5,8 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
-import Calendar from '@/mobile/ui/icons/calendar'
-import CalendarFilled from '@/mobile/ui/icons/calendar-filled'
+import Clipboard from '@/mobile/ui/icons/clipboard'
+import ClipboardFilled from '@/mobile/ui/icons/clipboard-filled'
 import Home from '@/mobile/ui/icons/home'
 import HomeFilled from '@/mobile/ui/icons/home-filled'
 import WorkoutStretching from '@/mobile/ui/icons/workout-stretching'
@@ -117,9 +117,9 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         }}
       />
       <MenuIcon
-        NonActiveIcon={Calendar}
-        ActiveIcon={CalendarFilled}
-        text="Planning"
+        NonActiveIcon={Clipboard}
+        ActiveIcon={ClipboardFilled}
+        text="Plan"
         active={navigationState.index === 2}
         onPress={() => {
           tracking.menuItemPressed('Planning')

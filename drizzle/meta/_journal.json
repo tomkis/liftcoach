@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1770631599943,
+      "tag": "0000_dizzy_susan_delgado",
+      "breakpoints": true
+    }
+  ]
+}

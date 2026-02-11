@@ -1,0 +1,18 @@
+{
+  "project": ["mobile/**/*.{ts,tsx}", "types/**/*.ts"],
+  "ignoreDependencies": [
+    "pino-pretty",
+    "react-native-get-random-values",
+    "@babel/core",
+    "@babel/runtime",
+    "@react-native/assets-registry",
+    "expo-modules-autolinking",
+    "eslint-plugin-react-hooks",
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-packagejson",
+    "expo-updates",
+    "@expo/metro-config",
+    "metro-minify-terser"
+  ],
+  "ignore": ["prettier.config.cjs"]
+}

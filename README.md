@@ -1,3 +1,5 @@
+<div align="center">
+
 # LiftCoach
 
 **Stop guessing. Start progressing.**
@@ -52,8 +54,8 @@ LiftCoach is for the dedicated people who already have the hardest part figured 
 ## Quick Start
 
 ```bash
-git clone https://github.com/tomkis/trainer.git
-cd trainer
+git clone https://github.com/tomkis/liftcoach.git
+cd liftcoach
 pnpm install
 pnpm run ios
 ```

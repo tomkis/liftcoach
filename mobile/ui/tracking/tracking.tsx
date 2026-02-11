@@ -91,9 +91,6 @@ export const useTracking = () => {
     exerciseExtraActionsShowed: () => {
       track('Workout - Exercise Extra Actions Shown')
     },
-    exerciseVideoOpened: (exerciseName: string) => {
-      track('Workout - Exercise Video Opened', { exerciseName })
-    },
     exerciseLoadingUndo: () => {
       track('Workout - Exercise Loading Undo')
     },

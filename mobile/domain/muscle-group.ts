@@ -95,7 +95,6 @@ export const providedExerciseSchema = z.object({
   minimumLiftingExperience: z.nativeEnum(LiftingExperience),
   name: z.string(),
   id: z.string(),
-  videoFilename: z.string().optional(),
 })
 export type ProvidedExercise = z.infer<typeof providedExerciseSchema>
 

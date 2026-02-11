@@ -66,7 +66,6 @@ export const exerciseSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   muscleGroup: z.nativeEnum(MuscleGroup),
-  videoFilename: z.string().optional(),
 })
 export type Exercise = z.infer<typeof exerciseSchema>
 

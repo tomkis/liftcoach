@@ -1,5 +1,4 @@
 import { LoadingSet, LoadingWorkingExercise, Unit } from '@/mobile/domain'
-import { PlayCircle } from 'lucide-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import {
@@ -23,8 +22,6 @@ import { Checkbox } from '@/mobile/ui/components/checkbox'
 import { Paragraph } from '@/mobile/ui/components/paragraph'
 import { Title } from '@/mobile/ui/components/title'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
-
-import { ExerciseVideoModal } from './ux/exercise-video-modal'
 
 const CARD_PADDING = 18
 
@@ -270,8 +267,6 @@ export const ExerciseLoadTesting = ({
   const [sets, setSets] = useState<Array<SetState>>([SetState.TryAnotherSet])
   const [undoStack, setUndoStack] = useState<Array<SetState>>([])
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
-  const [videoModalVisible, setVideoModalVisible] = useState(false)
-
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
@@ -411,11 +406,6 @@ export const ExerciseLoadTesting = ({
     [sets.length, stopedVoluntarily, onLoaded, reachedFailure]
   )
 
-  const handleVideoOpen = useCallback(() => {
-    tracking.exerciseVideoOpened(loadingExercise.exercise.name)
-    setVideoModalVisible(true)
-  }, [tracking, loadingExercise.exercise.name])
-
   const exerciseName = loadingExercise.exercise.name
 
   return (
@@ -438,11 +428,6 @@ export const ExerciseLoadTesting = ({
                   <Title>{exerciseName}</Title>
                 </View>
                 <View style={styles.buttonRow}>
-                  {loadingExercise.exercise.videoFilename && (
-                    <TouchableOpacity style={styles.titleButton} onPress={handleVideoOpen}>
-                      <PlayCircle color={theme.colors.newUi.primary.main} size={24} />
-                    </TouchableOpacity>
-                  )}
                   <TouchableOpacity style={styles.titleButton} onPress={onExtraActions}>
                     <CogwheelFilled color={theme.colors.newUi.primary.main} />
                   </TouchableOpacity>
@@ -626,14 +611,6 @@ export const ExerciseLoadTesting = ({
             <SecondaryButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} />
           )}
         </ButtonContainer>
-        {loadingExercise.exercise.videoFilename && (
-          <ExerciseVideoModal
-            visible={videoModalVisible}
-            videoFilename={loadingExercise.exercise.videoFilename}
-            exerciseName={exerciseName}
-            onClose={() => setVideoModalVisible(false)}
-          />
-        )}
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )

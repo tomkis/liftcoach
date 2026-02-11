@@ -1,10 +1,22 @@
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { theme } from '@/mobile/theme/theme'
+import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
+import { trpc } from '@/mobile/trpc'
 
-import { PlanHubProps } from './types'
+type ActivePlanData = {
+  currentWeek: number
+  totalWeeks: number
+  splitType: string
+  trainingDaysPerWeek: number
+  workoutsCompleted: number
+  totalWorkouts: number
+}
 
 const DotGrid = ({ completed, total }: { completed: number; total: number }) => {
   const dots = Array.from({ length: total }, (_, i) => i < completed)
@@ -24,7 +36,17 @@ const KeyValue = ({ label, value, accent }: { label: string; value: string; acce
   </View>
 )
 
-export const PlanDashboard = ({ activePlan, onViewActivePlan, onBuildNewPlan, isLoading }: PlanHubProps) => {
+const PlanDashboard = ({
+  activePlan,
+  onViewActivePlan,
+  onBuildNewPlan,
+  isLoading,
+}: {
+  activePlan: ActivePlanData | null
+  onViewActivePlan: () => void
+  onBuildNewPlan: () => void
+  isLoading: boolean
+}) => {
   const insets = useSafeAreaInsets()
 
   if (isLoading) {
@@ -132,6 +154,41 @@ export const PlanDashboard = ({ activePlan, onViewActivePlan, onBuildNewPlan, is
         </View>
       </TouchableOpacity>
     </View>
+  )
+}
+
+export const PlanHubScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
+  const { data: microcycle, isLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const tracking = useTracking()
+
+  const activePlan: ActivePlanData | null = microcycle
+    ? {
+        splitType: 'Training Plan',
+        currentWeek: 1,
+        totalWeeks: 4,
+        trainingDaysPerWeek: microcycle.workouts.length,
+        workoutsCompleted: 0,
+        totalWorkouts: microcycle.workouts.length * 4,
+      }
+    : null
+
+  const onViewActivePlan = () => {
+    // TODO: navigate to active plan detail screen
+  }
+
+  const onBuildNewPlan = () => {
+    tracking.newTrainingPlan()
+    navigation.navigate('TrainingDays')
+  }
+
+  return (
+    <PlanDashboard
+      activePlan={activePlan}
+      onViewActivePlan={onViewActivePlan}
+      onBuildNewPlan={onBuildNewPlan}
+      isLoading={isLoading}
+    />
   )
 }
 

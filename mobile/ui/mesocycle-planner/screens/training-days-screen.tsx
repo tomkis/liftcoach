@@ -7,6 +7,7 @@ import { theme } from '@/mobile/theme/theme'
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
 import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
 import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
 
 type TrainingDaysScreenProps = {
   navigation: NativeStackNavigationProp<MesocyclePlannerStackParamList, 'TrainingDays'>
@@ -30,6 +31,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     justifyContent: 'center',
     gap: 12,
+  },
+  footer: {
+    paddingBottom: 40,
+    marginHorizontal: 40,
   },
   description: {
     color: theme.colors.newUi.text.primary,
@@ -67,6 +72,10 @@ export const TrainingDaysScreen = ({ navigation }: TrainingDaysScreenProps) => {
               onPress={() => navigation.navigate('MusclePreferences', { trainingDays: day })}
             />
           ))}
+        </View>
+
+        <View style={styles.footer}>
+          <SecondaryButton title="Back" onPress={() => navigation.goBack()} />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

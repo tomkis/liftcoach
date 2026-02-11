@@ -117,6 +117,9 @@ importers:
       '@eslint/js':
         specifier: ^9.11.1
         version: 9.39.2
+      '@expo/metro-config':
+        specifier: ^0.18.11
+        version: 0.18.11
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.3.1
         version: 4.7.1(prettier@3.8.1)

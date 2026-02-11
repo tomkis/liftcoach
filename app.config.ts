@@ -26,7 +26,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   extra: {
-    eas: {},
+    eas: {
+      projectId: '0292fa2b-2a5f-4a29-a07d-9990e99bfdce',
+    },
   },
   updates: {},
   runtimeVersion: {

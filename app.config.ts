@@ -8,7 +8,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'liftcoach',
   privacy: 'unlisted',
   scheme: 'liftcoach',
-  version: '3.0.0',
+  version: '3.0.1',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   userInterfaceStyle: 'dark',

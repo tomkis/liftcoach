@@ -18,13 +18,13 @@ An iOS app for gym-goers who show up consistently but lack structured training p
 ---
 
 <div align="center">
-  <img src="docs/assets/2.png" width="200" alt="Workout Plan Management" />
+  <img src="docs/assets/2.png" width="180" alt="Workout Plan Management" />
   &nbsp;&nbsp;
-  <img src="docs/assets/0.png" width="200" alt="Upcoming Workouts" />
+  <img src="docs/assets/0.png" width="180" alt="Upcoming Workouts" />
   &nbsp;&nbsp;
-  <img src="docs/assets/1.png" width="200" alt="Inteligent Weight Picking" />
+  <img src="docs/assets/1.png" width="180" alt="Intelligent Weight Picking" />
   &nbsp;&nbsp;
-  <img src="docs/assets/3.png" width="200" alt="Program Tracking" />
+  <img src="docs/assets/3.png" width="180" alt="Program Tracking" />
 </div>
 
 ## Features

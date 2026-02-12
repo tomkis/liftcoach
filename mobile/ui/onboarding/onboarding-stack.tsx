@@ -8,6 +8,7 @@ import { MuscleGroupPreferencesFirstCardView } from '@/mobile/ui/onboarding/card
 import { MuscleGroupPreferencesSecondCardView } from '@/mobile/ui/onboarding/cards/muscle-group-preferences-second'
 import { TrainingFrequencyCardView } from '@/mobile/ui/onboarding/cards/training-frequency-card-view'
 import { theme } from '@/mobile/theme/theme'
+import { trpc } from '@/mobile/trpc'
 
 import { GenderCardView } from './cards/gender-card-view'
 import { IntroCardView } from './cards/intro-card-view'
@@ -24,7 +25,8 @@ const disabledBack = {
 
 export const OnboardingStack = () => {
   const value = useCreateOnboardingContext()
-  const initialRouteName = 'Intro'
+  const { data: me } = trpc.user.me.useQuery()
+  const initialRouteName = me?.hasPendingMesocycle ? 'ApproveCycle' : 'Intro'
 
   return (
     <OnboardingContext.Provider value={value}>

@@ -28,6 +28,7 @@ export const createLocalUserContext = (): UserContext => {
       hasStrengthTest,
       isOnboarded: isConfirmedMicrocycle,
       hasActiveWorkout,
+      hasPendingMesocycle: !!mesocycleId && !isConfirmedMicrocycle,
     }
   }
 

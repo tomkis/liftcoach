@@ -182,15 +182,14 @@ const styles = StyleSheet.create({
   },
   headerAccent: {
     width: 3,
-    height: 18,
-    borderRadius: 2,
+    height: 16,
+    borderRadius: theme.borderRadius.small,
     backgroundColor: theme.colors.newUi.primary.main,
   },
   headerTitle: {
     fontFamily: theme.font.sairaBold,
-    fontSize: 22,
+    fontSize: theme.fontSize.medium,
     color: theme.colors.newUi.text.primary,
-    letterSpacing: 3,
   },
   headerRule: {
     borderBottomWidth: 1,
@@ -201,9 +200,9 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontFamily: theme.font.sairaRegular,
-    fontSize: 10,
+    fontSize: theme.fontSize.extraSmall,
     color: theme.colors.newUi.primary.main,
-    letterSpacing: 2,
+    letterSpacing: 1.4,
   },
   activePlanCard: {
     backgroundColor: theme.colors.newUi.backgroundLight,
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 2,
-    backgroundColor: '#222',
+    backgroundColor: '#333',
   },
   dotFilled: {
     backgroundColor: theme.colors.newUi.primary.main,

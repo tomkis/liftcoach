@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native'
-import React from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import React, { useCallback } from 'react'
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -19,8 +19,16 @@ const stateColor = (state: DerivedState) => {
 export const ActivePlanDetailScreen = () => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
+  const trpcUtils = trpc.useUtils()
   const { data: activePlan, isLoading: isLoadingPlan } = trpc.workout.getActivePlanSummary.useQuery()
   const { data: microcycle, isLoading: isLoadingMicrocycle } = trpc.workout.getCurrentMicrocycle.useQuery()
+
+  useFocusEffect(
+    useCallback(() => {
+      trpcUtils.workout.getActivePlanSummary.invalidate()
+      trpcUtils.workout.getCurrentMicrocycle.invalidate()
+    }, [trpcUtils]),
+  )
 
   if (isLoadingPlan || isLoadingMicrocycle || !activePlan || !microcycle) {
     return (

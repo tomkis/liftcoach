@@ -140,8 +140,11 @@ export class ExercisePicker implements IExercisePicker {
           ]
         })
 
+        if (dayExercises.length === 0) {
+          throw new Error(`No exercises could be picked for workout day ${dayIndex}`)
+        }
+
         return { exercises: dayExercises }
       })
-      .filter(day => day.exercises.length > 0)
   }
 }

@@ -82,7 +82,7 @@ describe('ExercisePicker', () => {
       expect(result[0].exercises[1].sets).toBe(4)
     })
 
-    it('filters out empty workout days', async () => {
+    it('throws when a workout day has no exercises', async () => {
       const exerciseA = makeExercise('a', MuscleGroup.Abs, MovementPattern.AbsUpper)
 
       const provider = new ExerciseProvider([])
@@ -98,10 +98,9 @@ describe('ExercisePicker', () => {
         { exercises: [{ muscleGroup: MuscleGroup.Abs, sets: 3 }] },
       ]
 
-      const result = await new ExercisePicker(provider).pickExercises(template, LiftingExperience.None)
-
-      expect(result).toHaveLength(1)
-      expect(result[0].exercises[0].sets).toBe(6)
+      await expect(
+        new ExercisePicker(provider).pickExercises(template, LiftingExperience.None)
+      ).rejects.toThrow('No exercises could be picked for workout day 1')
     })
   })
 })

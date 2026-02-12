@@ -107,35 +107,49 @@ export class ExerciseProvider {
     return orderedExercises.filter(e => ![...selectedExercisesId, originalExerciseId].some(ee => ee === e.id))
   }
 
+  private tryPattern(
+    muscleGroup: MuscleGroup,
+    movementPattern: MovementPattern,
+    selectedExercises: ProvidedExercise[],
+    userExperience: LiftingExperience
+  ): ProvidedExercise | undefined {
+    const exercisesForPattern = this.exercises.filter(
+      e => e.muscleGroup === muscleGroup && e.movementPattern === movementPattern
+    )
+
+    const exercisesForExperience = exercisesForPattern.filter(
+      e => experienceToNumber(e.minimumLiftingExperience) <= experienceToNumber(userExperience)
+    )
+
+    if (exercisesForExperience.length === 0) {
+      return undefined
+    }
+
+    return exercisesForExperience.filter(e => !selectedExercises.some(selected => selected.id === e.id))[0]
+  }
+
   provideExercise(
     muscleGroup: MuscleGroup,
     exerciseNumber: number,
     selectedExercises: ProvidedExercise[],
     userExperience: LiftingExperience
   ): ProvidedExercise | undefined {
-    const movementPattern =
-      movementPatternsPriorities[muscleGroup][exerciseNumber % movementPatternsPriorities[muscleGroup].length]
+    const patterns = movementPatternsPriorities[muscleGroup]
+    const preferredIndex = exerciseNumber % patterns.length
 
-    const exercisesForPattern = this.exercises.filter(
-      e => e.muscleGroup === muscleGroup && e.movementPattern === movementPattern
-    )
+    const result = this.tryPattern(muscleGroup, patterns[preferredIndex], selectedExercises, userExperience)
+    if (result) return result
 
-    const expercisesForExperience = exercisesForPattern.filter(
-      e => experienceToNumber(e.minimumLiftingExperience) <= experienceToNumber(userExperience)
-    )
-
-    if (!expercisesForExperience || expercisesForExperience.length === 0) {
-      return undefined
+    for (let i = 1; i < patterns.length; i++) {
+      const fallback = this.tryPattern(
+        muscleGroup,
+        patterns[(preferredIndex + i) % patterns.length],
+        selectedExercises,
+        userExperience
+      )
+      if (fallback) return fallback
     }
 
-    const selectedExercise = expercisesForExperience.filter(
-      e => !selectedExercises.some(selected => selected.id === e.id)
-    )[0]
-
-    if (!selectedExercise) {
-      return undefined
-    }
-
-    return selectedExercise
+    return undefined
   }
 }

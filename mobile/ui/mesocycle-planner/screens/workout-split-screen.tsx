@@ -16,8 +16,8 @@ import {
 
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
 import { ScreenWrapper } from '@/mobile/ui/mesocycle-planner/screens/screen-wrapper'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { theme } from '@/mobile/theme/theme'
 
 type SplitSelectionScreenProps = {
@@ -152,14 +152,14 @@ const AddMuscleGroupModal = ({ isVisible, onClose, onConfirm, availableMuscleGro
                   value={selectedSets}
                   onChangeText={handleSetsChange}
                   placeholder="Enter number of sets"
-                  placeholderTextColor={theme.colors.newUi.primary.main}
+                  placeholderTextColor={theme.colors.primary.main}
                 />
               </View>
             </View>
           )}
 
           <View style={styles.modalButtons}>
-            <SecondaryButton title="Cancel" onPress={onClose} style={styles.cancelButton} />
+            <OutlineButton title="Cancel" onPress={onClose} style={styles.cancelButton} />
             <PrimaryButton
               title="Add"
               onPress={handleConfirm}
@@ -189,7 +189,7 @@ const WarningDialog = ({ isVisible, onClose, onConfirm, remainingSets }: Warning
             ))}
           </ScrollView>
           <View style={styles.warningDialogButtons}>
-            <SecondaryButton title="Adjust Split" onPress={onClose} style={styles.warningDialogButton} />
+            <OutlineButton title="Adjust Split" onPress={onClose} style={styles.warningDialogButton} />
             <PrimaryButton title="Continue Anyway" onPress={onConfirm} style={styles.warningDialogButton} />
           </View>
         </View>
@@ -394,25 +394,25 @@ const styles = StyleSheet.create({
   dayButton: {
     padding: 8,
     borderRadius: 5,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     alignItems: 'center',
     flex: 0,
     minWidth: 70,
     maxWidth: 90,
   },
   selectedDay: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   dayText: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
   },
   selectedDayText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   dayContent: {
     flex: 1,
@@ -421,12 +421,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
   },
   muscleGroupInfo: {
     flex: 1,
@@ -434,39 +434,39 @@ const styles = StyleSheet.create({
   muscleGroupName: {
     fontSize: 18,
     fontWeight: '600',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 4,
   },
   setsText: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     opacity: 0.7,
     fontFamily: theme.font.sairaRegular,
   },
   removeButton: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     padding: 8,
     borderRadius: 5,
     marginLeft: 10,
   },
   removeButtonText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
   },
   addButton: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     borderStyle: 'dashed',
     alignItems: 'center',
   },
   addButtonText: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontSize: 16,
     fontFamily: theme.font.sairaRegular,
   },
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     width: '100%',
     padding: 20,
     borderTopLeftRadius: 20,
@@ -493,13 +493,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 10,
   },
   setsInfo: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 15,
   },
@@ -507,28 +507,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   muscleGroupButton: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
   },
   selectedMuscleGroupButton: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   muscleGroupButtonText: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 4,
   },
   selectedMuscleGroupButtonText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   remainingSetsText: {
     fontSize: 14,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     opacity: 0.7,
     fontFamily: theme.font.sairaRegular,
   },
@@ -540,18 +540,18 @@ const styles = StyleSheet.create({
   },
   setsLabel: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginRight: 10,
   },
   setsInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
   },
   modalButtons: {
@@ -572,16 +572,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   warningText: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
     marginTop: 8,
   },
   errorInput: {
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
   },
   errorText: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontSize: 12,
     fontFamily: theme.font.sairaRegular,
     marginTop: 4,
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   warningDialogContent: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 10,
     padding: 20,
     width: '90%',
@@ -602,13 +602,13 @@ const styles = StyleSheet.create({
   warningDialogTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 10,
   },
   warningDialogText: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 15,
   },
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
   },
   warningDialogItem: {
     fontSize: 14,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 5,
   },

@@ -15,8 +15,8 @@ import {
 } from 'react-native'
 
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { useResetToHomeNavigation } from '@/mobile/ui/workout/hooks/use-workout-navigation'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
@@ -133,7 +133,7 @@ const ExerciseSelectionModal = ({
                 style={styles.setsInput}
                 keyboardType="numeric"
                 placeholder="Enter number of sets"
-                placeholderTextColor={theme.colors.newUi.primary.main}
+                placeholderTextColor={theme.colors.primary.main}
                 value={currentlySelectedExercise.sets.toString()}
                 onChangeText={handleSetsChange}
               />
@@ -141,7 +141,7 @@ const ExerciseSelectionModal = ({
           </View>
 
           <View style={styles.modalButtons}>
-            <SecondaryButton title="Cancel" onPress={onClose} style={styles.cancelButton} />
+            <OutlineButton title="Cancel" onPress={onClose} style={styles.cancelButton} />
             <PrimaryButton title="Confirm" onPress={handleConfirm} style={styles.confirmButton} />
           </View>
         </View>
@@ -314,34 +314,34 @@ const styles = StyleSheet.create({
   dayButton: {
     padding: 8,
     borderRadius: 5,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     alignItems: 'center',
     flex: 0,
     minWidth: 70,
     maxWidth: 90,
   },
   selectedDay: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   dayText: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
   },
   selectedDayText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   muscleGroupsList: {
     flex: 1,
   },
   exerciseCard: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     marginBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.primary.main,
+    borderBottomColor: theme.colors.primary.main,
     paddingVertical: 16,
   },
   exerciseHeader: {
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 20,
     fontWeight: '600',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     flex: 1,
     marginRight: 16,
@@ -362,19 +362,19 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     justifyContent: 'center',
     alignItems: 'center',
   },
   editIcon: {
     fontSize: 16,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   muscleGroupInfo: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     opacity: 0.8,
     marginBottom: 8,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   setsText: {
     fontSize: 16,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontFamily: theme.font.sairaRegular,
   },
   modalOverlay: {
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     width: '100%',
     padding: 20,
     borderTopLeftRadius: 20,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     marginBottom: 10,
   },
@@ -413,30 +413,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   exerciseButton: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.primary.main,
+    borderBottomColor: theme.colors.primary.main,
   },
   assignedExerciseButton: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     opacity: 0.7,
   },
   selectedExerciseButton: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     opacity: 1,
   },
   exerciseButtonText: {
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
   },
   assignedExerciseText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     opacity: 0.7,
   },
   selectedExerciseButtonText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
     opacity: 1,
   },
   exerciseInfo: {
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
   movementPatternText: {
     fontSize: 14,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     opacity: 0.8,
     marginTop: 2,
@@ -461,11 +461,11 @@ const styles = StyleSheet.create({
   setsInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
   },
   modalButtons: {
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
   },
   muscleGroupTitle: {
     fontSize: 18,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     textTransform: 'capitalize',
     marginTop: 4,

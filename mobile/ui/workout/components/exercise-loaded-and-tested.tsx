@@ -1,12 +1,12 @@
 import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
 import { StyleSheet, Text, View } from 'react-native'
 
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { ButtonContainer } from '@/mobile/ui/ui/button-container'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { Checkbox } from '@/mobile/ui/ds/controls'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const CARD_PADDING = 18
 
@@ -18,12 +18,12 @@ const styles = StyleSheet.create({
     paddingTop: CARD_PADDING + 10,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: CARD_PADDING,
   },
   setsCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     marginTop: CARD_PADDING,
     overflow: 'hidden',
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 40,
     borderBottomWidth: 2,
-    borderColor: theme.colors.newUi.background,
+    borderColor: theme.colors.background,
   },
   setInfo: {
     flex: 1,
@@ -58,17 +58,17 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   successSection: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     padding: CARD_PADDING,
     borderBottomLeftRadius: theme.borderRadius.medium,
     borderBottomRightRadius: theme.borderRadius.medium,
     marginTop: 1,
   },
   successText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   performanceText: {
     marginTop: 16,
@@ -95,16 +95,16 @@ export const ExerciseLoadedAndTested = (props: {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Title>{exerciseName}</Title>
+        <CardTitle>{exerciseName}</CardTitle>
         <View style={{ marginTop: 16 }}>
-          <Paragraph>
+          <BodyText>
             You have been able to perform <Text style={styles.emphasized}>{exercise.loadingSet.reps} reps</Text> with{' '}
             <Text style={styles.emphasized}>
               {exercise.loadingSet.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
             </Text>
-          </Paragraph>
-          <Paragraph>Let&apos;s try out some real training work now!</Paragraph>
-          <Paragraph>Pick the weight proposed by LiftCoach and see how you perform.</Paragraph>
+          </BodyText>
+          <BodyText>Let&apos;s try out some real training work now!</BodyText>
+          <BodyText>Pick the weight proposed by LiftCoach and see how you perform.</BodyText>
         </View>
       </View>
 
@@ -116,7 +116,7 @@ export const ExerciseLoadedAndTested = (props: {
                 style={[
                   styles.setDetails,
                   {
-                    color: theme.colors.newUi.text.primary,
+                    color: theme.colors.text.primary,
                   },
                 ]}
               >
@@ -130,7 +130,7 @@ export const ExerciseLoadedAndTested = (props: {
                   props.onSetChanged(set.id, WorkingSetState.failed)
                 }}
                 label="Failed"
-                color={theme.colors.newUi.text.primary}
+                color={theme.colors.text.primary}
               />
               <Checkbox
                 checked={set.state === 'done'}
@@ -138,19 +138,19 @@ export const ExerciseLoadedAndTested = (props: {
                   props.onSetChanged(set.id, WorkingSetState.done)
                 }}
                 label="Done"
-                color={theme.colors.newUi.text.primary}
+                color={theme.colors.text.primary}
               />
             </View>
           </View>
         ))}
       </View>
       {allSetsCompleted && (
-        <ButtonContainer>
+        <HorizontalButtonRow>
           <PrimaryButton
             title={props.hasMoreExercises ? 'Move on to the next exercise' : 'Finish Workout!'}
             onPress={props.onNext}
           />
-        </ButtonContainer>
+        </HorizontalButtonRow>
       )}
     </View>
   )

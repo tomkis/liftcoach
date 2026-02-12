@@ -5,9 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { theme } from '@/mobile/theme/theme'
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
-import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 
 type TrainingDaysScreenProps = {
   navigation: NativeStackNavigationProp<MesocyclePlannerStackParamList, 'TrainingDays'>
@@ -16,7 +16,7 @@ type TrainingDaysScreenProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   title: {
     height: 100,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   description: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontSize: 14,
     lineHeight: 20,
@@ -58,7 +58,7 @@ export const TrainingDaysScreen = ({ navigation }: TrainingDaysScreenProps) => {
         style={[styles.container, { paddingTop: insets.top }]}
       >
         <View style={styles.title}>
-          <H3 style={styles.titleText}>Training Frequency</H3>
+          <ScreenHeading style={styles.titleText}>Training Frequency</ScreenHeading>
         </View>
 
         <View style={styles.content}>
@@ -75,7 +75,7 @@ export const TrainingDaysScreen = ({ navigation }: TrainingDaysScreenProps) => {
         </View>
 
         <View style={styles.footer}>
-          <SecondaryButton title="Back" onPress={() => navigation.goBack()} />
+          <OutlineButton title="Back" onPress={() => navigation.goBack()} />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

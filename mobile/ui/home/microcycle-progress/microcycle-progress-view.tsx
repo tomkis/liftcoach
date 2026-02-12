@@ -6,7 +6,7 @@ import { WorkoutState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
-import { Title } from '@/mobile/ui/components/title'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 
 import { VerticalWorkoutCards } from './swipeable-workout-card'
@@ -31,7 +31,7 @@ export const MicrocycleProgressView = () => {
       <ScrollView ref={scrollViewRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Title style={styles.title}>Coming Up</Title>
+            <CardTitle style={styles.title}>Coming Up</CardTitle>
           </View>
 
           <View style={styles.workoutsSection}>
@@ -54,7 +54,7 @@ export const MicrocycleProgressView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   scrollView: {
     flex: 1,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: theme.fontSize.small,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     marginBottom: 0,
   },
   workoutsSection: {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   sectionSubtitle: {
     fontSize: theme.fontSize.extraSmall,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     marginBottom: 0,
   },
 })

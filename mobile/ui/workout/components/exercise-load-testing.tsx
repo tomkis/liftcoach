@@ -12,15 +12,15 @@ import {
   View,
 } from 'react-native'
 
-import { NumericalInput } from '@/mobile/ui/onboarding/cards/ux/numerical-input'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { NumericalInput } from '@/mobile/ui/ds/inputs'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
-import { ButtonContainer } from '@/mobile/ui/ui/button-container'
+import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { Checkbox } from '@/mobile/ui/ds/controls'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 
 const CARD_PADDING = 18
@@ -32,17 +32,17 @@ const styles = StyleSheet.create({
     paddingRight: CARD_PADDING,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
   },
   warmupSection: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     padding: CARD_PADDING,
     borderBottomLeftRadius: theme.borderRadius.medium,
     borderBottomRightRadius: theme.borderRadius.medium,
   },
   greenBackground: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   warmupHeader: {
     flexDirection: 'row',
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   warmupTitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     flex: 1,
     marginTop: 0,
     marginBottom: 0,
@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   undoButtonText: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontFamily: theme.font.sairaCondensedSemiBold,
     textTransform: 'uppercase',
     fontSize: theme.fontSize.extraSmall,
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputLabel: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     lineHeight: 24,
     letterSpacing: 0.15,
     fontSize: 16,
     fontFamily: theme.font.sairaRegular,
   },
   errorText: {
-    color: theme.colors.red,
+    color: theme.colors.primary.negative,
     marginTop: 8,
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
 
 const moreRepsMessages = [
   {
-    title: <Title style={styles.h2}>Great!</Title>,
+    title: <CardTitle style={styles.h2}>Great!</CardTitle>,
     subtitle: (
       <>
         <Text>Do you think you could squeeze in </Text>
@@ -142,7 +142,7 @@ const moreRepsMessages = [
     ),
   },
   {
-    title: <Title style={styles.h2}>Wow, you are strong!</Title>,
+    title: <CardTitle style={styles.h2}>Wow, you are strong!</CardTitle>,
     subtitle: (
       <>
         <Text>Do you still have enough steam to do </Text>
@@ -152,7 +152,7 @@ const moreRepsMessages = [
     ),
   },
   {
-    title: <Title style={styles.h2}>You are a beast!</Title>,
+    title: <CardTitle style={styles.h2}>You are a beast!</CardTitle>,
     subtitle: (
       <>
         <Text>Would you still feel comfortable to perform </Text>
@@ -176,24 +176,24 @@ const PerformSetCard = ({
     <>
       {setIndex === 1 && (
         <>
-          <Title style={styles.h2}>Let&apos;s start</Title>
-          <Paragraph>
+          <CardTitle style={styles.h2}>Let&apos;s start</CardTitle>
+          <BodyText>
             Take a challenging weight that you think you can <Text style={styles.emphasized}>safely</Text> do for{' '}
             <Text style={styles.emphasized}>8 reps</Text> and do those.
-          </Paragraph>
-          <Paragraph>
+          </BodyText>
+          <BodyText>
             Remember, exercise must be executed with <Text style={styles.emphasized}>proper form</Text>. No cheat reps!
-          </Paragraph>
+          </BodyText>
         </>
       )}
       {setIndex > 1 && (
         <>
-          <Title style={styles.h2}>How did it go?</Title>
-          <Paragraph>
+          <CardTitle style={styles.h2}>How did it go?</CardTitle>
+          <BodyText>
             <Text>Have you safely managed to perform </Text>
             <Text style={styles.emphasized}>{8 + (setIndex - 1) * 3} reps</Text>
             <Text> ?</Text>
-          </Paragraph>
+          </BodyText>
         </>
       )}
 
@@ -223,7 +223,7 @@ const SetPerformedCard = ({
   return (
     <>
       {moreRepsMessages[sets.length - 1].title}
-      <Paragraph>{moreRepsMessages[sets.length - 1].subtitle}</Paragraph>
+      <BodyText>{moreRepsMessages[sets.length - 1].subtitle}</BodyText>
       <View
         style={{
           flexDirection: 'row',
@@ -425,45 +425,45 @@ export const ExerciseLoadTesting = ({
             <View style={[styles.paddedContent]}>
               <View style={styles.titleContainer}>
                 <View style={styles.titleWrapper}>
-                  <Title>{exerciseName}</Title>
+                  <CardTitle>{exerciseName}</CardTitle>
                 </View>
                 <View style={styles.buttonRow}>
                   <TouchableOpacity style={styles.titleButton} onPress={onExtraActions}>
-                    <CogwheelFilled color={theme.colors.newUi.primary.main} />
+                    <CogwheelFilled color={theme.colors.primary.main} />
                   </TouchableOpacity>
                 </View>
               </View>
               <View style={{ marginTop: 16 }}>
-                <Paragraph>Let&apos;s test your performance on this exercise.</Paragraph>
-                <Paragraph>Make sure you execute the exercise with proper form.</Paragraph>
+                <BodyText>Let&apos;s test your performance on this exercise.</BodyText>
+                <BodyText>Make sure you execute the exercise with proper form.</BodyText>
               </View>
             </View>
 
             <View style={[styles.warmupSection, warmupCompleted && styles.greenBackground]}>
               <View style={styles.warmupHeader}>
-                <Title
+                <CardTitle
                   style={[
                     styles.warmupTitle,
                     styles.h2,
-                    warmupCompleted && { color: theme.colors.newUi.primary.contrastText },
+                    warmupCompleted && { color: theme.colors.primary.contrastText },
                   ]}
                 >
                   Warm-up
-                </Title>
+                </CardTitle>
                 <View style={styles.warmupCheckboxContainer}>
                   <Checkbox
                     checked={warmupCompleted}
                     onPress={toggleWarmupCompleted}
                     label="Warm-up completed"
-                    color={warmupCompleted ? theme.colors.newUi.primary.contrastText : theme.colors.newUi.primary.main}
+                    color={warmupCompleted ? theme.colors.primary.contrastText : theme.colors.primary.main}
                   />
                 </View>
               </View>
               {!warmupCompleted && (
-                <Paragraph style={styles.warmupParagraph}>
+                <BodyText style={styles.warmupParagraph}>
                   Before we test your strength, let&apos;s warm up properly. Do a few light sets to prepare your muscles
                   and joints.
-                </Paragraph>
+                </BodyText>
               )}
             </View>
           </View>
@@ -486,8 +486,8 @@ export const ExerciseLoadTesting = ({
                 )}
                 {stopedVoluntarily && (
                   <>
-                    <Title style={styles.h2}>Great Job!</Title>
-                    <Paragraph>What&apos;s the weight that you used?</Paragraph>
+                    <CardTitle style={styles.h2}>Great Job!</CardTitle>
+                    <BodyText>What&apos;s the weight that you used?</BodyText>
 
                     <View>
                       <View style={{ flexDirection: 'row' }}>
@@ -529,12 +529,12 @@ export const ExerciseLoadTesting = ({
                 {(isTooManySets || reachedFailure) && (
                   <>
                     <>
-                      <Title style={styles.h2}>{isTooManySets ? 'Great Job!' : 'Failure is key to improve'}</Title>
-                      <Paragraph>
+                      <CardTitle style={styles.h2}>{isTooManySets ? 'Great Job!' : 'Failure is key to improve'}</CardTitle>
+                      <BodyText>
                         {isTooManySets
                           ? "What's the weight and how many reps did you do?"
                           : "You'll get better and stronger over time! What was the weight and how many reps did you do?"}
-                      </Paragraph>
+                      </BodyText>
                     </>
                     <View>
                       <View style={{ flexDirection: 'row', gap: 8, marginVertical: 16 }}>
@@ -606,11 +606,11 @@ export const ExerciseLoadTesting = ({
             </View>
           )}
         </View>
-        <ButtonContainer>
+        <HorizontalButtonRow>
           {loadingFinished && warmupCompleted && !isKeyboardVisible && (
-            <SecondaryButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} />
+            <OutlineButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} />
           )}
-        </ButtonContainer>
+        </HorizontalButtonRow>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )

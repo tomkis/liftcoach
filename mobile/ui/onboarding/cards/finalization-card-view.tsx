@@ -7,16 +7,16 @@ import LinearGradient from 'react-native-linear-gradient'
 import { PrivacyPolicyModal } from '@/mobile/ui/onboarding/cards/modals/privacy-policy-modal'
 import { TermsAndConditionsModal } from '@/mobile/ui/onboarding/cards/modals/terms-and-conditions-modal'
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
-import { Title } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
-import { OnboardingVerticalButtonContainer } from '@/mobile/ui/onboarding/cards/ux/onboarding-vertical-button-container'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { UnitSegmentedControl } from '@/mobile/ui/onboarding/cards/ux/unit-segmented-control'
+import { SectionHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
+import { VerticalButtonStack } from '@/mobile/ui/ds/layout'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { SegmentedControl } from '@/mobile/ui/ds/controls'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
+import { Checkbox } from '@/mobile/ui/ds/controls'
 import { trpc } from '@/mobile/trpc'
 
 const styles = StyleSheet.create({
@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   termsLink: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     textDecorationLine: 'underline',
     fontFamily: theme.font.sairaRegular,
     fontSize: theme.fontSize.small,
   },
   termsText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     flex: 1,
     fontFamily: theme.font.sairaRegular,
     fontSize: theme.fontSize.small,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   unitLabel: {
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     textAlign: 'center',
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -105,15 +105,14 @@ export const FinalizationCardView = () => {
 
   return (
     <>
-      <OnboaardingThreeBlockTemplate
-        step="Finalization"
+      <ThreeBlockScreen
         topContent={
           <>
-            <Title style={{ textAlign: 'center' }}>We are ready!</Title>
-            <OnboardingDescriptiveTextBlock>
+            <SectionHeading style={{ textAlign: 'center' }}>We are ready!</SectionHeading>
+            <CaptionText>
               Amazing! We&apos;ve got all the data we need to prepare personalized workout routine that matches your
               preferences.
-            </OnboardingDescriptiveTextBlock>
+            </CaptionText>
           </>
         }
         middleContainerStyle={{ flex: 2 }}
@@ -130,9 +129,16 @@ export const FinalizationCardView = () => {
           </View>
         }
         bottomContent={
-          <OnboardingVerticalButtonContainer>
+          <VerticalButtonStack>
             <Text style={styles.unitLabel}>System of Measure</Text>
-            <UnitSegmentedControl unit={onboarding.user.unit || Unit.Metric} setUnit={onboarding.unitsProvided} />
+            <SegmentedControl
+              value={onboarding.user.unit || Unit.Metric}
+              onChange={onboarding.unitsProvided}
+              options={[
+                { value: Unit.Imperial, label: 'Imperial' },
+                { value: Unit.Metric, label: 'Metric' },
+              ]}
+            />
             <View style={styles.checkboxContainer}>
               <Checkbox
                 checked={agreedToTerms}
@@ -149,13 +155,13 @@ export const FinalizationCardView = () => {
                     </Text>
                   </Text>
                 }
-                color={theme.colors.newUi.primary.main}
+                color={theme.colors.primary.main}
               />
             </View>
             <PrimaryButton title="Start!" onPress={onStart} disabled={!agreedToTerms} />
-          </OnboardingVerticalButtonContainer>
+          </VerticalButtonStack>
         }
-      ></OnboaardingThreeBlockTemplate>
+      ></ThreeBlockScreen>
 
       <TermsAndConditionsModal visible={showTermsModal} onClose={handleCloseTerms} />
       <PrivacyPolicyModal visible={showPrivacyModal} onClose={handlePrivacyClose} />

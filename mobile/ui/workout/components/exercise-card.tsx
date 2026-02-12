@@ -11,7 +11,7 @@ import { ExerciseTesting } from '@/mobile/ui/workout/components/exercise-testing
 import { AdjustExerciseOverlay } from '@/mobile/ui/workout/components/ux/adjust-exercise-overlay'
 import { useWorkoutContext } from '@/mobile/ui/workout/hooks/use-workout-context'
 import { theme } from '@/mobile/theme/theme'
-import { ViewContainer } from '@/mobile/ui/components/view-container'
+import { ScreenContainer } from '@/mobile/ui/ds/layout'
 
 export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number; active: boolean }) => {
   const workoutContext = useWorkoutContext()
@@ -81,10 +81,10 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   }, [exercise])
 
   return (
-    <ViewContainer
+    <ScreenContainer
       style={{
         width: '100%',
-        backgroundColor: theme.colors.newUi.background,
+        backgroundColor: theme.colors.background,
         paddingBottom: 20,
         paddingHorizontal: 20,
       }}
@@ -154,6 +154,6 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing].includes(exercise.state)}
         unit={workoutContext.unit}
       />
-    </ViewContainer>
+    </ScreenContainer>
   )
 }

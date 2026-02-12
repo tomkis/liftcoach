@@ -12,7 +12,7 @@ const CARD_PADDING = 18
 
 const styles = StyleSheet.create({
   exerciseCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: 0,
     marginHorizontal: 20,
@@ -24,13 +24,13 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   exerciseName: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: theme.fontSize.medium,
     fontFamily: theme.font.sairaBold,
     marginBottom: 4,
   },
   exerciseDetails: {
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
   },

@@ -12,9 +12,9 @@ import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 type DerivedState = 'completed' | 'active' | 'pending'
 
 const stateColor = (state: DerivedState) => {
-  if (state === 'completed') return theme.colors.newUi.status.success
-  if (state === 'active') return theme.colors.newUi.primary.main
-  return theme.colors.newUi.text.muted
+  if (state === 'completed') return theme.colors.status.success
+  if (state === 'active') return theme.colors.primary.main
+  return theme.colors.text.muted
 }
 
 export const ActivePlanDetailScreen = () => {
@@ -34,7 +34,7 @@ export const ActivePlanDetailScreen = () => {
   if (isLoadingPlan || isLoadingMicrocycle || !activePlan || !microcycle) {
     return (
       <View style={[styles.root, { paddingTop: insets.top + 8, justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator color={theme.colors.newUi.primary.main} />
+        <ActivityIndicator color={theme.colors.primary.main} />
       </View>
     )
   }
@@ -47,7 +47,7 @@ export const ActivePlanDetailScreen = () => {
         <View style={styles.headerCard}>
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={styles.backBtn}>
-              <ChevronLeft color={theme.colors.newUi.primary.main} size={24} />
+              <ChevronLeft color={theme.colors.primary.main} size={24} />
             </TouchableOpacity>
             <View>
               <Text style={styles.headerTitle}>{activePlan.splitType}</Text>
@@ -92,8 +92,8 @@ export const ActivePlanDetailScreen = () => {
                       {
                         backgroundColor:
                           workoutState === 'completed'
-                            ? theme.colors.newUi.status.success
-                            : theme.colors.newUi.border.default,
+                            ? theme.colors.status.success
+                            : theme.colors.border.default,
                       },
                     ]}
                   />
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   backBtn: {
     padding: 4,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: theme.fontSize.medium,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     textTransform: 'uppercase',
   },
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaRegular,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     marginTop: -2,
   },
   progressBar: {
@@ -182,18 +182,18 @@ const styles = StyleSheet.create({
   progressTrack: {
     flex: 1,
     height: 3,
-    backgroundColor: theme.colors.newUi.border.default,
+    backgroundColor: theme.colors.border.default,
     borderRadius: 2,
   },
   progressFill: {
     height: 3,
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     borderRadius: 2,
   },
   progressText: {
     fontFamily: theme.font.sairaCondesedBold,
     fontSize: 14,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   timelineItem: {
     flexDirection: 'row',
@@ -210,11 +210,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   nodeCompleted: {
-    backgroundColor: theme.colors.newUi.status.success,
+    backgroundColor: theme.colors.status.success,
   },
   nodePending: {
     borderWidth: 1.5,
-    borderColor: theme.colors.newUi.border.light,
+    borderColor: theme.colors.border.light,
     backgroundColor: 'transparent',
   },
   nodeActive: {
@@ -229,13 +229,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
   },
   nodeActiveDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   timelineLine: {
     width: 1.5,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   dayIndex: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 10,
-    color: theme.colors.newUi.text.secondary,
+    color: theme.colors.text.secondary,
     letterSpacing: 1,
     marginLeft: 'auto',
   },
@@ -274,11 +274,11 @@ const styles = StyleSheet.create({
   muscleText: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 8,
-    color: theme.colors.newUi.text.tertiary,
+    color: theme.colors.text.tertiary,
     letterSpacing: 1.2,
   },
   exerciseBlock: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: 8,
     padding: 12,
   },
@@ -297,23 +297,23 @@ const styles = StyleSheet.create({
   exBar: {
     width: 2,
     height: 14,
-    backgroundColor: theme.colors.newUi.text.dim,
+    backgroundColor: theme.colors.text.dim,
     borderRadius: 1,
   },
   exBarDone: {
-    backgroundColor: theme.colors.newUi.status.success,
+    backgroundColor: theme.colors.status.success,
   },
   exName: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 12,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
   },
   exNameDone: {
-    color: theme.colors.newUi.text.muted,
+    color: theme.colors.text.muted,
   },
   exRx: {
     fontFamily: theme.font.sairaSemiBold,
     fontSize: 11,
-    color: theme.colors.newUi.text.hint,
+    color: theme.colors.text.hint,
   },
 })

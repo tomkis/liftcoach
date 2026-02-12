@@ -12,13 +12,13 @@ import WorkoutStretching from '@/mobile/ui/icons/workout-stretching'
 import WorkoutStretchingFilled from '@/mobile/ui/icons/workout-stretching-filled'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 
-const ACCENT_COLOR = theme.colors.newUi.primary.main // gold/yellow accent
-const INACTIVE_ICON = theme.colors.lightGray || '#bdbdbd'
+const ACCENT_COLOR = theme.colors.primary.main // gold/yellow accent
+const INACTIVE_ICON = '#e0e0e0'
 
 const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     paddingTop: 12,
     justifyContent: 'center',
     alignItems: 'center',

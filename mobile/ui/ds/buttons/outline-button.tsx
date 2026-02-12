@@ -5,13 +5,13 @@ import { theme } from '@/mobile/theme/theme'
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     paddingHorizontal: 8,
     paddingVertical: 8,
-    borderRadius: 4,
+    borderRadius: theme.borderRadius.small,
   },
   text: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontSize: 14,
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -21,18 +21,20 @@ const styles = StyleSheet.create({
   },
 })
 
-export const SecondaryButton = ({
+export const OutlineButton = ({
   title,
   onPress,
   style,
+  disabled,
 }: {
   title: string
   onPress: () => void
   style?: StyleProp<ViewStyle>
+  disabled?: boolean
 }) => {
   return (
     <View style={[style]}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onPress} disabled={disabled}>
         <View style={[styles.container]}>
           <Text style={styles.text}>{title}</Text>
         </View>

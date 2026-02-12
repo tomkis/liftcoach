@@ -10,11 +10,11 @@ const styles = StyleSheet.create({
     paddingTop: CARD_PADDING + 10,
     paddingBottom: CARD_PADDING + 10,
     paddingHorizontal: 20,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     width: '100%',
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     flex: 1,
     marginTop: 80,

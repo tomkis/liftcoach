@@ -5,11 +5,11 @@ import { Image, StyleSheet, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
-import { OnboardingVerticalButtonContainer } from '@/mobile/ui/onboarding/cards/ux/onboarding-vertical-button-container'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
+import { VerticalButtonStack } from '@/mobile/ui/ds/layout'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 
 const styles = StyleSheet.create({
@@ -42,14 +42,13 @@ export const LiftingExperienceCardView = () => {
   )
 
   return (
-    <OnboaardingThreeBlockTemplate
-      step="LiftingExperienceSecond"
+    <ThreeBlockScreen
       topContent={
         <>
-          <H3ScreenAware style={{ textAlign: 'center' }}>Training Experience</H3ScreenAware>
-          <OnboardingDescriptiveTextBlock>
+          <ScreenHeading style={{ textAlign: 'center' }}>Training Experience</ScreenHeading>
+          <CaptionText>
             How long have you been consistently lifting recently?
-          </OnboardingDescriptiveTextBlock>
+          </CaptionText>
         </>
       }
       middleContainerStyle={{ flex: 2 }}
@@ -66,7 +65,7 @@ export const LiftingExperienceCardView = () => {
         </View>
       }
       bottomContent={
-        <OnboardingVerticalButtonContainer>
+        <VerticalButtonStack>
           <PrimaryButton
             title="Never worked out"
             onPress={() => setLiftingExperience(LiftingExperience.None)}
@@ -87,8 +86,8 @@ export const LiftingExperienceCardView = () => {
             title="7+ years"
             onPress={() => setLiftingExperience(LiftingExperience.Advanced)}
           ></PrimaryButton>
-        </OnboardingVerticalButtonContainer>
+        </VerticalButtonStack>
       }
-    ></OnboaardingThreeBlockTemplate>
+    ></ThreeBlockScreen>
   )
 }

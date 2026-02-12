@@ -6,13 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useHomeTestingNavigation } from '@/mobile/ui/home-testing/use-navigation'
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
-import { ButtonContainer } from '@/mobile/ui/ui/button-container'
-import { ScreenBackground } from '@/mobile/ui/ux/screen-background'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
+import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
+import { KeyboardScreen } from '@/mobile/ui/ds/layout'
 import { trpc } from '@/mobile/trpc'
 
 const styles = StyleSheet.create({
@@ -48,11 +48,10 @@ export const IntroView = () => {
   }, [navigation, skipStrengthTest, utils.user.me])
 
   return (
-    <ScreenBackground>
-      <OnboaardingThreeBlockTemplate
-        step="Home Testing"
+    <KeyboardScreen>
+      <ThreeBlockScreen
         topContent={
-          <H3ScreenAware style={{ textAlign: 'center', marginTop: insets.top }}>Test your strength now</H3ScreenAware>
+          <ScreenHeading style={{ textAlign: 'center', marginTop: insets.top }}>Test your strength now</ScreenHeading>
         }
         middleContainerStyle={{ flex: 1.5 }}
         middleContent={
@@ -88,22 +87,22 @@ export const IntroView = () => {
         }
         bottomContent={
           <View style={{ flex: 1, justifyContent: 'flex-end', marginTop: 30 }}>
-            <OnboardingDescriptiveTextBlock>
+            <CaptionText>
               This quick workout takes less than 30 minutes. All you need is your bodyweight, towel, a backpack (loaded
               with bottles or books), and a chair or sofa.
-            </OnboardingDescriptiveTextBlock>
-            <ButtonContainer>
-              <SecondaryButton title="Maybe Later" onPress={notNow} />
+            </CaptionText>
+            <HorizontalButtonRow>
+              <OutlineButton title="Maybe Later" onPress={notNow} />
               <PrimaryButton
                 title="Lets do the test!"
                 onPress={() => {
                   navigation.navigate('TestStrength')
                 }}
               />
-            </ButtonContainer>
+            </HorizontalButtonRow>
           </View>
         }
       />
-    </ScreenBackground>
+    </KeyboardScreen>
   )
 }

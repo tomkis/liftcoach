@@ -11,7 +11,7 @@ const CARD_PADDING = 18
 
 const styles = StyleSheet.create({
   exerciseCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: 0,
     marginHorizontal: 20,
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   exerciseIcon: {
     width: 24,
     height: 24,
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     borderRadius: 6,
     marginRight: 12,
     justifyContent: 'center',
@@ -32,13 +32,13 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   exerciseName: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: theme.fontSize.medium,
     fontFamily: theme.font.sairaBold,
     marginBottom: 4,
   },
   exerciseDetails: {
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
   },
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   redPill: {
-    backgroundColor: theme.colors.newUi.primary.negative,
+    backgroundColor: theme.colors.primary.negative,
   },
   greenPill: {
     backgroundColor: '#4caf50',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   expandedContent: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     borderBottomLeftRadius: theme.borderRadius.medium,
     borderBottomRightRadius: theme.borderRadius.medium,
     minHeight: 0,
@@ -94,10 +94,10 @@ const styles = StyleSheet.create({
     minWidth: 4,
   },
   projectedBar: {
-    backgroundColor: theme.colors.newUi.primary.contrastText,
+    backgroundColor: theme.colors.primary.contrastText,
   },
   testedBar: {
-    backgroundColor: theme.colors.newUi.primary.contrastText,
+    backgroundColor: theme.colors.primary.contrastText,
   },
   barLabel: {
     color: 'rgba(0,0,0,0.6)',
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     minWidth: 150,
   },
   barPercentage: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontFamily: theme.font.sairaBold,
     textAlign: 'center',
   },
@@ -406,9 +406,9 @@ export const WorkoutStartWithCompleteStats = (props: { exercises: CompleteWorkou
         >
           <View style={styles.exerciseIcon}>
             {isExpanded ? (
-              <ChevronDown color={theme.colors.newUi.primary.contrastText} style={{ marginTop: -5 }} />
+              <ChevronDown color={theme.colors.primary.contrastText} style={{ marginTop: -5 }} />
             ) : (
-              <ChevronUp color={theme.colors.newUi.primary.contrastText} style={{ marginTop: -5 }} />
+              <ChevronUp color={theme.colors.primary.contrastText} style={{ marginTop: -5 }} />
             )}
           </View>
           <View style={styles.exerciseInfo}>

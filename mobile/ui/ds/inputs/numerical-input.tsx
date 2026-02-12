@@ -10,9 +10,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: 0.15,
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: `rgba(255, 255, 255, ${theme.opacity.inputText})`,
   },
 })
+
 export const NumericalInput = (props: {
   width?: number
   value: string | undefined
@@ -24,7 +25,7 @@ export const NumericalInput = (props: {
   return (
     <TextInput
       placeholder={props.placeholder}
-      placeholderTextColor="rgba(255, 255, 255, 0.4)"
+      placeholderTextColor={`rgba(255, 255, 255, ${theme.opacity.placeholder})`}
       style={styles.input}
       keyboardType={props.keyboardType ?? 'number-pad'}
       onChangeText={props.onChange}

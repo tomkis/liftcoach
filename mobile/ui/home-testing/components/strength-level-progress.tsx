@@ -57,7 +57,7 @@ export const StrengthLevelProgress: React.FC<StrengthLevelProgressProps> = ({
             cx={centerX}
             cy={centerY}
             r={RADIUS}
-            stroke={theme.colors.newUi.background}
+            stroke={theme.colors.background}
             strokeWidth={STROKE_WIDTH}
             fill="none"
           />
@@ -67,7 +67,7 @@ export const StrengthLevelProgress: React.FC<StrengthLevelProgressProps> = ({
             cx={centerX}
             cy={centerY}
             r={RADIUS}
-            stroke={theme.colors.newUi.primary.main}
+            stroke={theme.colors.primary.main}
             strokeWidth={STROKE_WIDTH}
             fill="none"
             strokeDasharray={progressAnimation.interpolate({
@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
   percentageText: {
     fontSize: 24,
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 4,
   },
   labelText: {
     fontSize: 12,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

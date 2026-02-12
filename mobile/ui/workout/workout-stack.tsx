@@ -30,8 +30,8 @@ const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; on
         showsButtons={false}
         loop={false}
         ref={swiperRef}
-        dotColor={theme.colors.white}
-        activeDotColor={theme.colors.newUi.primary.main}
+        dotColor={theme.colors.text.primary}
+        activeDotColor={theme.colors.primary.main}
         onIndexChanged={setActiveIndex}
         paginationStyle={[styles.pagination, { top: insets.top }]}
       >

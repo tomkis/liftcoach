@@ -14,7 +14,7 @@ import { theme } from '@/mobile/theme/theme'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     flexDirection: 'column',
   },
   topContainer: {
@@ -32,23 +32,26 @@ const styles = StyleSheet.create({
   },
 })
 
-export const OnboaardingThreeBlockTemplate = (props: {
+export const ThreeBlockScreen = (props: {
   topContent: React.ReactNode
   middleContent: React.ReactNode
   bottomContent: React.ReactNode
-  step: string
   middleContainerStyle?: StyleProp<ViewStyle>
   bottomContainerStyle?: StyleProp<ViewStyle>
 }) => {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
 
   useEffect(() => {
-    Keyboard.addListener('keyboardWillShow', () => {
+    const showSub = Keyboard.addListener('keyboardWillShow', () => {
       setIsKeyboardVisible(true)
     })
-    Keyboard.addListener('keyboardWillHide', () => {
+    const hideSub = Keyboard.addListener('keyboardWillHide', () => {
       setIsKeyboardVisible(false)
     })
+    return () => {
+      showSub.remove()
+      hideSub.remove()
+    }
   }, [])
 
   return (

@@ -148,7 +148,7 @@ export const SplitTypeSelectionScreen = ({ navigation, route }: SplitTypeSelecti
     return (
       <ScreenWrapper title="Preferred Split" onNext={() => {}} includeScrollView>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.newUi.text.primary} />
+          <ActivityIndicator size="large" color={theme.colors.text.primary} />
           <Text style={styles.loadingText}>Loading split suggestions...</Text>
         </View>
       </ScreenWrapper>
@@ -185,15 +185,15 @@ export const SplitTypeSelectionScreen = ({ navigation, route }: SplitTypeSelecti
 
 const styles = StyleSheet.create({
   splitItem: {
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.text.primary,
+    borderColor: theme.colors.text.primary,
   },
   selectedSplitItem: {
     borderWidth: 2,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
     margin: -1,
   },
   splitHeader: {
@@ -203,19 +203,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   splitName: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontSize: 18,
     fontWeight: 'bold',
   },
   recommendedBadge: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   recommendedText: {
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -228,12 +228,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   dayText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: 14,
     fontWeight: '600',
   },
   muscleGroupsText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: 14,
   },
   disabledButton: {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   loadingText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontSize: 14,
     lineHeight: 20,
@@ -257,10 +257,10 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.newUi.primary.main,
+    borderTopColor: theme.colors.primary.main,
   },
   recommendationText: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
   },

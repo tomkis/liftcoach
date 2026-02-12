@@ -6,12 +6,12 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: theme.font.sairaRegular,
     fontSize: theme.fontSize.small,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     lineHeight: 24,
     marginBottom: 8,
   },
 })
 
-export const Paragraph = ({ children, style }: { children: React.ReactNode; style?: StyleProp<TextStyle> }) => {
+export const BodyText = ({ children, style }: { children: React.ReactNode; style?: StyleProp<TextStyle> }) => {
   return <Text style={[styles.text, style]}>{children}</Text>
 }

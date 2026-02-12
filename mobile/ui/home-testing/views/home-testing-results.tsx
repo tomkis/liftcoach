@@ -1,17 +1,17 @@
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import { ButtonContainer } from '@/mobile/ui/home-testing/components/button-container'
+import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { CardWrapper } from '@/mobile/ui/home-testing/components/card-wrapper'
 import { HomeTestingStackParamList } from '@/mobile/ui/home-testing/home-testing-stack'
 import { percentiles } from '@/mobile/ui/home-testing/percentiles'
 import { progression } from '@/mobile/ui/home-testing/progression-scheme'
 import { HomeTestingMuscleGroup } from '@/mobile/ui/home-testing/types'
 import { useHomeTestingNavigation } from '@/mobile/ui/home-testing/use-navigation'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { theme } from '@/mobile/theme/theme'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const muscleGroupLabels: Record<HomeTestingMuscleGroup, string> = {
   [HomeTestingMuscleGroup.FrontLegs]: 'Front Legs',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   overallLabel: {
     fontSize: 16,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginTop: 12,
     textAlign: 'center',
   },
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: theme.colors.newUi.gray.light,
+    borderColor: theme.colors.gray.light,
     opacity: 1,
   },
   muscleGroupHeader: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   muscleGroupTitle: {
     fontSize: 16,
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
   },
   muscleGroupProgress: {
     alignItems: 'center',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   muscleGroupLevel: {
     fontSize: 14,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     marginTop: 4,
   },
   resultDetails: {
@@ -95,12 +95,12 @@ const styles = StyleSheet.create({
   resultLabel: {
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
   },
   resultValue: {
     fontSize: 14,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
   },
   resultTextContainer: {
     marginBottom: 12,
@@ -108,17 +108,17 @@ const styles = StyleSheet.create({
   resultMainText: {
     fontSize: 16,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     lineHeight: 22,
     marginBottom: 8,
   },
   resultHighlightText: {
     fontSize: 16,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   tableContainer: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.small,
   },
   tableRow: {
@@ -127,32 +127,32 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.gray.light,
+    borderBottomColor: theme.colors.gray.light,
   },
   tableLabel: {
     fontSize: 13,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     flex: 0.4,
     marginRight: 8,
   },
   tableValue: {
     fontSize: 13,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     textAlign: 'right',
     flex: 0.6,
   },
   tableValueHighlight: {
     fontSize: 13,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     textAlign: 'right',
     flex: 0.6,
     flexWrap: 'wrap',
   },
   percentileBadge: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: theme.borderRadius.small,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   percentileBadgeText: {
     fontSize: 13,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   headerRow: {
     flexDirection: 'row',
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   strengthChip: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: theme.borderRadius.small,
@@ -177,16 +177,16 @@ const styles = StyleSheet.create({
   strengthChipText: {
     fontSize: 12,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.contrastText,
+    color: theme.colors.primary.contrastText,
   },
   buttonContainer: {
     paddingTop: 16,
     paddingBottom: 20,
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
   },
   emphasized: {
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
 })
 
@@ -215,12 +215,12 @@ export const HomeTestingResults = () => {
     <CardWrapper>
       <View style={styles.container}>
         <View style={{ marginBottom: 24 }}>
-          <Title>Test Results</Title>
+          <CardTitle>Test Results</CardTitle>
         </View>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
-            <Paragraph>Your test results are in. Here&apos;s how you did.</Paragraph>
-            <Paragraph>Liftcoach will use these results to fine-tune your training plan.</Paragraph>
+            <BodyText>Your test results are in. Here&apos;s how you did.</BodyText>
+            <BodyText>Liftcoach will use these results to fine-tune your training plan.</BodyText>
           </View>
 
           <View style={styles.resultsContainer}>
@@ -241,10 +241,10 @@ export const HomeTestingResults = () => {
                   </View>
 
                   <View style={styles.tableContainer}>
-                    <Paragraph>
+                    <BodyText>
                       <Text style={styles.emphasized}>{exercise}</Text> performed{' '}
                       <Text style={styles.emphasized}>{repsLabels[result.reps]}</Text> reps.
-                    </Paragraph>
+                    </BodyText>
                   </View>
                 </View>
               )
@@ -253,9 +253,9 @@ export const HomeTestingResults = () => {
         </ScrollView>
 
         <View style={styles.buttonContainer}>
-          <ButtonContainer>
+          <HorizontalButtonRow>
             <PrimaryButton title="Got it" onPress={handleContinue} style={{ flex: 1 }} />
-          </ButtonContainer>
+          </HorizontalButtonRow>
         </View>
       </View>
     </CardWrapper>

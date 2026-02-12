@@ -11,6 +11,6 @@ const styles = StyleSheet.create({
   },
 })
 
-export const OnboardingVerticalButtonContainer = (props: { children: React.ReactNode }) => {
-  return <View style={styles.container}>{props.children}</View>
+export const VerticalButtonStack = ({ children }: { children: React.ReactNode }) => {
+  return <View style={styles.container}>{children}</View>
 }

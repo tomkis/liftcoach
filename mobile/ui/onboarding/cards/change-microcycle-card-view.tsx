@@ -3,14 +3,14 @@ import { useState } from 'react'
 import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ProposeExerciseReplacementModal } from '@/mobile/ui/workout/components/ux/adjust-exercise-overlay'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
+import { BodyText } from '@/mobile/ui/ds/typography'
 import Pencil from '@/mobile/ui/icons/pencil'
 
 const getWorkoutTitle = (index: number) => {
@@ -109,18 +109,18 @@ export const ChangeMicrocycleCardView = () => {
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.header}>
-              <H3 style={styles.title}>Adjust The Plan</H3>
-              <Paragraph style={styles.subtitle}>
+              <ScreenHeading style={styles.title}>Adjust The Plan</ScreenHeading>
+              <BodyText style={styles.subtitle}>
                 Feel free to swap out individual exercises for ones you like more.
-              </Paragraph>
+              </BodyText>
               {(onboardingInfo.trainingDays !== trainingFrequencyDays ||
                 realNumberOfTrainings !== onboardingInfo.trainingDays) && (
                 <>
-                  <Paragraph style={styles.subtitle}>
+                  <BodyText style={styles.subtitle}>
                     You chose {onboardingInfo.trainingDays} days/week, but we optimized the plan for{' '}
                     {realNumberOfTrainings} days.
-                  </Paragraph>
-                  <Paragraph style={styles.subtitle}>Train as often as you like, the plan adapts.</Paragraph>
+                  </BodyText>
+                  <BodyText style={styles.subtitle}>Train as often as you like, the plan adapts.</BodyText>
                 </>
               )}
             </View>
@@ -157,7 +157,7 @@ export const ChangeMicrocycleCardView = () => {
                                 })
                               }}
                             >
-                              <Pencil color={theme.colors.newUi.gray.light} />
+                              <Pencil color={theme.colors.gray.light} />
                             </Pressable>
                           </View>
                         )}
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: 24,
     width: '100%',
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   },
   scrollView: {
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loadingText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     textAlign: 'center',
     fontSize: theme.fontSize.medium,
     fontFamily: theme.font.sairaRegular,
@@ -232,11 +232,11 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   title: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 12,
   },
   subtitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: theme.fontSize.small,
     lineHeight: 20,
   },
@@ -244,10 +244,10 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   workoutCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     marginBottom: 16,
-    shadowColor: theme.colors.primary,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -264,12 +264,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase',
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   workoutTitle: {
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     letterSpacing: 0.5,
   },
   exercisesContainer: {
@@ -292,21 +292,21 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 14,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
   },
   exerciseDetails: {
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
   },
   summarySection: {
     marginBottom: 24,
   },
   summaryCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: 18,
-    shadowColor: theme.colors.primary,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   summaryTitle: {
     fontSize: 18,
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 16,
     textTransform: 'uppercase',
   },
@@ -329,13 +329,13 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

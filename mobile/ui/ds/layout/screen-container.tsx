@@ -6,12 +6,12 @@ import { theme } from '@/mobile/theme/theme'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: theme.spacing.xl,
     backgroundColor: theme.colors.background,
   },
 })
 
-export const ViewContainer = ({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) => {
+export const ScreenContainer = ({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) => {
   const insets = useSafeAreaInsets()
   return <View style={[styles.container, { paddingTop: insets.top }, style]}>{children}</View>
 }

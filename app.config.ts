@@ -34,5 +34,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   runtimeVersion: {
     policy: 'appVersion',
   },
-  plugins: [],
+  plugins: [
+    [
+      '@sentry/react-native/expo',
+      {
+        organization: 'trainer-mh',
+        project: 'trainer-dev',
+      },
+    ],
+  ],
 })

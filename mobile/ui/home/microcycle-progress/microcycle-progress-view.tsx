@@ -1,13 +1,13 @@
-import { WorkoutState } from '@/mobile/domain'
 import React, { useRef } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
+import { WorkoutState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 import { Title } from '@/mobile/ui/components/title'
+import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 
 import { VerticalWorkoutCards } from './swipeable-workout-card'
 

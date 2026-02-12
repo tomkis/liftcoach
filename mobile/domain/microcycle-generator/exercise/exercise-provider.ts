@@ -112,7 +112,7 @@ export class ExerciseProvider {
     exerciseNumber: number,
     selectedExercises: ProvidedExercise[],
     userExperience: LiftingExperience
-  ): ProvidedExercise {
+  ): ProvidedExercise | undefined {
     const movementPattern =
       movementPatternsPriorities[muscleGroup][exerciseNumber % movementPatternsPriorities[muscleGroup].length]
 
@@ -125,7 +125,7 @@ export class ExerciseProvider {
     )
 
     if (!expercisesForExperience || expercisesForExperience.length === 0) {
-      throw new Error(`No exercises found for the given movement pattern - ${movementPattern}`)
+      return undefined
     }
 
     const selectedExercise = expercisesForExperience.filter(
@@ -133,7 +133,7 @@ export class ExerciseProvider {
     )[0]
 
     if (!selectedExercise) {
-      throw new Error('No exercise found')
+      return undefined
     }
 
     return selectedExercise

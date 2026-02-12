@@ -136,25 +136,25 @@ const ensureMusclePreferencesIntegrity = (
   const adjustedValues = { ...data }
 
   if (expanded.arms) {
-    adjustedValues.arms = undefined
+    delete adjustedValues.arms
   } else {
-    adjustedValues.biceps = undefined
-    adjustedValues.triceps = undefined
+    delete adjustedValues.biceps
+    delete adjustedValues.triceps
   }
 
   if (expanded.legs) {
-    adjustedValues.legs = undefined
+    delete adjustedValues.legs
   } else {
-    adjustedValues.glutes = undefined
-    adjustedValues.hamstrings = undefined
-    adjustedValues.quads = undefined
+    delete adjustedValues.glutes
+    delete adjustedValues.hamstrings
+    delete adjustedValues.quads
   }
 
   if (expanded.shoulders) {
-    adjustedValues.shoulders = undefined
+    delete adjustedValues.shoulders
   } else {
-    adjustedValues.sideDelts = undefined
-    adjustedValues.rearDelts = undefined
+    delete adjustedValues.sideDelts
+    delete adjustedValues.rearDelts
   }
 
   return adjustedValues

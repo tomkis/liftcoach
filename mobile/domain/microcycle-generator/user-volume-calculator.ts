@@ -28,7 +28,9 @@ export class UserVolumeCalculator {
           ? getBalancedMuscleGroupPreferenceMale()
           : getBalancedMuscleGroupPreferenceFemale())
     ).reduce<Array<{ muscleGroup: MuscleGroup; priority: number }>>((acc, [muscleGroup, priority]) => {
-      if (priority === undefined) return acc
+      if (priority === undefined) {
+        throw new Error(`Undefined priority for muscle group "${muscleGroup}"`)
+      }
       switch (muscleGroup) {
         case 'chest':
           return acc.concat([{ muscleGroup: MuscleGroup.Chest, priority }])

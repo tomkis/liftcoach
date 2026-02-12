@@ -7,6 +7,7 @@ import { MicrocycleGeneratorConfig } from '../microcycle'
 import { ProvidedExercise } from '../muscle-group'
 import { LiftingExperience, MuscleGroupPreference, OnboardedUser, TrainingFrequency, Unit } from '../onboarding'
 import { MicrocycleGenerator } from './generate-microcycle'
+import { UserVolumeCalculator } from './user-volume-calculator'
 
 const availableExercises: ProvidedExercise[] = exerciseSeedData.map((e, i) => ({
   ...e,
@@ -118,39 +119,30 @@ describe('generateMicrocycle', () => {
     }
   })
 
-  describe('partial preferences with undefined body part values', () => {
-    const partialPresets: Array<{ name: string; preference: MuscleGroupPreference }> = [
-      {
-        name: 'undefined-shoulders',
-        preference: { chest: 5, back: 5, shoulders: undefined, arms: 3, legs: 7, abs: 3 },
-      },
-      {
-        name: 'undefined-arms',
-        preference: { chest: 5, back: 5, shoulders: 4, arms: undefined, legs: 7, abs: 3 },
-      },
-      {
-        name: 'undefined-legs',
-        preference: { chest: 5, back: 5, shoulders: 4, arms: 3, legs: undefined, abs: 3 },
-      },
-      {
-        name: 'all-body-parts-undefined',
-        preference: { chest: 5, back: 5, shoulders: undefined, arms: undefined, legs: undefined, abs: 3 },
-      },
-    ]
+  describe('undefined priority throws explicit error', () => {
+    it('throws for undefined shoulders priority', () => {
+      const user = makeUser(TrainingFrequency.FourDays, LiftingExperience.Intermediate, 'male', {
+        chest: 5, back: 5, shoulders: undefined, arms: 3, legs: 7, abs: 3,
+      })
+      const calculator = new UserVolumeCalculator(new AuditTrail(), { volumeConfig: config.volumeConfig }, user)
+      expect(() => calculator.getMuscleGroupPriorities()).toThrow('Undefined priority for muscle group "shoulders"')
+    })
 
-    for (const { name, preference } of partialPresets) {
-      for (const frequency of frequencies) {
-        it(`${name} / ${frequency}`, async () => {
-          const user = makeUser(frequency, LiftingExperience.Intermediate, 'male', preference)
-          const microcycle = await generateForUser(user)
+    it('throws for undefined arms priority', () => {
+      const user = makeUser(TrainingFrequency.FourDays, LiftingExperience.Intermediate, 'male', {
+        chest: 5, back: 5, shoulders: 4, arms: undefined, legs: 7, abs: 3,
+      })
+      const calculator = new UserVolumeCalculator(new AuditTrail(), { volumeConfig: config.volumeConfig }, user)
+      expect(() => calculator.getMuscleGroupPriorities()).toThrow('Undefined priority for muscle group "arms"')
+    })
 
-          expect(microcycle.workouts.length).toBeGreaterThan(0)
-          for (const workout of microcycle.workouts) {
-            expect(workout.exercises.length).toBeGreaterThan(0)
-          }
-        })
-      }
-    }
+    it('throws for undefined legs priority', () => {
+      const user = makeUser(TrainingFrequency.FourDays, LiftingExperience.Intermediate, 'male', {
+        chest: 5, back: 5, shoulders: 4, arms: 3, legs: undefined, abs: 3,
+      })
+      const calculator = new UserVolumeCalculator(new AuditTrail(), { volumeConfig: config.volumeConfig }, user)
+      expect(() => calculator.getMuscleGroupPriorities()).toThrow('Undefined priority for muscle group "legs"')
+    })
   })
 
   describe('extreme custom preferences', () => {

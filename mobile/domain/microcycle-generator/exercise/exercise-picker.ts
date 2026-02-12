@@ -56,13 +56,25 @@ export class ExercisePicker implements IExercisePicker {
     }
 
     const selectedExercises: ProvidedExercise[] = []
+    const orphanedSets: Record<MuscleGroup, number> = {
+      [MuscleGroup.Abs]: 0,
+      [MuscleGroup.Back]: 0,
+      [MuscleGroup.Biceps]: 0,
+      [MuscleGroup.Chest]: 0,
+      [MuscleGroup.Glutes]: 0,
+      [MuscleGroup.Hamstrings]: 0,
+      [MuscleGroup.Quads]: 0,
+      [MuscleGroup.RearDelts]: 0,
+      [MuscleGroup.SideDelts]: 0,
+      [MuscleGroup.Triceps]: 0,
+    }
 
     const pickedExercises = Object.entries(this.getMuscleGroupGroupedTemplate(microcycleTemplate)).flatMap(
       ([mg, exercisesByDay]) => {
         const muscleGroup = mg as MuscleGroup
 
         return Object.entries(exercisesByDay).flatMap(([dayIndex, exercises]) => {
-          return exercises.map(({ sets, index }) => {
+          return exercises.flatMap(({ sets, index }) => {
             const exercise = this.exerciseProvider.provideExercise(
               muscleGroup,
               mgAcc[muscleGroup],
@@ -70,41 +82,69 @@ export class ExercisePicker implements IExercisePicker {
               experience
             )
             mgAcc[muscleGroup]++
+
+            if (!exercise) {
+              orphanedSets[muscleGroup] += sets
+              return []
+            }
+
             selectedExercises.push(exercise)
 
-            if (exercise === undefined) {
-              throw new Error('Exercise not found')
-            }
-
-            return {
-              exercise,
-              sets,
-              exerciseIndex: index,
-              dayIndex: parseInt(dayIndex),
-            }
+            return [
+              {
+                exercise,
+                sets,
+                muscleGroup,
+                exerciseIndex: index,
+                dayIndex: parseInt(dayIndex),
+              },
+            ]
           })
         })
       }
     )
 
-    return microcycleTemplate.map((dayTemplate, dayIndex) => {
-      return {
-        exercises: dayTemplate.exercises.map((exerciseTemplate, exerciseIndex) => {
+    for (const mg of Object.values(MuscleGroup)) {
+      const orphaned = orphanedSets[mg]
+      if (orphaned === 0) continue
+
+      const mgExercises = pickedExercises.filter(e => e.muscleGroup === mg)
+      if (mgExercises.length === 0) continue
+
+      const perExercise = Math.floor(orphaned / mgExercises.length)
+      const remainder = orphaned % mgExercises.length
+
+      for (let i = 0; i < mgExercises.length; i++) {
+        mgExercises[i].sets += perExercise + (i < remainder ? 1 : 0)
+      }
+    }
+
+    return microcycleTemplate
+      .map((dayTemplate, dayIndex) => {
+        const dayExercises = dayTemplate.exercises.flatMap((exerciseTemplate, exerciseIndex) => {
           const pickedExercise = pickedExercises.find(
             exercise => exercise.exerciseIndex === exerciseIndex && exercise.dayIndex === dayIndex
           )
           if (!pickedExercise) {
-            throw new Error('Exercise not found')
+            return []
           }
 
-          return {
-            ...exerciseTemplate,
-            targetReps: 8,
-            alternations: [],
-            exercise: pickedExercise.exercise,
-          }
-        }),
-      }
-    })
+          return [
+            {
+              ...exerciseTemplate,
+              sets: pickedExercise.sets,
+              targetReps: 8,
+              alternations: [],
+              exercise: pickedExercise.exercise,
+            },
+          ]
+        })
+
+        if (dayExercises.length === 0) {
+          throw new Error(`No exercises could be picked for workout day ${dayIndex}`)
+        }
+
+        return { exercises: dayExercises }
+      })
   }
 }

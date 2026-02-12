@@ -12,5 +12,6 @@ Many gym-goers have the discipline to show up consistently but lack structured t
 - After each change run `pnpm typecheck` to see any typescript issues
 - After each change run `pnpm lint` to see any linting issues
 - After each change run `pnpm knip` to check for unused exports, deps and files
+- After each change run `pnpm test` to run vitest tests
 
 **IMPORTANT**: Before proposing a plan or writing any code, ALWAYS ensure you understand the project by going through the `docs/index.md`. You NEED to understand what the project is, what it solves and how its built.

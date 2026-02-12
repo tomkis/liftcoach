@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "lint": "eslint mobile/",
     "start": "expo start",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "web": "expo run:web",
     "knip": "knip"
@@ -69,7 +70,8 @@
     "knip": "^5.83.1",
     "prettier-plugin-packagejson": "^2.5.0",
     "typescript": "~5.3.3",
-    "typescript-eslint": "^8.7.0"
+    "typescript-eslint": "^8.7.0",
+    "vitest": "^4.0.18"
   },
   "packageManager": "pnpm@9.7.1",
   "engines": {

@@ -1,5 +1,5 @@
 {
-  "project": ["mobile/**/*.{ts,tsx}", "types/**/*.ts"],
+  "project": ["mobile/**/*.{ts,tsx}", "types/**/*.ts", "mobile/**/*.test.ts"],
   "ignoreDependencies": [
     "pino-pretty",
     "@babel/core",

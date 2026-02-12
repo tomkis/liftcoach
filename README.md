@@ -4,6 +4,7 @@
 
 **Stop guessing. Start progressing.**
 
+[![Download on the App Store](https://img.shields.io/badge/App_Store-0D96F6?logo=app-store&logoColor=white)](https://apps.apple.com/cz/app/liftcoach/id6749958842)
 [![iOS](https://img.shields.io/badge/iOS-000000?logo=apple&logoColor=white)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React Native](https://img.shields.io/badge/React_Native-20232A?logo=react&logoColor=61DAFB)](https://reactnative.dev/)

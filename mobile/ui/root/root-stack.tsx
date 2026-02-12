@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import { HomeStack } from '@/mobile/ui/home/home-stack'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
+import { HomeStack } from '@/mobile/ui/home/home-stack'
 
 import { OnboardingStack } from '../onboarding/onboarding-stack'
 

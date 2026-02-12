@@ -36,6 +36,7 @@ export interface UserContext {
     hasStrengthTest: boolean
     isOnboarded: boolean
     hasActiveWorkout: boolean
+    hasPendingMesocycle: boolean
   }>
   getOnboardingInfo: (session: Session) => Promise<OnboardedUser | null>
   getDashboardData: (session: Session) => Promise<DashboardData>

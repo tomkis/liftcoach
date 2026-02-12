@@ -5,6 +5,7 @@ import { VolumePreferencesScreen } from '@/mobile/ui/mesocycle-planner/screens/v
 
 import { ExerciseSelectionScreen } from './screens/exercise-selection-screen'
 import { MusclePreferencesScreen } from './screens/muscle-preferences-screen'
+import { ActivePlanDetailScreen } from './screens/active-plan-detail-screen'
 import { PlanHubScreen } from './screens/plan-hub-screen'
 import { SplitTypeSelectionScreen } from './screens/split-type-selection-screen'
 import { TrainingDaysScreen } from './screens/training-days-screen'
@@ -16,6 +17,7 @@ export const PlanningStack = () => {
   return (
     <Stack.Navigator initialRouteName="PlanningHome" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="PlanningHome" component={PlanHubScreen} />
+      <Stack.Screen name="ActivePlanDetail" component={ActivePlanDetailScreen} />
       <Stack.Screen name="TrainingDays" component={TrainingDaysScreen} />
       <Stack.Screen name="MusclePreferences" component={MusclePreferencesScreen} />
       <Stack.Screen name="VolumePreferences" component={VolumePreferencesScreen} />

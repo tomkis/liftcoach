@@ -150,7 +150,7 @@ export const PlanHubScreen = () => {
   const tracking = useTracking()
 
   const onViewActivePlan = () => {
-    // TODO: navigate to active plan detail screen
+    navigation.navigate('ActivePlanDetail')
   }
 
   const onBuildNewPlan = () => {

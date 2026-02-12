@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { WorkingSetState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import ChevronLeft from '@/mobile/ui/icons/chevron-left'
@@ -11,9 +12,9 @@ import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 type DerivedState = 'completed' | 'active' | 'pending'
 
 const stateColor = (state: DerivedState) => {
-  if (state === 'completed') return '#4ade80'
-  if (state === 'active') return '#ffc300'
-  return '#666'
+  if (state === 'completed') return theme.colors.newUi.status.success
+  if (state === 'active') return theme.colors.newUi.primary.main
+  return theme.colors.newUi.text.muted
 }
 
 export const ActivePlanDetailScreen = () => {
@@ -27,7 +28,7 @@ export const ActivePlanDetailScreen = () => {
     useCallback(() => {
       trpcUtils.workout.getActivePlanSummary.invalidate()
       trpcUtils.workout.getCurrentMicrocycle.invalidate()
-    }, [trpcUtils]),
+    }, [trpcUtils])
   )
 
   if (isLoadingPlan || isLoadingMicrocycle || !activePlan || !microcycle) {
@@ -88,7 +89,12 @@ export const ActivePlanDetailScreen = () => {
                   <View
                     style={[
                       styles.timelineLine,
-                      { backgroundColor: workoutState === 'completed' ? '#4ade80' : '#2a2a2a' },
+                      {
+                        backgroundColor:
+                          workoutState === 'completed'
+                            ? theme.colors.newUi.status.success
+                            : theme.colors.newUi.border.default,
+                      },
                     ]}
                   />
                 )}
@@ -110,7 +116,7 @@ export const ActivePlanDetailScreen = () => {
 
                 <View style={styles.exerciseBlock}>
                   {w.exercises.map(ex => {
-                    const setsCompleted = (ex.sets as Array<{ state: string }>).filter(s => s.state === 'done').length
+                    const setsCompleted = ex.sets.filter(s => s.state === WorkingSetState.done).length
                     const done = setsCompleted >= ex.targetSets
                     return (
                       <View key={ex.id} style={styles.exRow}>
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: '#121212',
+    backgroundColor: theme.colors.newUi.background,
   },
   backBtn: {
     padding: 4,
@@ -176,18 +182,18 @@ const styles = StyleSheet.create({
   progressTrack: {
     flex: 1,
     height: 3,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: theme.colors.newUi.border.default,
     borderRadius: 2,
   },
   progressFill: {
     height: 3,
-    backgroundColor: '#ffc300',
+    backgroundColor: theme.colors.newUi.primary.main,
     borderRadius: 2,
   },
   progressText: {
     fontFamily: theme.font.sairaCondesedBold,
     fontSize: 14,
-    color: '#ffc300',
+    color: theme.colors.newUi.primary.main,
   },
   timelineItem: {
     flexDirection: 'row',
@@ -204,11 +210,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   nodeCompleted: {
-    backgroundColor: '#4ade80',
+    backgroundColor: theme.colors.newUi.status.success,
   },
   nodePending: {
     borderWidth: 1.5,
-    borderColor: '#333',
+    borderColor: theme.colors.newUi.border.light,
     backgroundColor: 'transparent',
   },
   nodeActive: {
@@ -223,13 +229,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: '#ffc300',
+    borderColor: theme.colors.newUi.primary.main,
   },
   nodeActiveDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ffc300',
+    backgroundColor: theme.colors.newUi.primary.main,
   },
   timelineLine: {
     width: 1.5,
@@ -256,7 +262,7 @@ const styles = StyleSheet.create({
   dayIndex: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 10,
-    color: '#aaa',
+    color: theme.colors.newUi.text.secondary,
     letterSpacing: 1,
     marginLeft: 'auto',
   },
@@ -268,11 +274,11 @@ const styles = StyleSheet.create({
   muscleText: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 8,
-    color: '#999',
+    color: theme.colors.newUi.text.tertiary,
     letterSpacing: 1.2,
   },
   exerciseBlock: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: theme.colors.newUi.backgroundLight,
     borderRadius: 8,
     padding: 12,
   },
@@ -291,23 +297,23 @@ const styles = StyleSheet.create({
   exBar: {
     width: 2,
     height: 14,
-    backgroundColor: '#555',
+    backgroundColor: theme.colors.newUi.text.dim,
     borderRadius: 1,
   },
   exBarDone: {
-    backgroundColor: '#4ade80',
+    backgroundColor: theme.colors.newUi.status.success,
   },
   exName: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 12,
-    color: '#fff',
+    color: theme.colors.newUi.text.primary,
   },
   exNameDone: {
-    color: '#666',
+    color: theme.colors.newUi.text.muted,
   },
   exRx: {
     fontFamily: theme.font.sairaSemiBold,
     fontSize: 11,
-    color: '#888',
+    color: theme.colors.newUi.text.hint,
   },
 })

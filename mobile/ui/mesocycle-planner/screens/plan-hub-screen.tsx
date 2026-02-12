@@ -4,7 +4,6 @@ import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ActivePlanSummary } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
@@ -28,18 +27,20 @@ const KeyValue = ({ label, value, accent }: { label: string; value: string; acce
   </View>
 )
 
-const PlanDashboard = ({
-  activePlan,
-  onViewActivePlan,
-  onBuildNewPlan,
-  isLoading,
-}: {
-  activePlan: ActivePlanSummary | null
-  onViewActivePlan: () => void
-  onBuildNewPlan: () => void
-  isLoading: boolean
-}) => {
+export const PlanHubScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
   const insets = useSafeAreaInsets()
+  const { data: activePlan, isLoading } = trpc.workout.getActivePlanSummary.useQuery()
+  const tracking = useTracking()
+
+  const onViewActivePlan = () => {
+    navigation.navigate('ActivePlanDetail')
+  }
+
+  const onBuildNewPlan = () => {
+    tracking.newTrainingPlan()
+    navigation.navigate('TrainingDays')
+  }
 
   if (isLoading) {
     return (
@@ -144,30 +145,6 @@ const PlanDashboard = ({
   )
 }
 
-export const PlanHubScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
-  const { data: activePlan, isLoading } = trpc.workout.getActivePlanSummary.useQuery()
-  const tracking = useTracking()
-
-  const onViewActivePlan = () => {
-    navigation.navigate('ActivePlanDetail')
-  }
-
-  const onBuildNewPlan = () => {
-    tracking.newTrainingPlan()
-    navigation.navigate('TrainingDays')
-  }
-
-  return (
-    <PlanDashboard
-      activePlan={activePlan ?? null}
-      onViewActivePlan={onViewActivePlan}
-      onBuildNewPlan={onBuildNewPlan}
-      isLoading={isLoading}
-    />
-  )
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -221,7 +198,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 10,
-    color: '#4ade80',
+    color: theme.colors.newUi.status.success,
     letterSpacing: 2,
     marginBottom: 4,
   },
@@ -244,12 +221,12 @@ const styles = StyleSheet.create({
   pctSign: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 16,
-    color: '#555',
+    color: theme.colors.newUi.text.dim,
     marginTop: 4,
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: theme.colors.newUi.border.default,
     marginVertical: 16,
   },
   statsGrid: {
@@ -262,7 +239,7 @@ const styles = StyleSheet.create({
   kvLabel: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 10,
-    color: '#555',
+    color: theme.colors.newUi.text.dim,
     letterSpacing: 1.5,
     marginBottom: 4,
   },
@@ -284,7 +261,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 2,
-    backgroundColor: '#333',
+    backgroundColor: theme.colors.newUi.border.light,
   },
   dotFilled: {
     backgroundColor: theme.colors.newUi.primary.main,
@@ -297,7 +274,7 @@ const styles = StyleSheet.create({
   cardFooterLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: theme.colors.newUi.border.default,
   },
   cardFooterText: {
     fontFamily: theme.font.sairaSemiBold,
@@ -313,7 +290,7 @@ const styles = StyleSheet.create({
   },
   emptyTopBorder: {
     height: 2,
-    backgroundColor: '#333',
+    backgroundColor: theme.colors.newUi.border.light,
   },
   emptyContent: {
     padding: 32,
@@ -324,7 +301,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
     borderWidth: 2,
-    borderColor: '#333',
+    borderColor: theme.colors.newUi.border.light,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -332,12 +309,12 @@ const styles = StyleSheet.create({
   emptyRingText: {
     fontFamily: theme.font.sairaCondesedBold,
     fontSize: 22,
-    color: '#444',
+    color: theme.colors.newUi.text.faint,
   },
   emptyTitle: {
     fontFamily: theme.font.sairaSemiBold,
     fontSize: 16,
-    color: '#555',
+    color: theme.colors.newUi.text.dim,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -345,7 +322,7 @@ const styles = StyleSheet.create({
   emptyBody: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 13,
-    color: '#444',
+    color: theme.colors.newUi.text.faint,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -393,7 +370,7 @@ const styles = StyleSheet.create({
   buildSubtitle: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.newUi.text.muted,
     marginTop: 2,
   },
   buildBottom: {
@@ -401,24 +378,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: '#161616',
+    backgroundColor: theme.colors.newUi.surface.elevated,
     gap: 6,
   },
   buildTag: {
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 3,
-    backgroundColor: '#222',
+    backgroundColor: theme.colors.newUi.surface.muted,
   },
   buildTagText: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 9,
-    color: '#666',
+    color: theme.colors.newUi.text.muted,
     letterSpacing: 1,
   },
   buildArrowSep: {
     fontFamily: theme.font.sairaRegular,
     fontSize: 10,
-    color: '#444',
+    color: theme.colors.newUi.text.faint,
   },
 })

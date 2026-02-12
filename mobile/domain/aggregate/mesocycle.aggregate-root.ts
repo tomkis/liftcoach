@@ -11,6 +11,7 @@ import {
   ProgressStalledSuboptimalLifestyleInsight,
 } from '../dashboard'
 import {
+  ActivePlanSummary,
   CycleProgress,
   CycleProgressState,
   LifestyleFeedback,
@@ -540,6 +541,24 @@ export class MesocycleAggregateRoot {
       exercises,
       currentWeek: this.getCurrentCycleIndex() + 1,
       currentWeekProgress: this.getCurrentMicrocycleIndex() + 1,
+    }
+  }
+
+  getActivePlanSummary(): ActivePlanSummary {
+    const activeMicrocycle = this.getActiveMicrocycle()
+    const workoutsPerWeek = activeMicrocycle.workouts.length
+    const cycleIndex = this.getCurrentCycleIndex()
+    const completedInCurrentMicrocycle = activeMicrocycle.workouts.filter(
+      w => w.state === WorkoutState.completed
+    ).length
+
+    return {
+      splitType: `${workoutsPerWeek}-Day Split`,
+      currentWeek: cycleIndex + 1,
+      totalWeeks: TRAINING_WEEKS + 1,
+      trainingDaysPerWeek: workoutsPerWeek,
+      workoutsCompleted: cycleIndex * workoutsPerWeek + completedInCurrentMicrocycle,
+      totalWorkouts: (TRAINING_WEEKS + 1) * workoutsPerWeek,
     }
   }
 

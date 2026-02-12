@@ -2,6 +2,7 @@ import { MuscleGroup, MuscleGroupPreference } from '@/mobile/domain'
 
 export type MesocyclePlannerStackParamList = {
   PlanningHome: undefined
+  ActivePlanDetail: undefined
   TrainingDays: undefined
   MusclePreferences: {
     trainingDays: number

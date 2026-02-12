@@ -16,6 +16,14 @@ export const theme = {
     newUi: {
       background: '#121212',
       backgroundLight: '#1e1e1e',
+      border: {
+        default: '#2a2a2a',
+        light: '#333',
+      },
+      surface: {
+        elevated: '#161616',
+        muted: '#222',
+      },
       gray: {
         light: '#7a7a7a',
       },
@@ -24,8 +32,17 @@ export const theme = {
         negative: '#e53935',
         contrastText: 'rgba(0,0,0,0.87)',
       },
+      status: {
+        success: '#4ade80',
+      },
       text: {
         primary: '#fff',
+        secondary: '#aaa',
+        tertiary: '#999',
+        hint: '#888',
+        muted: '#666',
+        dim: '#555',
+        faint: '#444',
       },
     },
   },

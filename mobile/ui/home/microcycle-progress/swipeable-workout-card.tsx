@@ -1,11 +1,11 @@
-import { Unit, WorkingExercise } from '@/mobile/domain'
 import React, { useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { DashboardCard } from '@/mobile/ui/home/dashboard/dashboard-card'
+import { Unit, WorkingExercise } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { Paragraph } from '@/mobile/ui/components/paragraph'
 import { Title } from '@/mobile/ui/components/title'
+import { DashboardCard } from '@/mobile/ui/home/dashboard/dashboard-card'
 
 import { WorkoutCard } from './workout-card'
 
@@ -46,10 +46,6 @@ export const VerticalWorkoutCards = ({ scrollViewRef, workouts, unit }: Vertical
 
   const handleWorkoutPress = (workoutId: string) => {
     setExpandedWorkoutId(expandedWorkoutId === workoutId ? null : workoutId)
-  }
-
-  if (workouts.length === 0) {
-    return null
   }
 
   return (

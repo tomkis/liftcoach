@@ -3,14 +3,14 @@ import React, { useEffect, useRef } from 'react'
 import { Animated, Pressable, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
-import Calendar from '@/mobile/ui/icons/calendar'
-import CalendarFilled from '@/mobile/ui/icons/calendar-filled'
+import Clipboard from '@/mobile/ui/icons/clipboard'
+import ClipboardFilled from '@/mobile/ui/icons/clipboard-filled'
 import Home from '@/mobile/ui/icons/home'
 import HomeFilled from '@/mobile/ui/icons/home-filled'
 import WorkoutStretching from '@/mobile/ui/icons/workout-stretching'
 import WorkoutStretchingFilled from '@/mobile/ui/icons/workout-stretching-filled'
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 
 const ACCENT_COLOR = theme.colors.newUi.primary.main // gold/yellow accent
 const INACTIVE_ICON = theme.colors.lightGray || '#bdbdbd'
@@ -117,9 +117,9 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         }}
       />
       <MenuIcon
-        NonActiveIcon={Calendar}
-        ActiveIcon={CalendarFilled}
-        text="Planning"
+        NonActiveIcon={Clipboard}
+        ActiveIcon={ClipboardFilled}
+        text="Plan"
         active={navigationState.index === 2}
         onPress={() => {
           tracking.menuItemPressed('Planning')

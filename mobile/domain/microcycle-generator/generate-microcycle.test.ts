@@ -118,6 +118,41 @@ describe('generateMicrocycle', () => {
     }
   })
 
+  describe('partial preferences with undefined body part values', () => {
+    const partialPresets: Array<{ name: string; preference: MuscleGroupPreference }> = [
+      {
+        name: 'undefined-shoulders',
+        preference: { chest: 5, back: 5, shoulders: undefined, arms: 3, legs: 7, abs: 3 },
+      },
+      {
+        name: 'undefined-arms',
+        preference: { chest: 5, back: 5, shoulders: 4, arms: undefined, legs: 7, abs: 3 },
+      },
+      {
+        name: 'undefined-legs',
+        preference: { chest: 5, back: 5, shoulders: 4, arms: 3, legs: undefined, abs: 3 },
+      },
+      {
+        name: 'all-body-parts-undefined',
+        preference: { chest: 5, back: 5, shoulders: undefined, arms: undefined, legs: undefined, abs: 3 },
+      },
+    ]
+
+    for (const { name, preference } of partialPresets) {
+      for (const frequency of frequencies) {
+        it(`${name} / ${frequency}`, async () => {
+          const user = makeUser(frequency, LiftingExperience.Intermediate, 'male', preference)
+          const microcycle = await generateForUser(user)
+
+          expect(microcycle.workouts.length).toBeGreaterThan(0)
+          for (const workout of microcycle.workouts) {
+            expect(workout.exercises.length).toBeGreaterThan(0)
+          }
+        })
+      }
+    }
+  })
+
   describe('extreme custom preferences', () => {
     const extremePresets: Array<{ name: string; preference: MuscleGroupPreference }> = [
       {

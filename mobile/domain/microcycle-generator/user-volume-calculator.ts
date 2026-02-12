@@ -1,12 +1,11 @@
+import { AuditTrail } from '../audit-trail'
 import { BodyPart, MuscleGroup } from '../muscle-group'
 import { OnboardedUser } from '../onboarding'
-
-import { AuditTrail } from '../audit-trail'
+import { convertBodyPartToMuscleGroups } from '../user/convert-body-to-muscle-groups'
 import {
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
 } from '../user/get-muscle-group-preference'
-import { convertBodyPartToMuscleGroups } from '../user/convert-body-to-muscle-groups'
 import { MicrocycleVolumeCalculator, MicrocycleVolumeConfig } from './volume/microcycle-volume-calculator'
 
 export class UserVolumeCalculator {
@@ -29,6 +28,7 @@ export class UserVolumeCalculator {
           ? getBalancedMuscleGroupPreferenceMale()
           : getBalancedMuscleGroupPreferenceFemale())
     ).reduce<Array<{ muscleGroup: MuscleGroup; priority: number }>>((acc, [muscleGroup, priority]) => {
+      if (priority === undefined) return acc
       switch (muscleGroup) {
         case 'chest':
           return acc.concat([{ muscleGroup: MuscleGroup.Chest, priority }])

@@ -19,7 +19,6 @@ Key token groups:
 | Component | Purpose |
 |-----------|---------|
 | `PrimaryButton` | Gold bg, dark text, uppercase |
-| `SubtleButton` | Transparent bg, gold border, small text |
 | `OutlineButton` | Gold border, gold text |
 
 All accept `{ title, onPress, style?, disabled? }`.
@@ -33,7 +32,6 @@ All accept `{ title, onPress, style?, disabled? }`.
 | `CardTitle` | SairaCondensedBold 20px uppercase |
 | `BodyText` | SairaRegular 14px, lh 24, mb 8 |
 | `CaptionText` | SairaRegular 16px center, 70% opacity |
-| `EmphasizedText` | SairaBold, gold color (inline span) |
 
 All accept `{ children, style? }`.
 
@@ -59,16 +57,13 @@ All accept `{ children, style? }`.
 
 | Component | Purpose |
 |-----------|---------|
-| `Card` | bgLight, borderRadius 10, padding 18, shadow |
 | `AccentCard` | Card + gold accent bar + optional subtitle |
-| `SetsCard` | Card without padding, overflow hidden, mt 18 |
 
 ### Inputs (`ds/inputs/`)
 
 | Component | Purpose |
 |-----------|---------|
 | `NumericalInput` | Styled numeric TextInput |
-| `InputField` | Border wrapper (1px white@23%, radius 8) |
 
 ### Controls (`ds/controls/`)
 
@@ -76,12 +71,6 @@ All accept `{ children, style? }`.
 |-----------|---------|
 | `Checkbox` | 20x20 box + checkmark + label |
 | `SegmentedControl` | Two-option toggle, gold selection |
-
-### Rows (`ds/rows/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `SetRow` | h40, ph12, borderBottom 2px, row layout |
 
 ## Import Convention
 

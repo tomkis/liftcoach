@@ -1,9 +1,14 @@
+import { format, subDays } from 'date-fns'
 import { and, desc, eq, gte, inArray, isNull, or, sql } from 'drizzle-orm'
+import { v4 } from 'uuid'
+
 import {
   ExerciseAssesmentScore,
+  ExerciseLibraryItem,
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   HistoricalResult,
+  MovementPattern,
   MuscleGroup,
   OnboardedUser,
   ProvidedExercise,
@@ -12,8 +17,6 @@ import {
   WorkoutExerciseState,
   WorkoutState,
 } from '@/mobile/domain'
-import { format, subDays } from 'date-fns'
-import { v4 } from 'uuid'
 
 import { db } from './index'
 import * as schema from './schema'
@@ -21,10 +24,7 @@ import * as schema from './schema'
 const LOCAL_USER_ID = 'local-user'
 
 export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
-  const rows = await db
-    .select()
-    .from(schema.exercise)
-    .orderBy(schema.exercise.movementPatternPriority)
+  const rows = await db.select().from(schema.exercise).orderBy(schema.exercise.movementPatternPriority)
 
   return rows.map(e => ({
     muscleGroup: e.muscleGroup as MuscleGroup,
@@ -109,12 +109,7 @@ export const getLastTestingWeights = async (
     .innerJoin(schema.exercise, eq(schema.workoutExercise.exerciseId, schema.exercise.id))
     .innerJoin(schema.microcycleWorkout, eq(schema.workoutExercise.workoutId, schema.microcycleWorkout.id))
     .innerJoin(schema.microcycle, eq(schema.microcycleWorkout.microcycleId, schema.microcycle.id))
-    .where(
-      and(
-        or(...conditions),
-        sql`${schema.workoutExercise.loadedWeight} IS NOT NULL`
-      )
-    )
+    .where(and(or(...conditions), sql`${schema.workoutExercise.loadedWeight} IS NOT NULL`))
     .orderBy(desc(schema.microcycle.createdAt))
 
   const exerciseMap = new Map<string, number>()
@@ -125,6 +120,23 @@ export const getLastTestingWeights = async (
   }
 
   return exerciseMap
+}
+
+export const getExerciseLibrary = async (): Promise<ExerciseLibraryItem[]> => {
+  const rows = await db
+    .select()
+    .from(schema.exercise)
+    .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
+
+  return rows.map(e => ({
+    id: e.id,
+    name: e.name,
+    muscleGroup: e.muscleGroup as MuscleGroup,
+    movementPattern: e.movementPattern as MovementPattern,
+    estimatedOneRepMax: 42,
+    progressState: 'stalled' as const,
+    doneInPast: true,
+  }))
 }
 
 export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {
@@ -148,10 +160,7 @@ export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {
   }
 
   if (existing.length > 0) {
-    await db
-      .update(schema.onboardingData)
-      .set(values)
-      .where(eq(schema.onboardingData.userId, LOCAL_USER_ID))
+    await db.update(schema.onboardingData).set(values).where(eq(schema.onboardingData.userId, LOCAL_USER_ID))
   } else {
     await db.insert(schema.onboardingData).values({
       id: v4(),
@@ -315,8 +324,5 @@ export const storeStrengthTest = async (strengthTest: StrengthTest) => {
 }
 
 export const skipStrengthTest = async () => {
-  await db
-    .update(schema.user)
-    .set({ askedForStrengthTest: 1 })
-    .where(eq(schema.user.id, LOCAL_USER_ID))
+  await db.update(schema.user).set({ askedForStrengthTest: 1 }).where(eq(schema.user.id, LOCAL_USER_ID))
 }

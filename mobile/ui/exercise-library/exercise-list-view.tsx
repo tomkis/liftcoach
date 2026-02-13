@@ -1,5 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   Pressable,
@@ -11,13 +12,41 @@ import {
   View,
 } from 'react-native'
 
+import type { ExerciseLibraryItem, MuscleGroup } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
-
-import { MUSCLE_GROUPS, TOTAL_COUNT, type MockExercise } from './mock-data'
+import { trpc } from '@/mobile/trpc'
 
 const GOLD = theme.colors.primary.main
 const SCREEN_WIDTH = Dimensions.get('window').width
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8
+
+const formatLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2')
+
+const trendFromProgress = (state: ExerciseLibraryItem['progressState']) => {
+  if (state === 'progressing') return 'up' as const
+  if (state === 'regressing') return 'down' as const
+  return 'flat' as const
+}
+
+type GroupedSection = {
+  title: string
+  muscleGroup: MuscleGroup
+  data: ExerciseLibraryItem[]
+}
+
+const groupByMuscleGroup = (items: ExerciseLibraryItem[]): GroupedSection[] => {
+  const map = new Map<MuscleGroup, ExerciseLibraryItem[]>()
+  for (const item of items) {
+    const arr = map.get(item.muscleGroup) ?? []
+    arr.push(item)
+    map.set(item.muscleGroup, arr)
+  }
+  return Array.from(map.entries()).map(([mg, exercises]) => ({
+    title: formatLabel(mg),
+    muscleGroup: mg,
+    data: exercises,
+  }))
+}
 
 const FilterIcon = ({ active }: { active: boolean }) => {
   const color = active ? GOLD : theme.colors.text.secondary
@@ -30,55 +59,58 @@ const FilterIcon = ({ active }: { active: boolean }) => {
   )
 }
 
-const ExerciseListCard = ({ exercise }: { exercise: MockExercise }) => (
-  <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
-    <View style={[s.cardAccentBar, !exercise.performed && s.cardAccentBarMuted]} />
-    <View style={s.cardBody}>
-      <View style={s.cardLeft}>
-        <View style={s.nameRow}>
-          <Text style={s.exerciseName} numberOfLines={1}>
-            {exercise.name}
-          </Text>
-          {exercise.performed && <View style={s.performedDot} />}
+const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
+  const trend = trendFromProgress(exercise.progressState)
+  const hasE1rm = exercise.estimatedOneRepMax > 0
+
+  return (
+    <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
+      <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
+      <View style={s.cardBody}>
+        <View style={s.cardLeft}>
+          <View style={s.nameRow}>
+            <Text style={s.exerciseName} numberOfLines={1}>
+              {exercise.name}
+            </Text>
+            {exercise.doneInPast && <View style={s.performedDot} />}
+          </View>
+          <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
         </View>
-        <Text style={s.patternLabel}>{exercise.movementPattern}</Text>
-      </View>
-      <View style={s.cardRight}>
-        {exercise.e1rm ? (
-          <>
-            <Text style={s.e1rmValue}>{exercise.e1rm}</Text>
-            <View style={s.trendRow}>
-              <Text style={s.e1rmUnit}>kg</Text>
-              {exercise.e1rmTrend && (
+        <View style={s.cardRight}>
+          {hasE1rm ? (
+            <>
+              <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
+              <View style={s.trendRow}>
+                <Text style={s.e1rmUnit}>kg</Text>
                 <View
                   style={[
                     s.trendChip,
-                    exercise.e1rmTrend === 'up' && s.trendChipUp,
-                    exercise.e1rmTrend === 'down' && s.trendChipDown,
-                    exercise.e1rmTrend === 'flat' && s.trendChipFlat,
+                    trend === 'up' && s.trendChipUp,
+                    trend === 'down' && s.trendChipDown,
+                    trend === 'flat' && s.trendChipFlat,
                   ]}
                 >
                   <Text
                     style={[
                       s.trendText,
-                      exercise.e1rmTrend === 'up' && s.trendTextUp,
-                      exercise.e1rmTrend === 'down' && s.trendTextDown,
-                      exercise.e1rmTrend === 'flat' && s.trendTextFlat,
+                      trend === 'up' && s.trendTextUp,
+                      trend === 'down' && s.trendTextDown,
+                      trend === 'flat' && s.trendTextFlat,
                     ]}
                   >
-                    {exercise.e1rmTrend === 'up' ? '↑' : exercise.e1rmTrend === 'down' ? '↓' : '—'}
+                    {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
                   </Text>
                 </View>
-              )}
-            </View>
-          </>
-        ) : (
-          <Text style={s.noData}>—</Text>
-        )}
+              </View>
+            </>
+          ) : (
+            <Text style={s.noData}>—</Text>
+          )}
+        </View>
       </View>
-    </View>
-  </Pressable>
-)
+    </Pressable>
+  )
+}
 
 const FilterRow = ({
   name,
@@ -104,6 +136,11 @@ export const ExerciseListView = () => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const drawerAnim = useRef(new Animated.Value(0)).current
+
+  const { data: exercises, isLoading } = trpc.exerciseLibrary.getExercises.useQuery()
+
+  const allSections = useMemo(() => groupByMuscleGroup(exercises ?? []), [exercises])
+  const totalCount = exercises?.length ?? 0
 
   const openDrawer = useCallback(() => {
     setDrawerOpen(true)
@@ -131,12 +168,7 @@ export const ExerciseListView = () => {
     [closeDrawer]
   )
 
-  const displayGroups = activeGroup ? MUSCLE_GROUPS.filter(mg => mg.name === activeGroup) : MUSCLE_GROUPS
-
-  const sections = displayGroups.map(mg => ({
-    title: mg.name,
-    data: mg.exercises,
-  }))
+  const displaySections = activeGroup ? allSections.filter(s => s.title === activeGroup) : allSections
 
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
@@ -147,6 +179,14 @@ export const ExerciseListView = () => {
     inputRange: [0, 1],
     outputRange: [DRAWER_WIDTH, 0],
   })
+
+  if (isLoading) {
+    return (
+      <View style={s.loadingContainer}>
+        <ActivityIndicator color={GOLD} />
+      </View>
+    )
+  }
 
   return (
     <View style={s.container}>
@@ -181,7 +221,7 @@ export const ExerciseListView = () => {
       )}
 
       <SectionList
-        sections={sections}
+        sections={displaySections}
         keyExtractor={item => item.id}
         renderSectionHeader={({ section }) =>
           !activeGroup ? (
@@ -226,18 +266,18 @@ export const ExerciseListView = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={s.drawerScroll}>
               <FilterRow
                 name="All Exercises"
-                count={TOTAL_COUNT}
+                count={totalCount}
                 active={activeGroup === null}
                 onPress={() => selectGroup(null)}
               />
               <View style={s.drawerSep} />
-              {MUSCLE_GROUPS.map(mg => (
+              {allSections.map(section => (
                 <FilterRow
-                  key={mg.name}
-                  name={mg.name}
-                  count={mg.exercises.length}
-                  active={activeGroup === mg.name}
-                  onPress={() => selectGroup(activeGroup === mg.name ? null : mg.name)}
+                  key={section.title}
+                  name={section.title}
+                  count={section.data.length}
+                  active={activeGroup === section.title}
+                  onPress={() => selectGroup(activeGroup === section.title ? null : section.title)}
                 />
               ))}
             </ScrollView>
@@ -252,6 +292,12 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerWrap: {
     paddingHorizontal: 20,

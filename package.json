@@ -13,7 +13,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "web": "expo run:web",
-    "knip": "knip"
+    "knip": "knip",
+    "seed:snapshot": "bash scripts/snapshot-seed.sh",
+    "seed:load": "bash scripts/load-seed.sh"
   },
   "dependencies": {
     "@react-native-community/slider": "^4.5.2",

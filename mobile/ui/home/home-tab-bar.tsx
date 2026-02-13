@@ -6,6 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { theme } from '@/mobile/theme/theme'
 import Clipboard from '@/mobile/ui/icons/clipboard'
 import ClipboardFilled from '@/mobile/ui/icons/clipboard-filled'
+import Dumbbell from '@/mobile/ui/icons/dumbbell'
+import DumbbellFilled from '@/mobile/ui/icons/dumbbell-filled'
 import Home from '@/mobile/ui/icons/home'
 import HomeFilled from '@/mobile/ui/icons/home-filled'
 import WorkoutStretching from '@/mobile/ui/icons/workout-stretching'
@@ -124,6 +126,16 @@ export const HomeTabBar = (props: BottomTabBarProps) => {
         onPress={() => {
           tracking.menuItemPressed('Planning')
           props.navigation.navigate('Planning')
+        }}
+      />
+      <MenuIcon
+        NonActiveIcon={Dumbbell}
+        ActiveIcon={DumbbellFilled}
+        text="Exercises"
+        active={navigationState.index === 3}
+        onPress={() => {
+          tracking.menuItemPressed('ExerciseLibrary')
+          props.navigation.navigate('ExerciseLibrary')
         }}
       />
     </View>

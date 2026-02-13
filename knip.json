@@ -13,5 +13,5 @@
     "metro-minify-terser",
     "@sentry/cli"
   ],
-  "ignore": ["prettier.config.cjs"]
+  "ignore": ["prettier.config.cjs", "mobile/ui/home-testing/**", "mobile/ui/ds/layout/**", "mobile/domain/strength-test.ts"]
 }

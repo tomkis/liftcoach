@@ -2,7 +2,6 @@ import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } f
 import { StyleSheet, Text, View } from 'react-native'
 
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
-import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { BodyText } from '@/mobile/ui/ds/typography'
@@ -145,13 +144,13 @@ export const ExerciseLoadedAndTested = (props: {
         ))}
       </View>
       {allSetsCompleted && (
-        <HorizontalButtonRow>
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
           <PrimaryButton
             title={props.hasMoreExercises ? 'Move on to the next exercise' : 'Finish Workout!'}
             onPress={props.onNext}
             style={{ flex: 1 }}
           />
-        </HorizontalButtonRow>
+        </View>
       )}
     </View>
   )

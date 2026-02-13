@@ -16,7 +16,6 @@ import { NumericalInput } from '@/mobile/ui/ds/inputs'
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
-import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { BodyText } from '@/mobile/ui/ds/typography'
@@ -606,11 +605,11 @@ export const ExerciseLoadTesting = ({
             </View>
           )}
         </View>
-        <HorizontalButtonRow>
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
           {loadingFinished && warmupCompleted && !isKeyboardVisible && (
             <OutlineButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} style={{ flex: 1 }} />
           )}
-        </HorizontalButtonRow>
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )

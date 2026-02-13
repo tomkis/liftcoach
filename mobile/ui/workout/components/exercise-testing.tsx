@@ -14,7 +14,6 @@ import {
 import { useKeyboardVisible } from '@/mobile/hooks/use-keyboard-visible'
 import { NumericalInput } from '@/mobile/ui/ds/inputs'
 import { OutlineButton } from '@/mobile/ui/ds/buttons'
-import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { BodyText } from '@/mobile/ui/ds/typography'
@@ -252,7 +251,7 @@ export const ExerciseTesting = ({
           </View>
         )}
 
-        <HorizontalButtonRow>
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
           {warmupCompleted && (
             <OutlineButton
               title="Move on to working set"
@@ -260,7 +259,7 @@ export const ExerciseTesting = ({
               style={{ marginTop: 16, flex: 1 }}
             />
           )}
-        </HorizontalButtonRow>
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )

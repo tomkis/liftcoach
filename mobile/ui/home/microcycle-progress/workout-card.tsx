@@ -5,13 +5,13 @@ import React, { useEffect, useRef } from 'react'
 import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { match } from 'ts-pattern'
 
-import { DashboardCard } from '@/mobile/ui/home/dashboard/dashboard-card'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { AccentCard } from '@/mobile/ui/ds/surfaces'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 interface WorkoutCardProps {
   title: string
@@ -28,7 +28,7 @@ const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Uni
   return (
     <View style={styles.exerciseItem}>
       <View style={styles.exerciseInfo}>
-        <Paragraph style={styles.exerciseName}>{exercise.exercise.name}</Paragraph>
+        <BodyText style={styles.exerciseName}>{exercise.exercise.name}</BodyText>
         {match(exercise)
           .with({ state: WorkoutExerciseState.pending }, exercise => {
             const firstSet = exercise.sets[0]
@@ -37,28 +37,28 @@ const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Uni
             }
 
             return (
-              <Paragraph style={styles.exerciseDetails}>
+              <BodyText style={styles.exerciseDetails}>
                 {exercise.sets.length} sets × {firstSet.reps} reps × {firstSet.weight}{' '}
                 {unit === Unit.Metric ? 'kg' : 'lbs'}
-              </Paragraph>
+              </BodyText>
             )
           })
           .with({ state: WorkoutExerciseState.testing }, exercise => {
             return (
-              <Paragraph style={styles.exerciseDetails}>
+              <BodyText style={styles.exerciseDetails}>
                 Performance Testing with{' '}
                 <Text style={styles.emphasized}>
                   {exercise.testingWeight} {unit === Unit.Metric ? 'kg' : 'lbs'}
                 </Text>
-              </Paragraph>
+              </BodyText>
             )
           })
           .with({ state: WorkoutExerciseState.loading }, () => {
             return (
-              <Paragraph style={styles.exerciseDetails}>
+              <BodyText style={styles.exerciseDetails}>
                 Performance Testing for <Text style={styles.emphasized}>{exercise.targetReps} reps</Text> in{' '}
                 <Text style={styles.emphasized}>{exercise.targetSets} sets</Text>
-              </Paragraph>
+              </BodyText>
             )
           })
           .otherwise(() => (
@@ -72,7 +72,7 @@ const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Uni
 const ChevronIcon = ({ isExpanded }: { isExpanded: boolean }) => {
   return (
     <View style={[styles.chevron, isExpanded && styles.chevronExpanded]}>
-      <Paragraph style={styles.chevronText}>▼</Paragraph>
+      <BodyText style={styles.chevronText}>▼</BodyText>
     </View>
   )
 }
@@ -93,11 +93,11 @@ const CustomHeader = ({
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7} disabled={!showChevron}>
       <View style={styles.headerContainer}>
-        <Title style={styles.title}>{title}</Title>
+        <CardTitle style={styles.title}>{title}</CardTitle>
         {showChevron && <ChevronIcon isExpanded={isExpanded} />}
       </View>
       <View style={styles.subTitleContainer}>
-        <Paragraph style={styles.subTitle}>{subTitle}</Paragraph>
+        <BodyText style={styles.subTitle}>{subTitle}</BodyText>
       </View>
     </TouchableOpacity>
   )
@@ -175,7 +175,7 @@ export const WorkoutCard = ({
   return (
     <View ref={headerRef}>
       <View>
-        <DashboardCard customHeader={customHeader} style={styles.card}>
+        <AccentCard customHeader={customHeader} style={styles.card}>
           <Animated.View style={[styles.exercisesContainer, { height: animatedHeight, overflow: 'hidden' }]}>
             {displayExercises.map(exercise => (
               <ExerciseItem key={exercise.id} exercise={exercise} unit={unit} />
@@ -183,7 +183,7 @@ export const WorkoutCard = ({
             <View>
               {!isExpanded && exercises.length > 1 ? (
                 <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.moreExercises}>
-                  <Paragraph style={styles.moreExercisesText}>+{exercises.length - 1} more exercises</Paragraph>
+                  <BodyText style={styles.moreExercisesText}>+{exercises.length - 1} more exercises</BodyText>
                 </TouchableOpacity>
               ) : (
                 <></>
@@ -195,7 +195,7 @@ export const WorkoutCard = ({
               <PrimaryButton title={workoutQuery.data ? 'Resume Workout' : 'Start Workout'} onPress={startWorkout} />
             </View>
           )}
-        </DashboardCard>
+        </AccentCard>
       </View>
     </View>
   )
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: theme.fontSize.medium,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     textTransform: 'uppercase',
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     marginBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.primary.main,
+    borderBottomColor: theme.colors.primary.main,
   },
   subTitle: {
     fontSize: theme.fontSize.extraSmall,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaRegular,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   exercisesContainer: {
     gap: 10, // Slightly reduced gap for more compact layout
@@ -243,10 +243,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10, // Slightly increased padding for better touch targets
     paddingHorizontal: 12,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.small,
     borderLeftWidth: 3,
-    borderLeftColor: theme.colors.newUi.primary.main,
+    borderLeftColor: theme.colors.primary.main,
   },
   exerciseInfo: {
     flex: 1,
@@ -254,27 +254,27 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaSemiBold,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 2,
   },
   exerciseDetails: {
     fontSize: theme.fontSize.extraSmall,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     marginBottom: 0,
   },
   moreExercises: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
     borderRadius: theme.borderRadius.small,
     borderLeftWidth: 3,
-    borderLeftColor: theme.colors.newUi.gray.light,
+    borderLeftColor: theme.colors.gray.light,
   },
   moreExercisesText: {
     fontSize: theme.fontSize.extraSmall,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontStyle: 'italic',
     marginBottom: 0,
   },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   chevronText: {
     fontSize: 16,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontWeight: 'bold',
     marginBottom: 0,
   },

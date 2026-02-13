@@ -15,12 +15,12 @@ type WeekSegment = {
 function getStatusColor(status: 'completed' | 'failed' | 'pending') {
   switch (status) {
     case 'completed':
-      return theme.colors.newUi.primary.main
+      return theme.colors.primary.main
     case 'failed':
-      return theme.colors.red
+      return theme.colors.primary.negative
     case 'pending':
     default:
-      return theme.colors.newUi.background
+      return theme.colors.background
   }
 }
 
@@ -255,7 +255,7 @@ export const CycleProgressCircle: React.FC<CycleProgressCircleProps> = ({
               cx={size / 2}
               cy={size / 2}
               r={radius}
-              stroke={theme.colors.newUi.background}
+              stroke={theme.colors.background}
               strokeWidth={STROKE_WIDTH}
               fill="none"
               strokeDasharray={`${circumference},0`}
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: theme.font.sairaSemiBold,
     textTransform: 'uppercase',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     width: 50,
   },
   centerLabelContainer: {
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   centerPercent: {
     fontSize: 20,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
   },
 })

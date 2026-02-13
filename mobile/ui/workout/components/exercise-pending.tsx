@@ -17,14 +17,14 @@ import {
   View,
 } from 'react-native'
 
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
 import { HardAssessmentModal } from '@/mobile/ui/workout/components/ux/hard-assessment-modal'
 import { IncompleteSetsModal } from '@/mobile/ui/workout/components/ux/incomplete-sets-modal'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
-import { Title } from '@/mobile/ui/components/title'
+import { Checkbox } from '@/mobile/ui/ds/controls'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 
 const CARD_PADDING = 18
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     paddingRight: CARD_PADDING,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
   },
   titleContainer: {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   setsCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     marginTop: CARD_PADDING,
     overflow: 'hidden',
@@ -61,10 +61,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 40,
     borderBottomWidth: 2,
-    borderColor: theme.colors.newUi.background,
+    borderColor: theme.colors.background,
   },
   failedSetRow: {
-    backgroundColor: theme.colors.red,
+    backgroundColor: theme.colors.primary.negative,
   },
   setInfo: {
     flex: 1,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
 })
 
@@ -220,9 +220,9 @@ export const ExercisePending = (props: {
           <View style={styles.card}>
             <View style={styles.paddedContent}>
               <View style={styles.titleContainer}>
-                <Title>{exerciseName}</Title>
+                <CardTitle>{exerciseName}</CardTitle>
                 <TouchableOpacity style={styles.titleButton} onPress={props.onExtraActions}>
-                  <CogwheelFilled color={theme.colors.newUi.primary.main} />
+                  <CogwheelFilled color={theme.colors.primary.main} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -267,7 +267,7 @@ export const ExercisePending = (props: {
                         styles.setDetails,
                         textStyle,
                         {
-                          color: theme.colors.newUi.text.primary,
+                          color: theme.colors.text.primary,
                         },
                       ]}
                     >
@@ -281,8 +281,8 @@ export const ExercisePending = (props: {
                       label="Failed"
                       color={
                         set.state === WorkingSetState.pending
-                          ? theme.colors.newUi.primary.main
-                          : theme.colors.newUi.text.primary
+                          ? theme.colors.primary.main
+                          : theme.colors.text.primary
                       }
                     />
                     <Checkbox
@@ -291,8 +291,8 @@ export const ExercisePending = (props: {
                       label="Done"
                       color={
                         set.state === WorkingSetState.pending
-                          ? theme.colors.newUi.primary.main
-                          : theme.colors.newUi.text.primary
+                          ? theme.colors.primary.main
+                          : theme.colors.text.primary
                       }
                     />
                   </View>

@@ -3,11 +3,11 @@ import { useCallback, useState } from 'react'
 import { View } from 'react-native'
 
 import { useDeviceSize } from '@/mobile/hooks/use-device-size'
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
-import { OnboardingVerticalButtonContainer } from '@/mobile/ui/onboarding/cards/ux/onboarding-vertical-button-container'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
+import { VerticalButtonStack } from '@/mobile/ui/ds/layout'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 
 import { TrainingFrequencyAlertModal } from './training-frequency-warning-modal'
@@ -52,19 +52,18 @@ export const TrainingFrequencyCardView = () => {
 
   return (
     <>
-      <OnboaardingThreeBlockTemplate
-        step="TrainingFequency"
+      <ThreeBlockScreen
         topContent={
-          <H3ScreenAware style={{ textAlign: 'center' }}>How often are you willing to train in a week?</H3ScreenAware>
+          <ScreenHeading style={{ textAlign: 'center' }}>How often are you willing to train in a week?</ScreenHeading>
         }
         middleContainerStyle={{ flex: 2 }}
         bottomContainerStyle={{ marginTop: -100 }}
         middleContent={
           <>
             {!deviceSize.isSmallDevice ? (
-              <OnboardingDescriptiveTextBlock style={{ paddingBottom: 48, paddingHorizontal: 40 }}>
+              <CaptionText style={{ paddingBottom: 48, paddingHorizontal: 40 }}>
                 Training even once a week makes sense and can bring you results!
-              </OnboardingDescriptiveTextBlock>
+              </CaptionText>
             ) : (
               <></>
             )}
@@ -72,7 +71,7 @@ export const TrainingFrequencyCardView = () => {
         }
         bottomContent={
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-            <OnboardingVerticalButtonContainer>
+            <VerticalButtonStack>
               <PrimaryButton
                 title="Once a week"
                 onPress={() => handleFrequencySelection(TrainingFrequency.TwoDays, 1, true, 'once-a-week')}
@@ -101,10 +100,10 @@ export const TrainingFrequencyCardView = () => {
                 title="Everyday"
                 onPress={() => handleFrequencySelection(TrainingFrequency.SixDays, 7, true, 'everyday')}
               />
-            </OnboardingVerticalButtonContainer>
+            </VerticalButtonStack>
           </View>
         }
-      ></OnboaardingThreeBlockTemplate>
+      ></ThreeBlockScreen>
 
       <TrainingFrequencyAlertModal visible={showAlertModal} alertType={alertType} onConfirm={handleAlertConfirm} />
     </>

@@ -26,7 +26,7 @@ const ClipboardFilled = (props: { color: string }) => (
       strokeLinejoin="round"
     />
     <Path
-      stroke={theme.colors.newUi.backgroundLight}
+      stroke={theme.colors.backgroundLight}
       strokeWidth={1.5}
       strokeLinecap="round"
       d="M8 10h8M8 14h5"

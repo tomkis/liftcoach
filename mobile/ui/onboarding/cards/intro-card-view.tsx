@@ -5,8 +5,8 @@ import LinearGradient from 'react-native-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
 
@@ -15,7 +15,7 @@ import { useOnboardingContext } from '../hooks/use-onboarding-context'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   mainContent: {
     flexDirection: 'column',
@@ -28,19 +28,19 @@ const styles = StyleSheet.create({
   logoText: {
     fontFamily: theme.font.orbitronBold,
     fontSize: 90,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontWeight: '900',
     borderWidth: 1,
     lineHeight: 90,
     padding: 0,
   },
   logoTextAccent: {
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   logoSubtext: {
     fontFamily: theme.font.orbitronBold,
     fontSize: 55,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginTop: -20,
     fontWeight: '900',
   },
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   taglineText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaCondensedRegular,
     textTransform: 'uppercase',
     letterSpacing: 1.37,
@@ -139,9 +139,9 @@ export const IntroCardView = () => {
 
         <View style={styles.bottomSection}>
           <View style={styles.descriptionContainer}>
-            <OnboardingDescriptiveTextBlock>
+            <CaptionText>
               Let&apos;s get to know you better so we can design a workout routine tailored just for you.
-            </OnboardingDescriptiveTextBlock>
+            </CaptionText>
           </View>
 
           <View style={styles.buttonContainer}>

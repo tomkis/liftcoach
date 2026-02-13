@@ -12,13 +12,12 @@ import {
 } from 'react-native'
 
 import { useKeyboardVisible } from '@/mobile/hooks/use-keyboard-visible'
-import { NumericalInput } from '@/mobile/ui/onboarding/cards/ux/numerical-input'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
-import { ButtonContainer } from '@/mobile/ui/ui/button-container'
+import { NumericalInput } from '@/mobile/ui/ds/inputs'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { theme } from '@/mobile/theme/theme'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { Checkbox } from '@/mobile/ui/ds/controls'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 
 const CARD_PADDING = 18
@@ -31,17 +30,17 @@ const styles = StyleSheet.create({
     paddingRight: CARD_PADDING,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
   },
   warmupSection: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     padding: CARD_PADDING,
     borderBottomLeftRadius: theme.borderRadius.medium,
     borderBottomRightRadius: theme.borderRadius.medium,
   },
   greenBackground: {
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
   },
   warmupHeader: {
     flexDirection: 'row',
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   warmupTitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     flex: 1,
     marginTop: 0,
     marginBottom: 0,
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   inputWrapper: {
     borderWidth: 1,
@@ -79,14 +78,14 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   inputLabel: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     lineHeight: 24,
     letterSpacing: 0.15,
     fontSize: 16,
     fontFamily: theme.font.sairaRegular,
   },
   errorText: {
-    color: theme.colors.red,
+    color: theme.colors.primary.negative,
     marginTop: 8,
     fontSize: 14,
     fontFamily: theme.font.sairaRegular,
@@ -156,52 +155,52 @@ export const ExerciseTesting = ({
         <View style={styles.card}>
           <View style={styles.paddedContent}>
             <View style={styles.titleContainer}>
-              <Title>{exerciseName}</Title>
+              <CardTitle>{exerciseName}</CardTitle>
               <TouchableOpacity style={styles.titleButton} onPress={onExtraActions}>
-                <CogwheelFilled color={theme.colors.newUi.primary.main} />
+                <CogwheelFilled color={theme.colors.primary.main} />
               </TouchableOpacity>
             </View>
             {!keyboardVisible && (
               <View style={{ marginTop: 16 }}>
-                <Paragraph>Let&apos;s test your performance on this exercise.</Paragraph>
-                <Paragraph>Make sure you execute the exercise with proper form.</Paragraph>
+                <BodyText>Let&apos;s test your performance on this exercise.</BodyText>
+                <BodyText>Make sure you execute the exercise with proper form.</BodyText>
               </View>
             )}
           </View>
 
           <View style={[styles.warmupSection, warmupCompleted && styles.greenBackground]}>
             <View style={styles.warmupHeader}>
-              <Title
+              <CardTitle
                 style={[
                   styles.warmupTitle,
                   styles.h2,
-                  warmupCompleted && { color: theme.colors.newUi.primary.contrastText },
+                  warmupCompleted && { color: theme.colors.primary.contrastText },
                 ]}
               >
                 Warm-up
-              </Title>
+              </CardTitle>
               <View style={styles.warmupCheckboxContainer}>
                 <Checkbox
                   checked={warmupCompleted}
                   onPress={toggleWarmupCompleted}
                   label="Warm-up completed"
-                  color={warmupCompleted ? theme.colors.newUi.primary.contrastText : theme.colors.newUi.primary.main}
+                  color={warmupCompleted ? theme.colors.primary.contrastText : theme.colors.primary.main}
                 />
               </View>
             </View>
             {!warmupCompleted && !keyboardVisible && (
               <View>
-                <Paragraph style={styles.warmupParagraph}>
+                <BodyText style={styles.warmupParagraph}>
                   Your test will be performed with{' '}
                   <Text style={styles.emphasized}>
                     {testingExercise.testingWeight} {unit === 'metric' ? 'kg' : 'lbs'}
                   </Text>
                   .
-                </Paragraph>
-                <Paragraph style={styles.warmupParagraph}>
+                </BodyText>
+                <BodyText style={styles.warmupParagraph}>
                   Before we test your strength, let&apos;s warm up properly. Do a few light sets to prepare your muscles
                   and joints.
-                </Paragraph>
+                </BodyText>
               </View>
             )}
           </View>
@@ -212,20 +211,20 @@ export const ExerciseTesting = ({
             <View style={styles.paddedContent}>
               {!keyboardVisible && (
                 <View>
-                  <Paragraph>
+                  <BodyText>
                     Try to perform as many reps as possible with{' '}
                     <Text style={styles.emphasized}>
                       {testingExercise.testingWeight} {unit === 'metric' ? 'kg' : 'lbs'}
                     </Text>
                     .
-                  </Paragraph>
-                  <Paragraph>
+                  </BodyText>
+                  <BodyText>
                     Remember, exercise must be executed with <Text style={styles.emphasized}>proper form</Text>. No
                     cheat reps!
-                  </Paragraph>
+                  </BodyText>
                 </View>
               )}
-              {keyboardVisible && <Paragraph>How many reps did you manage to execute?</Paragraph>}
+              {keyboardVisible && <BodyText>How many reps did you manage to execute?</BodyText>}
               <View style={styles.inputWrapper}>
                 <Controller
                   control={control}
@@ -252,15 +251,15 @@ export const ExerciseTesting = ({
           </View>
         )}
 
-        <ButtonContainer>
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
           {warmupCompleted && (
-            <SecondaryButton
+            <OutlineButton
               title="Move on to working set"
               onPress={handleSubmit(onMoveToWorkingSet)}
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, flex: 1 }}
             />
           )}
-        </ButtonContainer>
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   )

@@ -2,8 +2,8 @@ import { WorkoutStats } from '@/mobile/domain'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Title } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { SectionHeading } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 import { theme } from '@/mobile/theme/theme'
 
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   headerSection: {
     paddingHorizontal: 20,
@@ -24,12 +24,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   weekText: {
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
   },
   infoCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     marginHorizontal: 20,
     padding: CARD_PADDING,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     flex: 1,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
   },
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
@@ -86,7 +86,7 @@ export const WorkoutStartTemplate = (props: {
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.headerSection}>
         <View style={styles.titleContainer}>
-          <Title>{getTrainingTitle(props.workoutStats)}</Title>
+          <SectionHeading>{getTrainingTitle(props.workoutStats)}</SectionHeading>
         </View>
       </View>
 

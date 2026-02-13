@@ -7,7 +7,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 
 import { MesocyclePlannerStackParamList } from '@/mobile/ui/mesocycle-planner/routes'
 import { ScreenWrapper } from '@/mobile/ui/mesocycle-planner/screens/screen-wrapper'
-import { NumericalInput } from '@/mobile/ui/onboarding/cards/ux/numerical-input'
+import { NumericalInput } from '@/mobile/ui/ds/inputs'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   formBlockLabel: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaSemiBold,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputLabel: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     lineHeight: 16,
     letterSpacing: 0.15,
     fontSize: 12,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   infoText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontSize: 14,
     lineHeight: 20,
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   loadingText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontSize: 14,
     lineHeight: 20,
@@ -170,7 +170,7 @@ export const VolumePreferencesScreen = ({ navigation, route }: VolumePreferences
     return (
       <ScreenWrapper title="Volume Preferences" onNext={() => {}} includeScrollView>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.newUi.text.primary} />
+          <ActivityIndicator size="large" color={theme.colors.text.primary} />
           <Text style={styles.loadingText}>Loading volume suggestions...</Text>
         </View>
       </ScreenWrapper>

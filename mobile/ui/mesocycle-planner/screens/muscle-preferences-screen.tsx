@@ -23,7 +23,7 @@ type FormValues = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   content: {
     flex: 1,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: 'center',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 30,
   },
   muscleGroupHeader: {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   muscleGroupHeaderText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontWeight: 'bold',
     fontSize: 12,
@@ -80,9 +80,9 @@ const PreferenceSlider = ({ control, name, style }: PreferenceSliderProps) => (
         }}
         step={1}
         value={field.value}
-        minimumTrackTintColor={theme.colors.newUi.primary.main}
+        minimumTrackTintColor={theme.colors.primary.main}
         maximumTrackTintColor="rgba(255,195,0, 0.3)"
-        thumbTintColor={theme.colors.newUi.primary.main}
+        thumbTintColor={theme.colors.primary.main}
       />
     )}
   />
@@ -105,12 +105,12 @@ const ToggleableBlock = ({
           {expanded ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={styles.muscleGroupHeaderText}>Show less</Text>
-              <ChevronUp size={24} color={theme.colors.newUi.text.primary} />
+              <ChevronUp size={24} color={theme.colors.text.primary} />
             </View>
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={styles.muscleGroupHeaderText}>Show More</Text>
-              <ChevronDown size={24} color={theme.colors.newUi.text.primary} />
+              <ChevronDown size={24} color={theme.colors.text.primary} />
             </View>
           )}
         </View>

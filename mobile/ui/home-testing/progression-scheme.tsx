@@ -6,7 +6,7 @@ import { theme } from '@/mobile/theme/theme'
 const styles = StyleSheet.create({
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
 })
 

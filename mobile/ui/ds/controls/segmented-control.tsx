@@ -1,4 +1,3 @@
-import { Unit } from '@/mobile/domain'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { theme } from '@/mobile/theme/theme'
@@ -15,7 +14,7 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS,
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: theme.colors.newUi.primary.main,
+    borderColor: theme.colors.primary.main,
   },
   button: {
     paddingVertical: 6,
@@ -40,15 +39,24 @@ const styles = StyleSheet.create({
   },
 })
 
-export const UnitSegmentedControl = ({ unit, setUnit }: { unit: Unit; setUnit: (isImperial: Unit) => void }) => (
+export const SegmentedControl = <T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T
+  onChange: (value: T) => void
+  options: [{ value: T; label: string }, { value: T; label: string }]
+}) => (
   <View style={styles.container}>
     <Pressable
-      onPress={() => setUnit(Unit.Imperial)}
+      onPress={() => onChange(options[0].value)}
       style={[
         styles.button,
         styles.leftButton,
         {
-          backgroundColor: unit === 'imperial' ? theme.colors.newUi.primary.main : theme.colors.newUi.background,
+          backgroundColor:
+            value === options[0].value ? theme.colors.primary.main : theme.colors.background,
         },
       ]}
     >
@@ -56,20 +64,24 @@ export const UnitSegmentedControl = ({ unit, setUnit }: { unit: Unit; setUnit: (
         style={[
           styles.buttonText,
           {
-            color: unit === 'imperial' ? theme.colors.newUi.primary.contrastText : theme.colors.newUi.text.primary,
+            color:
+              value === options[0].value
+                ? theme.colors.primary.contrastText
+                : theme.colors.text.primary,
           },
         ]}
       >
-        Imperial
+        {options[0].label}
       </Text>
     </Pressable>
     <Pressable
-      onPress={() => setUnit(Unit.Metric)}
+      onPress={() => onChange(options[1].value)}
       style={[
         styles.button,
         styles.rightButton,
         {
-          backgroundColor: unit === 'metric' ? theme.colors.newUi.primary.main : theme.colors.newUi.background,
+          backgroundColor:
+            value === options[1].value ? theme.colors.primary.main : theme.colors.background,
         },
       ]}
     >
@@ -77,11 +89,14 @@ export const UnitSegmentedControl = ({ unit, setUnit }: { unit: Unit; setUnit: (
         style={[
           styles.buttonText,
           {
-            color: unit === 'metric' ? theme.colors.newUi.primary.contrastText : theme.colors.newUi.text.primary,
+            color:
+              value === options[1].value
+                ? theme.colors.primary.contrastText
+                : theme.colors.text.primary,
           },
         ]}
       >
-        Metric
+        {options[1].label}
       </Text>
     </Pressable>
   </View>

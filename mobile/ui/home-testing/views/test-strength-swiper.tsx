@@ -4,7 +4,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Swiper from 'react-native-swiper'
 
-import { ButtonContainer } from '@/mobile/ui/home-testing/components/button-container'
+import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { CardWrapper } from '@/mobile/ui/home-testing/components/card-wrapper'
 import { ContentContainer } from '@/mobile/ui/home-testing/components/content-container'
 import { StrengthLevelProgress } from '@/mobile/ui/home-testing/components/strength-level-progress'
@@ -17,12 +17,12 @@ import {
   TestingResults,
 } from '@/mobile/ui/home-testing/types'
 import { useHomeTestingNavigation } from '@/mobile/ui/home-testing/use-navigation'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const styles = StyleSheet.create({
   slide: {
@@ -39,16 +39,16 @@ const styles = StyleSheet.create({
     height: 20,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     flex: 1,
   },
   title: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 16,
   },
   subtitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 8,
   },
   description: {
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   h2: {
     fontSize: theme.fontSize.medium,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: 24,
     width: '100%',
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.large,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -109,10 +109,10 @@ const StopTestConfirmationModal = ({
     <Modal transparent={true} visible={visible} animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Title style={styles.modalTitle}>Stop the Test?</Title>
-          <Paragraph>Are you sure you want to stop the strength test? Your progress will be lost.</Paragraph>
+          <CardTitle style={styles.modalTitle}>Stop the Test?</CardTitle>
+          <BodyText>Are you sure you want to stop the strength test? Your progress will be lost.</BodyText>
           <View style={styles.modalButtons}>
-            <SecondaryButton title="Cancel" onPress={onCancel} style={{ flex: 1 }} />
+            <OutlineButton title="Cancel" onPress={onCancel} style={{ flex: 1 }} />
             <PrimaryButton title="Stop Test" onPress={onConfirm} style={{ flex: 1 }} />
           </View>
         </View>
@@ -197,23 +197,23 @@ const TestStrengthCard = ({
 
     return (
       <CardWrapper>
-        <Title style={styles.title}>{title} Strength</Title>
-        <Paragraph>
+        <CardTitle style={styles.title}>{title} Strength</CardTitle>
+        <BodyText>
           Great job! Liftcoach has estimated your strength level for <Text style={styles.emphasized}>{title}</Text>.
-        </Paragraph>
-        <Paragraph>
+        </BodyText>
+        <BodyText>
           Your result is better than <Text style={styles.emphasized}>{percentile}%</Text> of the population.
-        </Paragraph>
+        </BodyText>
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
           <StrengthLevelProgress strengthLevel={percentile} animate={true} size={320} showPercentage={true} />
         </View>
-        <ButtonContainer>
+        <HorizontalButtonRow>
           <PrimaryButton
             title={next ? `Let's Test ${next}` : 'Get Results'}
             style={styles.button}
             onPress={onNextMuscleGroup}
           />
-        </ButtonContainer>
+        </HorizontalButtonRow>
       </CardWrapper>
     )
   }
@@ -223,19 +223,19 @@ const TestStrengthCard = ({
       {status === 'started' && (
         <>
           <ContentContainer>
-            <Title style={styles.title}>{currentExercise.exercise}</Title>
-            <Paragraph style={styles.description}>{currentExercise.intro}</Paragraph>
-            <Title style={[styles.subtitle, styles.h2]}>Technique clue</Title>
-            <Paragraph style={styles.description}>{currentExercise.technique}</Paragraph>
-            <Title style={[styles.subtitle, styles.h2]}>Ready to test?</Title>
-            <Paragraph>
+            <CardTitle style={styles.title}>{currentExercise.exercise}</CardTitle>
+            <BodyText style={styles.description}>{currentExercise.intro}</BodyText>
+            <CardTitle style={[styles.subtitle, styles.h2]}>Technique clue</CardTitle>
+            <BodyText style={styles.description}>{currentExercise.technique}</BodyText>
+            <CardTitle style={[styles.subtitle, styles.h2]}>Ready to test?</CardTitle>
+            <BodyText>
               How many <Text style={styles.emphasized}>{currentExercise.exercise}</Text> can you do with proper form?
-            </Paragraph>
+            </BodyText>
           </ContentContainer>
-          <ButtonContainer style={{ marginBottom: 24 }}>
-            <SecondaryButton title="Stop the test" onPress={handleStopTest} style={{ flex: 1 }} />
-          </ButtonContainer>
-          <ButtonContainer>
+          <HorizontalButtonRow style={{ marginBottom: 24 }}>
+            <OutlineButton title="Stop the test" onPress={handleStopTest} style={{ flex: 1 }} />
+          </HorizontalButtonRow>
+          <HorizontalButtonRow>
             <PrimaryButton title="< 5" style={styles.button} onPress={failure} />
             <PrimaryButton title="5-15" style={styles.button} onPress={foundStrenght} />
             <PrimaryButton
@@ -252,25 +252,25 @@ const TestStrengthCard = ({
                 }
               }}
             />
-          </ButtonContainer>
+          </HorizontalButtonRow>
         </>
       )}
       {status === 'progressed' && (
         <>
           <ContentContainer>
-            <Title style={styles.title}>{currentExercise.exercise}</Title>
-            <Paragraph style={styles.description}>
+            <CardTitle style={styles.title}>{currentExercise.exercise}</CardTitle>
+            <BodyText style={styles.description}>
               Amazing, you can handle over 15 reps of <Text style={styles.emphasized}>{currentExercise.exercise}</Text>.
-            </Paragraph>
-            <Title style={[styles.subtitle, styles.h2]}>What&apos;s next?</Title>
-            <Paragraph style={styles.description}>{currentExercise.next}</Paragraph>
+            </BodyText>
+            <CardTitle style={[styles.subtitle, styles.h2]}>What&apos;s next?</CardTitle>
+            <BodyText style={styles.description}>{currentExercise.next}</BodyText>
           </ContentContainer>
-          <ButtonContainer style={{ marginBottom: 24 }}>
-            <SecondaryButton title="Stop the test" onPress={handleStopTest} style={{ flex: 1 }} />
-          </ButtonContainer>
-          <ButtonContainer>
+          <HorizontalButtonRow style={{ marginBottom: 24 }}>
+            <OutlineButton title="Stop the test" onPress={handleStopTest} style={{ flex: 1 }} />
+          </HorizontalButtonRow>
+          <HorizontalButtonRow>
             <PrimaryButton title="Let's continue" onPress={progress} style={styles.button} />
-          </ButtonContainer>
+          </HorizontalButtonRow>
         </>
       )}
       <StopTestConfirmationModal visible={showStopConfirmation} onConfirm={confirmStopTest} onCancel={cancelStopTest} />
@@ -336,8 +336,8 @@ export const TestStrengthSwiper = () => {
       showsButtons={false}
       loop={false}
       ref={swiperRef}
-      dotColor={theme.colors.white}
-      activeDotColor={theme.colors.newUi.primary.main}
+      dotColor={theme.colors.text.primary}
+      activeDotColor={theme.colors.primary.main}
       paginationStyle={[styles.pagination, { top: insets.top }]}
     >
       {progression.map((muscleGroup, index) => (

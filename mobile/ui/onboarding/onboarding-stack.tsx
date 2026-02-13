@@ -37,9 +37,9 @@ export const OnboardingStack = () => {
           gestureEnabled: true,
           fullScreenGestureEnabled: true,
           headerStyle: {
-            backgroundColor: theme.colors.newUi.background,
+            backgroundColor: theme.colors.background,
           },
-          headerTintColor: theme.colors.newUi.text.primary,
+          headerTintColor: theme.colors.text.primary,
           headerTitle: '',
           headerShadowVisible: false,
           headerBackTitleVisible: false,

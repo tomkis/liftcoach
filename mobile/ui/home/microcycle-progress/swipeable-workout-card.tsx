@@ -3,9 +3,9 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 
 import { Unit, WorkingExercise } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
-import { DashboardCard } from '@/mobile/ui/home/dashboard/dashboard-card'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
+import { AccentCard } from '@/mobile/ui/ds/surfaces'
 
 import { WorkoutCard } from './workout-card'
 
@@ -22,21 +22,21 @@ interface VerticalWorkoutCardsProps {
 const PlaceholderCard = () => {
   const customHeader = (
     <View style={styles.placeholderHeaderContainer}>
-      <Title style={styles.placeholderTitle}>Next Up Coming</Title>
+      <CardTitle style={styles.placeholderTitle}>Next Up Coming</CardTitle>
       <View style={styles.placeholderSubTitleContainer}></View>
     </View>
   )
 
   return (
     <View style={styles.placeholderCard}>
-      <DashboardCard customHeader={customHeader} style={styles.card}>
+      <AccentCard customHeader={customHeader} style={styles.card}>
         <View style={styles.placeholderContent}>
-          <Paragraph style={styles.placeholderText}>
+          <BodyText style={styles.placeholderText}>
             New workouts will appear here once you complete the remaining sessions. Liftcoach needs to analyse your
             performance and adjust the training plan based on your results.
-          </Paragraph>
+          </BodyText>
         </View>
-      </DashboardCard>
+      </AccentCard>
     </View>
   )
 }
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   placeholderTitle: {
     fontSize: theme.fontSize.medium,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     marginBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.primary.main,
+    borderBottomColor: theme.colors.primary.main,
   },
   placeholderSubTitle: {
     fontSize: theme.fontSize.extraSmall,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaRegular,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   placeholderContent: {
     paddingHorizontal: 16,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: theme.fontSize.small,
     fontFamily: theme.font.sairaRegular,
-    color: theme.colors.white,
+    color: theme.colors.text.primary,
     textAlign: 'center',
     lineHeight: 20,
   },

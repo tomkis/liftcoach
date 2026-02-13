@@ -1,21 +1,21 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const CARD_PADDING = 18
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   header: {
     paddingTop: 10,
@@ -26,16 +26,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   upcomingWorkout: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: CARD_PADDING,
     marginBottom: 16,
     borderLeftWidth: 4,
-    borderLeftColor: theme.colors.newUi.primary.main,
+    borderLeftColor: theme.colors.primary.main,
   },
   upcomingText: {
     fontSize: theme.fontSize.medium,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
     fontFamily: theme.font.sairaCondesedBold,
     textTransform: 'uppercase',
     marginBottom: 12,
@@ -47,18 +47,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   exerciseName: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     fontSize: theme.fontSize.extraSmall,
     textTransform: 'uppercase',
   },
   exerciseDetails: {
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontFamily: theme.font.sairaRegular,
     fontSize: theme.fontSize.extraSmall,
   },
   remainingWorkouts: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     padding: CARD_PADDING,
     // marginTop: 8,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   remainingTitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaCondesedBold,
     fontSize: theme.fontSize.small,
     textTransform: 'uppercase',
@@ -83,17 +83,17 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 20,
     borderLeftWidth: 3,
-    borderLeftColor: theme.colors.newUi.gray.light,
+    borderLeftColor: theme.colors.gray.light,
   },
   collapsedTitle: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     fontSize: theme.fontSize.extraSmall,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   collapsedSubtitle: {
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     fontFamily: theme.font.sairaRegular,
     fontSize: theme.fontSize.extraSmall,
     lineHeight: 16,
@@ -122,10 +122,10 @@ export const ApproveCycleCardView = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Title>You’re set. Let’s crush this cycle</Title>
-          <Paragraph style={{ marginTop: 8 }}>
+          <CardTitle>You’re set. Let’s crush this cycle</CardTitle>
+          <BodyText style={{ marginTop: 8 }}>
             Your new block is built for steady gains. If anything feels off, I’ll adjust it for you.
-          </Paragraph>
+          </BodyText>
         </View>
 
         {/* Scrollable Content */}
@@ -153,7 +153,7 @@ export const ApproveCycleCardView = () => {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <SecondaryButton title="Make Changes" onPress={onboardingContext.changeMicrocycle} />
+        <OutlineButton title="Make Changes" onPress={onboardingContext.changeMicrocycle} />
         <PrimaryButton title="Let’s Do This" onPress={onboardingContext.cycleReviewed} />
       </View>
     </View>

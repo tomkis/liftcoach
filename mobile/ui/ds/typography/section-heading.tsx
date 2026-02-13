@@ -4,14 +4,15 @@ import { theme } from '@/mobile/theme/theme'
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: theme.fontSize.large,
-    lineHeight: 32,
-    fontFamily: theme.font.sairaCondesedBold,
-    color: theme.colors.newUi.text.primary,
+    fontFamily: theme.font.sairaBold,
+    fontSize: 18,
+    marginBottom: 10,
+    color: theme.colors.text.primary,
     textTransform: 'uppercase',
+    lineHeight: 28,
   },
 })
 
-export const Title = ({ children, style }: { children: React.ReactNode; style?: StyleProp<TextStyle> }) => {
+export const SectionHeading = ({ children, style }: { children: React.ReactNode; style?: StyleProp<TextStyle> }) => {
   return <Text style={[styles.text, style]}>{children}</Text>
 }

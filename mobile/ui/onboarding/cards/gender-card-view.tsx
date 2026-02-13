@@ -4,16 +4,16 @@ import { useCallback } from 'react'
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
 import { theme } from '@/mobile/theme/theme'
 
 import { useOnboardingContext } from '../hooks/use-onboarding-context'
 
 const styles = StyleSheet.create({
   genderText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontSize: 12,
     textAlign: 'center',
     margin: 16,
@@ -40,9 +40,8 @@ export const GenderCardView = () => {
   }, [onboarding])
 
   return (
-    <OnboaardingThreeBlockTemplate
-      step="Gender"
-      topContent={<H3ScreenAware style={{ textAlign: 'center' }}>Who are you?</H3ScreenAware>}
+    <ThreeBlockScreen
+      topContent={<ScreenHeading style={{ textAlign: 'center' }}>Who are you?</ScreenHeading>}
       middleContainerStyle={{ flex: 1 }}
       middleContent={
         <View style={{ flex: 1, flexDirection: 'row', gap: 17, marginHorizontal: 40 }}>
@@ -62,7 +61,7 @@ export const GenderCardView = () => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  borderColor: theme.colors.newUi.primary.main,
+                  borderColor: theme.colors.primary.main,
                   borderWidth: 2,
                   borderRadius: 16,
                   position: 'absolute',
@@ -80,7 +79,7 @@ export const GenderCardView = () => {
                 overflow: 'hidden',
                 borderRadius: 16,
                 borderWidth: 2,
-                borderColor: theme.colors.newUi.primary.main,
+                borderColor: theme.colors.primary.main,
                 alignContent: 'flex-end',
                 justifyContent: 'flex-end',
               }}
@@ -113,10 +112,10 @@ export const GenderCardView = () => {
       }
       bottomContent={
         <View style={styles.descriptiveTextCenter}>
-          <OnboardingDescriptiveTextBlock>
+          <CaptionText>
             While the training may be similar for both, knowing your gender helps us better understand and interpret
             your results.
-          </OnboardingDescriptiveTextBlock>
+          </CaptionText>
         </View>
       }
     />

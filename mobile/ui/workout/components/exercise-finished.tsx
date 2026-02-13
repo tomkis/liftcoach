@@ -4,8 +4,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
-import { Checkbox } from '@/mobile/ui/components/checkbox'
-import { Title } from '@/mobile/ui/components/title'
+import { Checkbox } from '@/mobile/ui/ds/controls'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const CARD_PADDING = 18
 
@@ -16,11 +16,11 @@ const styles = StyleSheet.create({
     paddingRight: CARD_PADDING,
   },
   card: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
   },
   setsCard: {
-    backgroundColor: theme.colors.newUi.backgroundLight,
+    backgroundColor: theme.colors.backgroundLight,
     borderRadius: theme.borderRadius.medium,
     marginTop: CARD_PADDING,
     overflow: 'hidden',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 40,
     borderBottomWidth: 2,
-    borderColor: theme.colors.newUi.background,
+    borderColor: theme.colors.background,
   },
 
   setInfo: {
@@ -78,12 +78,12 @@ const styles = StyleSheet.create({
   },
   emphasized: {
     fontFamily: theme.font.sairaBold,
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
   finishedMessage: {
     textAlign: 'center',
     fontSize: 14,
-    color: theme.colors.newUi.gray.light,
+    color: theme.colors.gray.light,
     marginTop: 32,
     paddingHorizontal: CARD_PADDING,
     paddingBottom: CARD_PADDING,
@@ -112,7 +112,7 @@ export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExerc
     >
       <View style={styles.card}>
         <View style={styles.paddedContent}>
-          <Title>{exerciseName}</Title>
+          <CardTitle>{exerciseName}</CardTitle>
         </View>
 
         <View style={{ marginTop: 16, paddingHorizontal: CARD_PADDING, paddingBottom: CARD_PADDING }}>
@@ -144,7 +144,7 @@ export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExerc
                     styles.setDetails,
                     textStyle,
                     {
-                      color: theme.colors.newUi.text.primary,
+                      color: theme.colors.text.primary,
                     },
                   ]}
                 >
@@ -156,13 +156,13 @@ export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExerc
                   checked={set.state === 'failed'}
                   onPress={() => {}} // Readonly - no action
                   label="Failed"
-                  color={theme.colors.newUi.text.primary}
+                  color={theme.colors.text.primary}
                 />
                 <Checkbox
                   checked={set.state === 'done'}
                   onPress={() => {}} // Readonly - no action
                   label="Done"
-                  color={theme.colors.newUi.text.primary}
+                  color={theme.colors.text.primary}
                 />
               </View>
             </View>

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkboxChecked: {
-    borderColor: theme.colors.newUi.primary.contrastText,
+    borderColor: theme.colors.primary.contrastText,
   },
   checkmark: {
     fontSize: 14,
@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.05,
   },
-  checked: {},
 })
 
 export const Checkbox = ({
@@ -46,10 +45,10 @@ export const Checkbox = ({
 }) => (
   <TouchableOpacity style={[styles.checkbox, style]} onPress={onPress}>
     <View style={[styles.checkboxBox, checked && styles.checkboxChecked, boxStyle, { borderColor: color }]}>
-      {checked && <Text style={[styles.checkmark, styles.checked, { color }]}>✓</Text>}
+      {checked && <Text style={[styles.checkmark, { color }]}>✓</Text>}
     </View>
     {typeof label === 'string' ? (
-      <Text style={[styles.checkmark, checked && styles.checked, { color }]}>{label}</Text>
+      <Text style={[styles.checkmark, { color }]}>{label}</Text>
     ) : (
       label
     )}

@@ -3,11 +3,11 @@ import { Image, StyleSheet, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { OnboardingDescriptiveTextBlock } from '@/mobile/ui/onboarding/cards/ux/onboarding-descriptive-text-block'
-import { OnboaardingThreeBlockTemplate } from '@/mobile/ui/onboarding/cards/ux/onboarding-three-block-template'
-import { OnboardingVerticalButtonContainer } from '@/mobile/ui/onboarding/cards/ux/onboarding-vertical-button-container'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { CaptionText } from '@/mobile/ui/ds/typography'
+import { ThreeBlockScreen } from '@/mobile/ui/ds/layout'
+import { VerticalButtonStack } from '@/mobile/ui/ds/layout'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 
 const styles = StyleSheet.create({
@@ -33,14 +33,13 @@ export const MuscleGroupPreferencesFirstCardView = () => {
   const onboarding = useOnboardingContext()
 
   return (
-    <OnboaardingThreeBlockTemplate
-      step="MuscleGroupPreferencesFirst"
+    <ThreeBlockScreen
       topContent={
         <>
-          <H3ScreenAware style={{ textAlign: 'center' }}>Any muscle preferences?</H3ScreenAware>
-          <OnboardingDescriptiveTextBlock>
+          <ScreenHeading style={{ textAlign: 'center' }}>Any muscle preferences?</ScreenHeading>
+          <CaptionText>
             Are there specific areas of your body that you’d like to focus on improving?
-          </OnboardingDescriptiveTextBlock>
+          </CaptionText>
         </>
       }
       middleContainerStyle={{ flex: 2 }}
@@ -57,11 +56,11 @@ export const MuscleGroupPreferencesFirstCardView = () => {
         </View>
       }
       bottomContent={
-        <OnboardingVerticalButtonContainer>
+        <VerticalButtonStack>
           <PrimaryButton title="Well-balanced plan" onPress={onboarding.prepareWellBalancedPlan}></PrimaryButton>
           <PrimaryButton title="Yes, i have preferences" onPress={onboarding.goWithMusclePreferences}></PrimaryButton>
-        </OnboardingVerticalButtonContainer>
+        </VerticalButtonStack>
       }
-    ></OnboaardingThreeBlockTemplate>
+    ></ThreeBlockScreen>
   )
 }

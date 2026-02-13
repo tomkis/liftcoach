@@ -5,8 +5,8 @@ import { useCallback, useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 import { Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 
-import { H3ScreenAware } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { useOnboardingContext } from '@/mobile/ui/onboarding/hooks/use-onboarding-context'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { theme } from '@/mobile/theme/theme'
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderColor: '#ff0000',
   },
   muscleGroupHeaderText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontWeight: 'bold',
     fontSize: 12,
@@ -75,9 +75,9 @@ const PreferenceSlider = ({ control, name, style }: PreferenceSliderProps) => (
         }}
         step={1}
         value={field.value}
-        minimumTrackTintColor={theme.colors.newUi.primary.main}
+        minimumTrackTintColor={theme.colors.primary.main}
         maximumTrackTintColor="rgba(255,195,0, 0.3)"
-        thumbTintColor={theme.colors.newUi.primary.main}
+        thumbTintColor={theme.colors.primary.main}
       />
     )}
   />
@@ -100,12 +100,12 @@ const ToggleableBlock = ({
           {expanded ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={styles.muscleGroupHeaderText}>Show less</Text>
-              <ChevronUp size={24} color={theme.colors.newUi.text.primary} />
+              <ChevronUp size={24} color={theme.colors.text.primary} />
             </View>
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={styles.muscleGroupHeaderText}>Show More</Text>
-              <ChevronDown size={24} color={theme.colors.newUi.text.primary} />
+              <ChevronDown size={24} color={theme.colors.text.primary} />
             </View>
           )}
         </View>
@@ -209,12 +209,12 @@ const MuscleGroupPreferencesSecondCardViewInternal = (props: {
     <View
       style={{
         flex: 1,
-        backgroundColor: theme.colors.newUi.background,
+        backgroundColor: theme.colors.background,
         flexDirection: 'column',
       }}
     >
       <View style={{ height: 100, justifyContent: 'center', marginHorizontal: 60, marginBottom: 20 }}>
-        <H3ScreenAware style={{ textAlign: 'center' }}>Your preferences</H3ScreenAware>
+        <ScreenHeading style={{ textAlign: 'center' }}>Your preferences</ScreenHeading>
       </View>
       <View style={{ flex: 1, marginHorizontal: 40 }}>
         <ScrollView>

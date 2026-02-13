@@ -11,9 +11,9 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { H3 } from '@/mobile/ui/onboarding/cards/ux/headings'
-import { PrimaryButton } from '@/mobile/ui/onboarding/cards/ux/primary-button'
-import { SecondaryButton } from '@/mobile/ui/onboarding/cards/ux/secondary-button'
+import { ScreenHeading } from '@/mobile/ui/ds/typography'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { theme } from '@/mobile/theme/theme'
 
 interface WrapperProps {
@@ -27,7 +27,7 @@ interface WrapperProps {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.newUi.background,
+    backgroundColor: theme.colors.background,
   },
   content: {
     flex: 1,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: 'center',
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     marginBottom: 30,
   },
   muscleGroupHeader: {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   muscleGroupHeaderText: {
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaRegular,
     fontWeight: 'bold',
     fontSize: 12,
@@ -77,7 +77,7 @@ export const ScreenWrapper = (props: WrapperProps) => {
         style={[styles.container, { paddingTop: insets.top }]}
       >
         <View style={styles.title}>
-          <H3 style={styles.titleText}>{props.title}</H3>
+          <ScreenHeading style={styles.titleText}>{props.title}</ScreenHeading>
         </View>
 
         <View style={styles.content}>
@@ -93,7 +93,7 @@ export const ScreenWrapper = (props: WrapperProps) => {
         <View style={{ justifyContent: 'flex-end', paddingBottom: 40, marginHorizontal: 40 }}>
           <View style={{ flexDirection: 'row', gap: 12 }}>
             <View style={{ flex: 1 }}>
-              <SecondaryButton title="Back" onPress={() => navigation.goBack()} />
+              <OutlineButton title="Back" onPress={() => navigation.goBack()} />
             </View>
             <View style={{ flex: 1 }}>
               <PrimaryButton title="Continue" onPress={props.onNext} disabled={props.isSubmitting} />

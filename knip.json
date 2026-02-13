@@ -10,8 +10,8 @@
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-packagejson",
     "expo-updates",
-    "@expo/metro-config",
-    "metro-minify-terser"
+    "metro-minify-terser",
+    "@sentry/cli"
   ],
-  "ignore": ["prettier.config.cjs"]
+  "ignore": ["prettier.config.cjs", "mobile/ui/home-testing/**", "mobile/ui/ds/layout/**", "mobile/domain/strength-test.ts"]
 }

@@ -1,19 +1,16 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 import { theme } from '@/mobile/theme/theme'
-import { Paragraph } from '@/mobile/ui/components/paragraph'
-import { Title } from '@/mobile/ui/components/title'
+import { BodyText } from '@/mobile/ui/ds/typography'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: 15,
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: theme.colors.newUi.backgroundLight,
-    shadowColor: theme.colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: theme.colors.backgroundLight,
+    ...theme.shadow.card,
+    shadowColor: '#000',
     paddingBottom: 12,
   },
   headerContainer: {
@@ -31,12 +28,12 @@ const styles = StyleSheet.create({
     width: 3,
     height: 16,
     borderRadius: theme.borderRadius.small,
-    backgroundColor: theme.colors.newUi.primary.main,
+    backgroundColor: theme.colors.primary.main,
     marginRight: 8,
   },
   title: {
     fontSize: theme.fontSize.medium,
-    color: theme.colors.newUi.text.primary,
+    color: theme.colors.text.primary,
     fontFamily: theme.font.sairaBold,
     textTransform: 'uppercase',
   },
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     marginBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.newUi.primary.main,
+    borderBottomColor: theme.colors.primary.main,
   },
   subTitle: {
     fontSize: theme.fontSize.extraSmall,
@@ -53,11 +50,11 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaRegular,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    color: theme.colors.newUi.primary.main,
+    color: theme.colors.primary.main,
   },
 })
 
-type DashboardCardProps = {
+type AccentCardProps = {
   title?: string
   subTitle?: string
   children: React.ReactNode
@@ -65,7 +62,7 @@ type DashboardCardProps = {
   customHeader?: React.ReactNode
 }
 
-export const DashboardCard = ({ title, subTitle, children, style, customHeader }: DashboardCardProps) => {
+export const AccentCard = ({ title, subTitle, children, style, customHeader }: AccentCardProps) => {
   return (
     <View style={[styles.container, style]}>
       {customHeader ? (
@@ -75,13 +72,13 @@ export const DashboardCard = ({ title, subTitle, children, style, customHeader }
           {title && (
             <View style={styles.headerContainer}>
               <View style={styles.accentBar} />
-              <Title style={styles.title}>{title}</Title>
+              <CardTitle style={styles.title}>{title}</CardTitle>
             </View>
           )}
 
           {subTitle && (
             <View style={styles.subTitleContainer}>
-              <Paragraph style={styles.subTitle}>{subTitle}</Paragraph>
+              <BodyText style={styles.subTitle}>{subTitle}</BodyText>
             </View>
           )}
         </>

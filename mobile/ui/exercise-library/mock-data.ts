@@ -118,6 +118,4 @@ export const MUSCLE_GROUPS: MuscleGroupData[] = [
   },
 ]
 
-const ALL_EXERCISES = MUSCLE_GROUPS.flatMap(mg => mg.exercises)
-export const PERFORMED_COUNT = ALL_EXERCISES.filter(e => e.performed).length
-export const TOTAL_COUNT = ALL_EXERCISES.length
+export const TOTAL_COUNT = MUSCLE_GROUPS.flatMap(mg => mg.exercises).length

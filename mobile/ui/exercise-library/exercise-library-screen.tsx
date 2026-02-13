@@ -10,7 +10,7 @@ export const ExerciseLibraryScreen = () => {
   const insets = useSafeAreaInsets()
 
   return (
-    <View style={[s.container, { paddingTop: insets.top }]}>
+    <View style={[s.container, { paddingTop: insets.top + 12 }]}>
       <ExerciseListView />
     </View>
   )

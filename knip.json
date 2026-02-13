@@ -10,7 +10,6 @@
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-packagejson",
     "expo-updates",
-    "@expo/metro-config",
     "metro-minify-terser"
   ],
   "ignore": ["prettier.config.cjs"]

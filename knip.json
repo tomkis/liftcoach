@@ -10,7 +10,8 @@
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-packagejson",
     "expo-updates",
-    "metro-minify-terser"
+    "metro-minify-terser",
+    "@sentry/cli"
   ],
   "ignore": ["prettier.config.cjs"]
 }

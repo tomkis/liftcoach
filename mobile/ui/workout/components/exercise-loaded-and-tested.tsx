@@ -149,6 +149,7 @@ export const ExerciseLoadedAndTested = (props: {
           <PrimaryButton
             title={props.hasMoreExercises ? 'Move on to the next exercise' : 'Finish Workout!'}
             onPress={props.onNext}
+            style={{ flex: 1 }}
           />
         </HorizontalButtonRow>
       )}

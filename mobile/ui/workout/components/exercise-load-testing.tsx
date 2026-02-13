@@ -608,7 +608,7 @@ export const ExerciseLoadTesting = ({
         </View>
         <HorizontalButtonRow>
           {loadingFinished && warmupCompleted && !isKeyboardVisible && (
-            <OutlineButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} />
+            <OutlineButton title="Move on to working set" onPress={handleSubmit(moveOnToWorkingSets)} style={{ flex: 1 }} />
           )}
         </HorizontalButtonRow>
       </KeyboardAvoidingView>

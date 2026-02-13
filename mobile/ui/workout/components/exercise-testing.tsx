@@ -257,7 +257,7 @@ export const ExerciseTesting = ({
             <OutlineButton
               title="Move on to working set"
               onPress={handleSubmit(onMoveToWorkingSet)}
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, flex: 1 }}
             />
           )}
         </HorizontalButtonRow>

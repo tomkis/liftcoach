@@ -2,12 +2,19 @@ import type { MuscleGroup, MovementPattern } from './muscle-group'
 
 export type ProgressState = 'progressing' | 'regressing' | 'stalled'
 
-export type ExerciseLibraryItem = {
+type ExerciseLibraryItemBase = {
   id: string
   name: string
   muscleGroup: MuscleGroup
   movementPattern: MovementPattern
-  estimatedOneRepMax: number
-  progressState: ProgressState
-  doneInPast: boolean
 }
+
+export type ExerciseLibraryItem =
+  | (ExerciseLibraryItemBase & {
+      doneInPast: true
+      estimatedOneRepMax: number
+      progressState: ProgressState
+    })
+  | (ExerciseLibraryItemBase & {
+      doneInPast: false
+    })

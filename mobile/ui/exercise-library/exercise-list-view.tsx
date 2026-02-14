@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native'
 
-import type { ExerciseLibraryItem, MuscleGroup } from '@/mobile/domain'
+import type { ExerciseLibraryItem, MuscleGroup, ProgressState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 
@@ -22,7 +22,7 @@ const DRAWER_WIDTH = SCREEN_WIDTH * 0.8
 
 const formatLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2')
 
-const trendFromProgress = (state: ExerciseLibraryItem['progressState']) => {
+const trendFromProgress = (state: ProgressState) => {
   if (state === 'progressing') return 'up' as const
   if (state === 'regressing') return 'down' as const
   return 'flat' as const
@@ -60,9 +60,6 @@ const FilterIcon = ({ active }: { active: boolean }) => {
 }
 
 const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
-  const trend = trendFromProgress(exercise.progressState)
-  const hasE1rm = exercise.estimatedOneRepMax > 0
-
   return (
     <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
       <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
@@ -76,39 +73,48 @@ const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
           </View>
           <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
         </View>
-        <View style={s.cardRight}>
-          {hasE1rm ? (
-            <>
-              <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
-              <View style={s.trendRow}>
-                <Text style={s.e1rmUnit}>kg</Text>
-                <View
-                  style={[
-                    s.trendChip,
-                    trend === 'up' && s.trendChipUp,
-                    trend === 'down' && s.trendChipDown,
-                    trend === 'flat' && s.trendChipFlat,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      s.trendText,
-                      trend === 'up' && s.trendTextUp,
-                      trend === 'down' && s.trendTextDown,
-                      trend === 'flat' && s.trendTextFlat,
-                    ]}
-                  >
-                    {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
-                  </Text>
-                </View>
-              </View>
-            </>
-          ) : (
-            <Text style={s.noData}>—</Text>
-          )}
-        </View>
+        {exercise.doneInPast && <ExerciseStats exercise={exercise} />}
       </View>
     </Pressable>
+  )
+}
+
+const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInPast: true } }) => {
+  const trend = trendFromProgress(exercise.progressState)
+  const hasE1rm = exercise.estimatedOneRepMax > 0
+
+  return (
+    <View style={s.cardRight}>
+      {hasE1rm ? (
+        <>
+          <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
+          <View style={s.trendRow}>
+            <Text style={s.e1rmUnit}>kg</Text>
+            <View
+              style={[
+                s.trendChip,
+                trend === 'up' && s.trendChipUp,
+                trend === 'down' && s.trendChipDown,
+                trend === 'flat' && s.trendChipFlat,
+              ]}
+            >
+              <Text
+                style={[
+                  s.trendText,
+                  trend === 'up' && s.trendTextUp,
+                  trend === 'down' && s.trendTextDown,
+                  trend === 'flat' && s.trendTextFlat,
+                ]}
+              >
+                {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
+              </Text>
+            </View>
+          </View>
+        </>
+      ) : (
+        <Text style={s.noData}>—</Text>
+      )}
+    </View>
   )
 }
 

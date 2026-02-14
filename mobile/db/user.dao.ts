@@ -123,20 +123,39 @@ export const getLastTestingWeights = async (
 }
 
 export const getExerciseLibrary = async (): Promise<ExerciseLibraryItem[]> => {
+  const doneStates = [WorkoutExerciseState.loaded, WorkoutExerciseState.tested, WorkoutExerciseState.finished]
+
+  const doneRows = await db
+    .selectDistinct({ exerciseId: schema.workoutExercise.exerciseId })
+    .from(schema.workoutExercise)
+    .where(inArray(schema.workoutExercise.state, doneStates))
+
+  const doneExerciseIds = new Set(doneRows.map(r => r.exerciseId))
+
   const rows = await db
     .select()
     .from(schema.exercise)
     .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
 
-  return rows.map(e => ({
-    id: e.id,
-    name: e.name,
-    muscleGroup: e.muscleGroup as MuscleGroup,
-    movementPattern: e.movementPattern as MovementPattern,
-    estimatedOneRepMax: 42,
-    progressState: 'stalled' as const,
-    doneInPast: true,
-  }))
+  return rows.map((e): ExerciseLibraryItem => {
+    const base = {
+      id: e.id,
+      name: e.name,
+      muscleGroup: e.muscleGroup as MuscleGroup,
+      movementPattern: e.movementPattern as MovementPattern,
+    }
+
+    if (doneExerciseIds.has(e.id)) {
+      return {
+        ...base,
+        doneInPast: true,
+        estimatedOneRepMax: 42,
+        progressState: 'stalled' as const,
+      }
+    }
+
+    return { ...base, doneInPast: false }
+  })
 }
 
 export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {

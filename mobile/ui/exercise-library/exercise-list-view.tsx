@@ -168,10 +168,6 @@ export const ExerciseListView = () => {
   )
   const allSections = useMemo(() => groupByMuscleGroup(filteredExercises), [filteredExercises])
   const totalCount = filteredExercises.length
-  const performedCount = useMemo(
-    () => (exercises ?? []).filter(e => e.doneInPast).length,
-    [exercises]
-  )
 
   const openDrawer = useCallback(() => {
     setDrawerOpen(true)
@@ -313,12 +309,7 @@ export const ExerciseListView = () => {
                   Performed Only
                 </Text>
               </View>
-              <View style={s.toggleRowRight}>
-                <Text style={[s.toggleRowCount, performedOnly && s.toggleRowCountActive]}>
-                  {performedCount}
-                </Text>
-                <ToggleSwitch active={performedOnly} onToggle={() => setPerformedOnly(p => !p)} />
-              </View>
+              <ToggleSwitch active={performedOnly} onToggle={() => setPerformedOnly(p => !p)} />
             </View>
             <View style={s.drawerSep} />
 
@@ -755,19 +746,6 @@ const s = StyleSheet.create({
   },
   toggleRowLabelActive: {
     color: theme.colors.text.primary,
-  },
-  toggleRowRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  toggleRowCount: {
-    fontFamily: theme.font.sairaCondesedBold,
-    fontSize: 16,
-    color: theme.colors.text.muted,
-  },
-  toggleRowCountActive: {
-    color: GOLD,
   },
   toggle: {
     width: 40,

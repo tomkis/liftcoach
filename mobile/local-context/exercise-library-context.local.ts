@@ -1,9 +1,11 @@
 import type { ExerciseLibraryContext } from '@/mobile/api'
+import { ExerciseAggregateRoot } from '@/mobile/domain'
 
 import * as userDao from '../db/user.dao'
 
 export const createLocalExerciseLibraryContext = (): ExerciseLibraryContext => ({
   getExercises: async () => {
-    return await userDao.getExerciseLibrary()
+    const rows = await userDao.getExerciseLibraryData()
+    return rows.map(row => new ExerciseAggregateRoot(row).toLibraryItem())
   },
 })

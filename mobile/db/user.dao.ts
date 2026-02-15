@@ -4,12 +4,12 @@ import { v4 } from 'uuid'
 
 import {
   ExerciseAssesmentScore,
-  ExerciseLibraryItem,
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   HistoricalResult,
-  MovementPattern,
+  movementPatternSchema,
   MuscleGroup,
+  muscleGroupSchema,
   OnboardedUser,
   ProvidedExercise,
   StrengthTest,
@@ -122,39 +122,39 @@ export const getLastTestingWeights = async (
   return exerciseMap
 }
 
-export const getExerciseLibrary = async (): Promise<ExerciseLibraryItem[]> => {
-  const doneStates = [WorkoutExerciseState.loaded, WorkoutExerciseState.tested, WorkoutExerciseState.finished]
-
-  const doneRows = await db
-    .selectDistinct({ exerciseId: schema.workoutExercise.exerciseId })
+export const getExerciseLibraryData = async () => {
+  const historicalExercises = await db
+    .select({
+      exerciseId: schema.workoutExercise.exerciseId,
+      loadedWeight: schema.workoutExercise.loadedWeight,
+      loadedReps: schema.workoutExercise.loadedReps,
+    })
     .from(schema.workoutExercise)
-    .where(inArray(schema.workoutExercise.state, doneStates))
-
-  const doneExerciseIds = new Set(doneRows.map(r => r.exerciseId))
+    .innerJoin(schema.microcycleWorkout, eq(schema.workoutExercise.workoutId, schema.microcycleWorkout.id))
+    .innerJoin(schema.microcycle, eq(schema.microcycleWorkout.microcycleId, schema.microcycle.id))
+    .where(
+      and(
+        sql`${schema.workoutExercise.loadedWeight} IS NOT NULL`,
+        sql`${schema.workoutExercise.loadedReps} IS NOT NULL`
+      )
+    )
+    .orderBy(desc(schema.microcycle.createdAt))
 
   const rows = await db
     .select()
     .from(schema.exercise)
     .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
 
-  return rows.map((e): ExerciseLibraryItem => {
-    const base = {
+  return rows.map(e => {
+    const history = historicalExercises.find(h => h.exerciseId === e.id && h.loadedWeight !== null && h.loadedReps !== null)
+
+    return {
       id: e.id,
       name: e.name,
-      muscleGroup: e.muscleGroup as MuscleGroup,
-      movementPattern: e.movementPattern as MovementPattern,
+      muscleGroup: muscleGroupSchema.parse(e.muscleGroup),
+      movementPattern: movementPatternSchema.parse(e.movementPattern),
+      loadingHistory: history ? { weight: history.loadedWeight!, reps: history.loadedReps! } : null,
     }
-
-    if (doneExerciseIds.has(e.id)) {
-      return {
-        ...base,
-        doneInPast: true,
-        estimatedOneRepMax: 42,
-        progressState: 'stalled' as const,
-      }
-    }
-
-    return { ...base, doneInPast: false }
   })
 }
 

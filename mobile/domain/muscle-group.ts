@@ -20,7 +20,8 @@ export enum MuscleGroup {
   Back = 'Back',
 }
 
-const muscleGroup = z.nativeEnum(MuscleGroup)
+export const muscleGroupSchema = z.nativeEnum(MuscleGroup)
+const muscleGroup = muscleGroupSchema
 
 export const volumePerMuscleGroupSchema = z.record(muscleGroup, z.number())
 export type VolumePerMuscleGroup = z.infer<typeof volumePerMuscleGroupSchema>
@@ -88,9 +89,11 @@ export enum MovementPattern {
   SideDeltsCableLateralRaise = 'SideDeltsCableLateralRaise',
   SideDeltsPress = 'SideDeltsPress',
 }
+export const movementPatternSchema = z.nativeEnum(MovementPattern)
+
 export const providedExerciseSchema = z.object({
   muscleGroup: muscleGroup,
-  movementPattern: z.nativeEnum(MovementPattern),
+  movementPattern: movementPatternSchema,
   movementPatternPriority: z.number(),
   minimumLiftingExperience: z.nativeEnum(LiftingExperience),
   name: z.string(),

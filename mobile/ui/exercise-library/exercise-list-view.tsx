@@ -141,8 +141,15 @@ const FilterRow = ({
   </Pressable>
 )
 
+const ToggleSwitch = ({ active, onToggle }: { active: boolean; onToggle: () => void }) => (
+  <Pressable onPress={onToggle} hitSlop={8} style={[s.toggle, active && s.toggleActive]}>
+    <Animated.View style={[s.toggleKnob, active && s.toggleKnobActive]} />
+  </Pressable>
+)
+
 export const ExerciseListView = () => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null)
+  const [performedOnly, setPerformedOnly] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const drawerAnim = useRef(new Animated.Value(0)).current
 
@@ -155,8 +162,16 @@ export const ExerciseListView = () => {
     }, [trpcUtils])
   )
 
-  const allSections = useMemo(() => groupByMuscleGroup(exercises ?? []), [exercises])
-  const totalCount = exercises?.length ?? 0
+  const filteredExercises = useMemo(
+    () => (performedOnly ? (exercises ?? []).filter(e => e.doneInPast) : (exercises ?? [])),
+    [exercises, performedOnly]
+  )
+  const allSections = useMemo(() => groupByMuscleGroup(filteredExercises), [filteredExercises])
+  const totalCount = filteredExercises.length
+  const performedCount = useMemo(
+    () => (exercises ?? []).filter(e => e.doneInPast).length,
+    [exercises]
+  )
 
   const openDrawer = useCallback(() => {
     setDrawerOpen(true)
@@ -218,7 +233,7 @@ export const ExerciseListView = () => {
               <View style={s.addIconVLine} />
             </Pressable>
             <Pressable onPress={openDrawer} hitSlop={12} style={s.filterButton}>
-              <FilterIcon active={activeGroup !== null} />
+              <FilterIcon active={activeGroup !== null || performedOnly} />
             </Pressable>
           </View>
         </View>
@@ -227,12 +242,21 @@ export const ExerciseListView = () => {
         </View>
       </View>
 
-      {activeGroup && (
+      {(activeGroup || performedOnly) && (
         <View style={s.activeFilterStrip}>
-          <Pressable onPress={() => setActiveGroup(null)} style={s.activeChip}>
-            <Text style={s.activeChipText}>{activeGroup}</Text>
-            <Text style={s.activeChipX}>×</Text>
-          </Pressable>
+          {performedOnly && (
+            <Pressable onPress={() => setPerformedOnly(false)} style={s.activeChip}>
+              <View style={s.activeChipDot} />
+              <Text style={s.activeChipText}>Performed</Text>
+              <Text style={s.activeChipX}>×</Text>
+            </Pressable>
+          )}
+          {activeGroup && (
+            <Pressable onPress={() => setActiveGroup(null)} style={s.activeChip}>
+              <Text style={s.activeChipText}>{activeGroup}</Text>
+              <Text style={s.activeChipX}>×</Text>
+            </Pressable>
+          )}
         </View>
       )}
 
@@ -279,9 +303,31 @@ export const ExerciseListView = () => {
               />
             </View>
 
+            <View style={s.drawerSectionHeader}>
+              <Text style={s.drawerSectionLabel}>STATUS</Text>
+            </View>
+            <View style={s.toggleRow}>
+              <View style={s.toggleRowLeft}>
+                <View style={[s.toggleRowDot, performedOnly && s.toggleRowDotActive]} />
+                <Text style={[s.toggleRowLabel, performedOnly && s.toggleRowLabelActive]}>
+                  Performed Only
+                </Text>
+              </View>
+              <View style={s.toggleRowRight}>
+                <Text style={[s.toggleRowCount, performedOnly && s.toggleRowCountActive]}>
+                  {performedCount}
+                </Text>
+                <ToggleSwitch active={performedOnly} onToggle={() => setPerformedOnly(p => !p)} />
+              </View>
+            </View>
+            <View style={s.drawerSep} />
+
+            <View style={s.drawerSectionHeader}>
+              <Text style={s.drawerSectionLabel}>MUSCLE GROUP</Text>
+            </View>
             <ScrollView showsVerticalScrollIndicator={false} style={s.drawerScroll}>
               <FilterRow
-                name="All Exercises"
+                name="All Groups"
                 count={totalCount}
                 active={activeGroup === null}
                 onPress={() => selectGroup(null)}
@@ -392,8 +438,11 @@ const s = StyleSheet.create({
     borderRadius: 1,
   },
   activeFilterStrip: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     paddingHorizontal: 20,
     marginBottom: 12,
+    gap: 8,
   },
   activeChip: {
     flexDirection: 'row',
@@ -404,8 +453,13 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    marginLeft: 'auto',
     gap: 4,
+  },
+  activeChipDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: GOLD,
   },
   activeChipText: {
     fontFamily: theme.font.sairaSemiBold,
@@ -660,5 +714,80 @@ const s = StyleSheet.create({
     backgroundColor: theme.colors.border.default,
     marginHorizontal: 20,
     marginVertical: 8,
+  },
+  drawerSectionHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  drawerSectionLabel: {
+    fontFamily: theme.font.sairaCondensedSemiBold,
+    fontSize: 11,
+    color: theme.colors.text.dim,
+    letterSpacing: 2,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 6,
+  },
+  toggleRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  toggleRowDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: theme.colors.text.muted,
+  },
+  toggleRowDotActive: {
+    backgroundColor: GOLD,
+  },
+  toggleRowLabel: {
+    fontFamily: theme.font.sairaSemiBold,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  },
+  toggleRowLabelActive: {
+    color: theme.colors.text.primary,
+  },
+  toggleRowRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  toggleRowCount: {
+    fontFamily: theme.font.sairaCondesedBold,
+    fontSize: 16,
+    color: theme.colors.text.muted,
+  },
+  toggleRowCountActive: {
+    color: GOLD,
+  },
+  toggle: {
+    width: 40,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: theme.colors.border.light,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  toggleActive: {
+    backgroundColor: 'rgba(255, 195, 0, 0.25)',
+  },
+  toggleKnob: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: theme.colors.text.muted,
+  },
+  toggleKnobActive: {
+    backgroundColor: GOLD,
+    alignSelf: 'flex-end',
   },
 })

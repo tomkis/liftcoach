@@ -224,10 +224,10 @@ export const ExerciseListView = () => {
             <Text style={s.headerTitle}>MY EXERCISES</Text>
           </View>
           <View style={s.headerActions}>
-            <Pressable onPress={() => {}} hitSlop={12} style={s.addButton}>
+            {/* <Pressable onPress={() => {}} hitSlop={12} style={s.addButton}>
               <View style={s.addIconHLine} />
               <View style={s.addIconVLine} />
-            </Pressable>
+            </Pressable> */}
             <Pressable onPress={openDrawer} hitSlop={12} style={s.filterButton}>
               <FilterIcon active={activeGroup !== null || performedOnly} />
             </Pressable>

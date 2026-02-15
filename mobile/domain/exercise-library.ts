@@ -7,7 +7,7 @@ export type ExerciseLibraryData = {
   name: string
   muscleGroup: MuscleGroup
   movementPattern: MovementPattern
-  loadingHistory: { weight: number; reps: number } | null
+  loadingHistory: Array<{ weight: number; reps: number }>
 }
 
 type ExerciseLibraryItemBase = {
@@ -21,7 +21,7 @@ export type ExerciseLibraryItem =
   | (ExerciseLibraryItemBase & {
       doneInPast: true
       estimatedOneRepMax: number
-      progressState: ProgressState
+      progressState: ProgressState | null
     })
   | (ExerciseLibraryItemBase & {
       doneInPast: false

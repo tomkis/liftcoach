@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -80,7 +81,7 @@ const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
 }
 
 const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInPast: true } }) => {
-  const trend = trendFromProgress(exercise.progressState)
+  const trend = exercise.progressState ? trendFromProgress(exercise.progressState) : null
   const hasE1rm = exercise.estimatedOneRepMax > 0
 
   return (
@@ -90,25 +91,27 @@ const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInP
           <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
           <View style={s.trendRow}>
             <Text style={s.e1rmUnit}>kg</Text>
-            <View
-              style={[
-                s.trendChip,
-                trend === 'up' && s.trendChipUp,
-                trend === 'down' && s.trendChipDown,
-                trend === 'flat' && s.trendChipFlat,
-              ]}
-            >
-              <Text
+            {trend && (
+              <View
                 style={[
-                  s.trendText,
-                  trend === 'up' && s.trendTextUp,
-                  trend === 'down' && s.trendTextDown,
-                  trend === 'flat' && s.trendTextFlat,
+                  s.trendChip,
+                  trend === 'up' && s.trendChipUp,
+                  trend === 'down' && s.trendChipDown,
+                  trend === 'flat' && s.trendChipFlat,
                 ]}
               >
-                {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
-              </Text>
-            </View>
+                <Text
+                  style={[
+                    s.trendText,
+                    trend === 'up' && s.trendTextUp,
+                    trend === 'down' && s.trendTextDown,
+                    trend === 'flat' && s.trendTextFlat,
+                  ]}
+                >
+                  {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
+                </Text>
+              </View>
+            )}
           </View>
         </>
       ) : (
@@ -143,7 +146,14 @@ export const ExerciseListView = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const drawerAnim = useRef(new Animated.Value(0)).current
 
+  const trpcUtils = trpc.useUtils()
   const { data: exercises, isLoading } = trpc.exerciseLibrary.getExercises.useQuery()
+
+  useFocusEffect(
+    useCallback(() => {
+      trpcUtils.exerciseLibrary.getExercises.invalidate()
+    }, [trpcUtils])
+  )
 
   const allSections = useMemo(() => groupByMuscleGroup(exercises ?? []), [exercises])
   const totalCount = exercises?.length ?? 0

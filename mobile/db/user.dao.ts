@@ -123,6 +123,8 @@ export const getLastTestingWeights = async (
 }
 
 export const getExerciseLibraryData = async () => {
+  const cutoff = subDays(new Date(), 120).getTime()
+
   const historicalExercises = await db
     .select({
       exerciseId: schema.workoutExercise.exerciseId,
@@ -134,28 +136,34 @@ export const getExerciseLibraryData = async () => {
     .innerJoin(schema.microcycle, eq(schema.microcycleWorkout.microcycleId, schema.microcycle.id))
     .where(
       and(
+        inArray(schema.workoutExercise.state, [WorkoutExerciseState.loaded, WorkoutExerciseState.tested]),
         sql`${schema.workoutExercise.loadedWeight} IS NOT NULL`,
-        sql`${schema.workoutExercise.loadedReps} IS NOT NULL`
+        sql`${schema.workoutExercise.loadedReps} IS NOT NULL`,
+        gte(schema.microcycle.createdAt, cutoff)
       )
     )
     .orderBy(desc(schema.microcycle.createdAt))
+
+  const historyByExercise = new Map<string, Array<{ weight: number; reps: number }>>()
+  for (const h of historicalExercises) {
+    if (h.loadedWeight === null || h.loadedReps === null) continue
+    const arr = historyByExercise.get(h.exerciseId) ?? []
+    arr.push({ weight: h.loadedWeight, reps: h.loadedReps })
+    historyByExercise.set(h.exerciseId, arr)
+  }
 
   const rows = await db
     .select()
     .from(schema.exercise)
     .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
 
-  return rows.map(e => {
-    const history = historicalExercises.find(h => h.exerciseId === e.id && h.loadedWeight !== null && h.loadedReps !== null)
-
-    return {
-      id: e.id,
-      name: e.name,
-      muscleGroup: muscleGroupSchema.parse(e.muscleGroup),
-      movementPattern: movementPatternSchema.parse(e.movementPattern),
-      loadingHistory: history ? { weight: history.loadedWeight!, reps: history.loadedReps! } : null,
-    }
-  })
+  return rows.map(e => ({
+    id: e.id,
+    name: e.name,
+    muscleGroup: muscleGroupSchema.parse(e.muscleGroup),
+    movementPattern: movementPatternSchema.parse(e.movementPattern),
+    loadingHistory: historyByExercise.get(e.id) ?? [],
+  }))
 }
 
 export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {

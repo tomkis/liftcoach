@@ -3,6 +3,7 @@ import {
   CycleProgress,
   DashboardData,
   ExerciseAssesment,
+  ExerciseLibraryItem,
   LifestyleFeedback,
   LoadingSet,
   Microcycle,
@@ -115,8 +116,13 @@ export interface MesoPlannerContext {
   ) => Promise<MicrocycleWorkoutsTemplateWithExercises>
 }
 
+export interface ExerciseLibraryContext {
+  getExercises: (session: Session) => Promise<ExerciseLibraryItem[]>
+}
+
 export interface ContractContext {
   user: UserContext
   workout: WorkoutContext
   mesoPlanner: MesoPlannerContext
+  exerciseLibrary: ExerciseLibraryContext
 }

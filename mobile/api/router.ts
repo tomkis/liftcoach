@@ -156,6 +156,12 @@ const workout = trpcInstance.router({
     }),
 })
 
+const exerciseLibrary = trpcInstance.router({
+  getExercises: trpcProcedureAuthProcedure.input(z.void()).query(async ({ ctx }) => {
+    return await ctx.exerciseLibrary.getExercises(ctx.session)
+  }),
+})
+
 const mesoPlanner = trpcInstance.router({
   proposeSplit: trpcProcedureAuthProcedure
     .input(
@@ -192,6 +198,7 @@ export const router = trpcInstance.router({
   user,
   workout,
   mesoPlanner,
+  exerciseLibrary,
 })
 
 export type Contract = typeof router

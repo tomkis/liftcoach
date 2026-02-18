@@ -154,7 +154,7 @@ export const ExerciseListView = () => {
   const drawerAnim = useRef(new Animated.Value(0)).current
 
   const trpcUtils = trpc.useUtils()
-  const { data: exercises, isLoading } = trpc.exerciseLibrary.getExercises.useQuery()
+  const { data: exercises, isLoading, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
 
   useFocusEffect(
     useCallback(() => {
@@ -211,6 +211,17 @@ export const ExerciseListView = () => {
     return (
       <View style={s.loadingContainer}>
         <ActivityIndicator color={GOLD} />
+      </View>
+    )
+  }
+
+  if (isError) {
+    return (
+      <View style={s.loadingContainer}>
+        <Text style={s.errorText}>Failed to load exercises</Text>
+        <Pressable onPress={() => refetch()} style={s.retryButton}>
+          <Text style={s.retryText}>RETRY</Text>
+        </Pressable>
       </View>
     )
   }
@@ -351,6 +362,25 @@ const s = StyleSheet.create({
     backgroundColor: theme.colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 16,
+  },
+  errorText: {
+    fontFamily: theme.font.sairaSemiBold,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  },
+  retryButton: {
+    borderWidth: 1,
+    borderColor: GOLD,
+    borderRadius: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  retryText: {
+    fontFamily: theme.font.sairaBold,
+    fontSize: 12,
+    color: GOLD,
+    letterSpacing: 1.5,
   },
   headerWrap: {
     paddingHorizontal: 20,

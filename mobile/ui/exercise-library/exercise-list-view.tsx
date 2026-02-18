@@ -61,7 +61,7 @@ const FilterIcon = ({ active }: { active: boolean }) => {
   )
 }
 
-const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; unit: Unit }) => {
+const ExerciseListCard = React.memo(function ExerciseListCard({ exercise, unit }: { exercise: ExerciseLibraryItem; unit: Unit }) {
   return (
     <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
       <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
@@ -79,9 +79,9 @@ const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; u
       </View>
     </Pressable>
   )
-}
+})
 
-const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { doneInPast: true }; unit: Unit }) => {
+const ExerciseStats = React.memo(function ExerciseStats({ exercise, unit }: { exercise: ExerciseLibraryItem & { doneInPast: true }; unit: Unit }) {
   const trend = exercise.progressState ? trendFromProgress(exercise.progressState) : null
   const hasE1rm = exercise.estimatedOneRepMax > 0
 
@@ -120,7 +120,7 @@ const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { d
       )}
     </View>
   )
-}
+})
 
 const FilterRow = ({
   name,
@@ -198,7 +198,27 @@ export const ExerciseListView = () => {
     [closeDrawer]
   )
 
-  const displaySections = activeGroup ? allSections.filter(s => s.title === activeGroup) : allSections
+  const displaySections = useMemo(
+    () => (activeGroup ? allSections.filter(s => s.title === activeGroup) : allSections),
+    [activeGroup, allSections]
+  )
+
+  const unit = onboardingInfo?.unit
+  const keyExtractor = useCallback((item: ExerciseLibraryItem) => item.id, [])
+  const renderItem = useCallback(
+    ({ item }: { item: ExerciseLibraryItem }) => <ExerciseListCard exercise={item} unit={unit!} />,
+    [unit]
+  )
+  const renderSectionHeader = useCallback(
+    ({ section }: { section: GroupedSection }) =>
+      !activeGroup ? (
+        <View style={s.groupHeader}>
+          <Text style={s.groupName}>{section.title.toUpperCase()}</Text>
+          <View style={s.groupLine} />
+        </View>
+      ) : null,
+    [activeGroup]
+  )
 
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
@@ -272,19 +292,14 @@ export const ExerciseListView = () => {
 
       <SectionList
         sections={displaySections}
-        keyExtractor={item => item.id}
-        renderSectionHeader={({ section }) =>
-          !activeGroup ? (
-            <View style={s.groupHeader}>
-              <Text style={s.groupName}>{section.title.toUpperCase()}</Text>
-              <View style={s.groupLine} />
-            </View>
-          ) : null
-        }
-        renderItem={({ item }) => <ExerciseListCard exercise={item} unit={onboardingInfo.unit} />}
+        keyExtractor={keyExtractor}
+        renderSectionHeader={renderSectionHeader}
+        renderItem={renderItem}
         contentContainerStyle={s.listContent}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
+        maxToRenderPerBatch={15}
+        windowSize={5}
       />
 
       {drawerOpen && (

@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native'
 
+import { Unit } from '@/mobile/domain'
 import type { ExerciseLibraryItem, MuscleGroup, ProgressState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
@@ -60,7 +61,7 @@ const FilterIcon = ({ active }: { active: boolean }) => {
   )
 }
 
-const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; unit?: string }) => {
+const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; unit: Unit }) => {
   return (
     <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
       <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
@@ -80,7 +81,7 @@ const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; u
   )
 }
 
-const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { doneInPast: true }; unit?: string }) => {
+const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { doneInPast: true }; unit: Unit }) => {
   const trend = exercise.progressState ? trendFromProgress(exercise.progressState) : null
   const hasE1rm = exercise.estimatedOneRepMax > 0
 
@@ -90,7 +91,7 @@ const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { d
         <>
           <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
           <View style={s.trendRow}>
-            <Text style={s.e1rmUnit}>{unit === 'metric' ? 'kg' : 'lbs'}</Text>
+            <Text style={s.e1rmUnit}>{unit === Unit.Metric ? 'kg' : 'lbs'}</Text>
             {trend && (
               <View
                 style={[
@@ -155,8 +156,8 @@ export const ExerciseListView = () => {
 
   const trpcUtils = trpc.useUtils()
   const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery()
-  const { data: exercises, isLoading, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
-  const unit = onboardingInfo?.unit
+  const { data: exercises, isLoading: isLoadingExercises, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+  const isLoading = isLoadingExercises || !onboardingInfo
 
   useFocusEffect(
     useCallback(() => {
@@ -280,7 +281,7 @@ export const ExerciseListView = () => {
             </View>
           ) : null
         }
-        renderItem={({ item }) => <ExerciseListCard exercise={item} unit={unit} />}
+        renderItem={({ item }) => <ExerciseListCard exercise={item} unit={onboardingInfo.unit} />}
         contentContainerStyle={s.listContent}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}

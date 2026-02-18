@@ -60,7 +60,7 @@ const FilterIcon = ({ active }: { active: boolean }) => {
   )
 }
 
-const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
+const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; unit?: string }) => {
   return (
     <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
       <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
@@ -74,13 +74,13 @@ const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
           </View>
           <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
         </View>
-        {exercise.doneInPast && <ExerciseStats exercise={exercise} />}
+        {exercise.doneInPast && <ExerciseStats exercise={exercise} unit={unit} />}
       </View>
     </Pressable>
   )
 }
 
-const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInPast: true } }) => {
+const ExerciseStats = ({ exercise, unit }: { exercise: ExerciseLibraryItem & { doneInPast: true }; unit?: string }) => {
   const trend = exercise.progressState ? trendFromProgress(exercise.progressState) : null
   const hasE1rm = exercise.estimatedOneRepMax > 0
 
@@ -90,7 +90,7 @@ const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInP
         <>
           <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
           <View style={s.trendRow}>
-            <Text style={s.e1rmUnit}>kg</Text>
+            <Text style={s.e1rmUnit}>{unit === 'metric' ? 'kg' : 'lbs'}</Text>
             {trend && (
               <View
                 style={[
@@ -154,7 +154,9 @@ export const ExerciseListView = () => {
   const drawerAnim = useRef(new Animated.Value(0)).current
 
   const trpcUtils = trpc.useUtils()
+  const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery()
   const { data: exercises, isLoading, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+  const unit = onboardingInfo?.unit
 
   useFocusEffect(
     useCallback(() => {
@@ -278,7 +280,7 @@ export const ExerciseListView = () => {
             </View>
           ) : null
         }
-        renderItem={({ item }) => <ExerciseListCard exercise={item} />}
+        renderItem={({ item }) => <ExerciseListCard exercise={item} unit={unit} />}
         contentContainerStyle={s.listContent}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}

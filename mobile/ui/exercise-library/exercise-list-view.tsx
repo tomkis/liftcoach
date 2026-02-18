@@ -1,5 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   Pressable,
@@ -11,13 +13,41 @@ import {
   View,
 } from 'react-native'
 
+import type { ExerciseLibraryItem, MuscleGroup, ProgressState } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
-
-import { MUSCLE_GROUPS, TOTAL_COUNT, type MockExercise } from './mock-data'
+import { trpc } from '@/mobile/trpc'
 
 const GOLD = theme.colors.primary.main
 const SCREEN_WIDTH = Dimensions.get('window').width
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8
+
+const formatLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2')
+
+const trendFromProgress = (state: ProgressState) => {
+  if (state === 'progressing') return 'up' as const
+  if (state === 'regressing') return 'down' as const
+  return 'flat' as const
+}
+
+type GroupedSection = {
+  title: string
+  muscleGroup: MuscleGroup
+  data: ExerciseLibraryItem[]
+}
+
+const groupByMuscleGroup = (items: ExerciseLibraryItem[]): GroupedSection[] => {
+  const map = new Map<MuscleGroup, ExerciseLibraryItem[]>()
+  for (const item of items) {
+    const arr = map.get(item.muscleGroup) ?? []
+    arr.push(item)
+    map.set(item.muscleGroup, arr)
+  }
+  return Array.from(map.entries()).map(([mg, exercises]) => ({
+    title: formatLabel(mg),
+    muscleGroup: mg,
+    data: exercises,
+  }))
+}
 
 const FilterIcon = ({ active }: { active: boolean }) => {
   const color = active ? GOLD : theme.colors.text.secondary
@@ -30,55 +60,66 @@ const FilterIcon = ({ active }: { active: boolean }) => {
   )
 }
 
-const ExerciseListCard = ({ exercise }: { exercise: MockExercise }) => (
-  <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
-    <View style={[s.cardAccentBar, !exercise.performed && s.cardAccentBarMuted]} />
-    <View style={s.cardBody}>
-      <View style={s.cardLeft}>
-        <View style={s.nameRow}>
-          <Text style={s.exerciseName} numberOfLines={1}>
-            {exercise.name}
-          </Text>
-          {exercise.performed && <View style={s.performedDot} />}
+const ExerciseListCard = ({ exercise }: { exercise: ExerciseLibraryItem }) => {
+  return (
+    <Pressable style={({ pressed }) => [s.exerciseCard, pressed && { opacity: 0.8 }]}>
+      <View style={[s.cardAccentBar, !exercise.doneInPast && s.cardAccentBarMuted]} />
+      <View style={s.cardBody}>
+        <View style={s.cardLeft}>
+          <View style={s.nameRow}>
+            <Text style={s.exerciseName} numberOfLines={1}>
+              {exercise.name}
+            </Text>
+            {exercise.doneInPast && <View style={s.performedDot} />}
+          </View>
+          <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
         </View>
-        <Text style={s.patternLabel}>{exercise.movementPattern}</Text>
+        {exercise.doneInPast && <ExerciseStats exercise={exercise} />}
       </View>
-      <View style={s.cardRight}>
-        {exercise.e1rm ? (
-          <>
-            <Text style={s.e1rmValue}>{exercise.e1rm}</Text>
-            <View style={s.trendRow}>
-              <Text style={s.e1rmUnit}>kg</Text>
-              {exercise.e1rmTrend && (
-                <View
+    </Pressable>
+  )
+}
+
+const ExerciseStats = ({ exercise }: { exercise: ExerciseLibraryItem & { doneInPast: true } }) => {
+  const trend = exercise.progressState ? trendFromProgress(exercise.progressState) : null
+  const hasE1rm = exercise.estimatedOneRepMax > 0
+
+  return (
+    <View style={s.cardRight}>
+      {hasE1rm ? (
+        <>
+          <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
+          <View style={s.trendRow}>
+            <Text style={s.e1rmUnit}>kg</Text>
+            {trend && (
+              <View
+                style={[
+                  s.trendChip,
+                  trend === 'up' && s.trendChipUp,
+                  trend === 'down' && s.trendChipDown,
+                  trend === 'flat' && s.trendChipFlat,
+                ]}
+              >
+                <Text
                   style={[
-                    s.trendChip,
-                    exercise.e1rmTrend === 'up' && s.trendChipUp,
-                    exercise.e1rmTrend === 'down' && s.trendChipDown,
-                    exercise.e1rmTrend === 'flat' && s.trendChipFlat,
+                    s.trendText,
+                    trend === 'up' && s.trendTextUp,
+                    trend === 'down' && s.trendTextDown,
+                    trend === 'flat' && s.trendTextFlat,
                   ]}
                 >
-                  <Text
-                    style={[
-                      s.trendText,
-                      exercise.e1rmTrend === 'up' && s.trendTextUp,
-                      exercise.e1rmTrend === 'down' && s.trendTextDown,
-                      exercise.e1rmTrend === 'flat' && s.trendTextFlat,
-                    ]}
-                  >
-                    {exercise.e1rmTrend === 'up' ? '↑' : exercise.e1rmTrend === 'down' ? '↓' : '—'}
-                  </Text>
-                </View>
-              )}
-            </View>
-          </>
-        ) : (
-          <Text style={s.noData}>—</Text>
-        )}
-      </View>
+                  {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
+                </Text>
+              </View>
+            )}
+          </View>
+        </>
+      ) : (
+        <Text style={s.noData}>—</Text>
+      )}
     </View>
-  </Pressable>
-)
+  )
+}
 
 const FilterRow = ({
   name,
@@ -100,10 +141,33 @@ const FilterRow = ({
   </Pressable>
 )
 
+const ToggleSwitch = ({ active, onToggle }: { active: boolean; onToggle: () => void }) => (
+  <Pressable onPress={onToggle} hitSlop={8} style={[s.toggle, active && s.toggleActive]}>
+    <Animated.View style={[s.toggleKnob, active && s.toggleKnobActive]} />
+  </Pressable>
+)
+
 export const ExerciseListView = () => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null)
+  const [performedOnly, setPerformedOnly] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const drawerAnim = useRef(new Animated.Value(0)).current
+
+  const trpcUtils = trpc.useUtils()
+  const { data: exercises, isLoading, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+
+  useFocusEffect(
+    useCallback(() => {
+      trpcUtils.exerciseLibrary.getExercises.invalidate()
+    }, [trpcUtils])
+  )
+
+  const filteredExercises = useMemo(
+    () => (performedOnly ? (exercises ?? []).filter(e => e.doneInPast) : (exercises ?? [])),
+    [exercises, performedOnly]
+  )
+  const allSections = useMemo(() => groupByMuscleGroup(filteredExercises), [filteredExercises])
+  const totalCount = filteredExercises.length
 
   const openDrawer = useCallback(() => {
     setDrawerOpen(true)
@@ -131,12 +195,7 @@ export const ExerciseListView = () => {
     [closeDrawer]
   )
 
-  const displayGroups = activeGroup ? MUSCLE_GROUPS.filter(mg => mg.name === activeGroup) : MUSCLE_GROUPS
-
-  const sections = displayGroups.map(mg => ({
-    title: mg.name,
-    data: mg.exercises,
-  }))
+  const displaySections = activeGroup ? allSections.filter(s => s.title === activeGroup) : allSections
 
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
@@ -148,6 +207,25 @@ export const ExerciseListView = () => {
     outputRange: [DRAWER_WIDTH, 0],
   })
 
+  if (isLoading) {
+    return (
+      <View style={s.loadingContainer}>
+        <ActivityIndicator color={GOLD} />
+      </View>
+    )
+  }
+
+  if (isError) {
+    return (
+      <View style={s.loadingContainer}>
+        <Text style={s.errorText}>Failed to load exercises</Text>
+        <Pressable onPress={() => refetch()} style={s.retryButton}>
+          <Text style={s.retryText}>RETRY</Text>
+        </Pressable>
+      </View>
+    )
+  }
+
   return (
     <View style={s.container}>
       <View style={s.headerWrap}>
@@ -157,12 +235,12 @@ export const ExerciseListView = () => {
             <Text style={s.headerTitle}>MY EXERCISES</Text>
           </View>
           <View style={s.headerActions}>
-            <Pressable onPress={() => {}} hitSlop={12} style={s.addButton}>
+            {/* <Pressable onPress={() => {}} hitSlop={12} style={s.addButton}>
               <View style={s.addIconHLine} />
               <View style={s.addIconVLine} />
-            </Pressable>
+            </Pressable> */}
             <Pressable onPress={openDrawer} hitSlop={12} style={s.filterButton}>
-              <FilterIcon active={activeGroup !== null} />
+              <FilterIcon active={activeGroup !== null || performedOnly} />
             </Pressable>
           </View>
         </View>
@@ -171,17 +249,26 @@ export const ExerciseListView = () => {
         </View>
       </View>
 
-      {activeGroup && (
+      {(activeGroup || performedOnly) && (
         <View style={s.activeFilterStrip}>
-          <Pressable onPress={() => setActiveGroup(null)} style={s.activeChip}>
-            <Text style={s.activeChipText}>{activeGroup}</Text>
-            <Text style={s.activeChipX}>×</Text>
-          </Pressable>
+          {performedOnly && (
+            <Pressable onPress={() => setPerformedOnly(false)} style={s.activeChip}>
+              <View style={s.activeChipDot} />
+              <Text style={s.activeChipText}>Performed</Text>
+              <Text style={s.activeChipX}>×</Text>
+            </Pressable>
+          )}
+          {activeGroup && (
+            <Pressable onPress={() => setActiveGroup(null)} style={s.activeChip}>
+              <Text style={s.activeChipText}>{activeGroup}</Text>
+              <Text style={s.activeChipX}>×</Text>
+            </Pressable>
+          )}
         </View>
       )}
 
       <SectionList
-        sections={sections}
+        sections={displaySections}
         keyExtractor={item => item.id}
         renderSectionHeader={({ section }) =>
           !activeGroup ? (
@@ -223,21 +310,38 @@ export const ExerciseListView = () => {
               />
             </View>
 
+            <View style={s.drawerSectionHeader}>
+              <Text style={s.drawerSectionLabel}>STATUS</Text>
+            </View>
+            <View style={s.toggleRow}>
+              <View style={s.toggleRowLeft}>
+                <View style={[s.toggleRowDot, performedOnly && s.toggleRowDotActive]} />
+                <Text style={[s.toggleRowLabel, performedOnly && s.toggleRowLabelActive]}>
+                  Performed Only
+                </Text>
+              </View>
+              <ToggleSwitch active={performedOnly} onToggle={() => setPerformedOnly(p => !p)} />
+            </View>
+            <View style={s.drawerSep} />
+
+            <View style={s.drawerSectionHeader}>
+              <Text style={s.drawerSectionLabel}>MUSCLE GROUP</Text>
+            </View>
             <ScrollView showsVerticalScrollIndicator={false} style={s.drawerScroll}>
               <FilterRow
-                name="All Exercises"
-                count={TOTAL_COUNT}
+                name="All Groups"
+                count={totalCount}
                 active={activeGroup === null}
                 onPress={() => selectGroup(null)}
               />
               <View style={s.drawerSep} />
-              {MUSCLE_GROUPS.map(mg => (
+              {allSections.map(section => (
                 <FilterRow
-                  key={mg.name}
-                  name={mg.name}
-                  count={mg.exercises.length}
-                  active={activeGroup === mg.name}
-                  onPress={() => selectGroup(activeGroup === mg.name ? null : mg.name)}
+                  key={section.title}
+                  name={section.title}
+                  count={section.data.length}
+                  active={activeGroup === section.title}
+                  onPress={() => selectGroup(activeGroup === section.title ? null : section.title)}
                 />
               ))}
             </ScrollView>
@@ -252,6 +356,31 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  errorText: {
+    fontFamily: theme.font.sairaSemiBold,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  },
+  retryButton: {
+    borderWidth: 1,
+    borderColor: GOLD,
+    borderRadius: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  retryText: {
+    fontFamily: theme.font.sairaBold,
+    fontSize: 12,
+    color: GOLD,
+    letterSpacing: 1.5,
   },
   headerWrap: {
     paddingHorizontal: 20,
@@ -330,8 +459,11 @@ const s = StyleSheet.create({
     borderRadius: 1,
   },
   activeFilterStrip: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     paddingHorizontal: 20,
     marginBottom: 12,
+    gap: 8,
   },
   activeChip: {
     flexDirection: 'row',
@@ -342,8 +474,13 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    marginLeft: 'auto',
     gap: 4,
+  },
+  activeChipDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: GOLD,
   },
   activeChipText: {
     fontFamily: theme.font.sairaSemiBold,
@@ -598,5 +735,67 @@ const s = StyleSheet.create({
     backgroundColor: theme.colors.border.default,
     marginHorizontal: 20,
     marginVertical: 8,
+  },
+  drawerSectionHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  drawerSectionLabel: {
+    fontFamily: theme.font.sairaCondensedSemiBold,
+    fontSize: 11,
+    color: theme.colors.text.dim,
+    letterSpacing: 2,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 6,
+  },
+  toggleRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  toggleRowDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: theme.colors.text.muted,
+  },
+  toggleRowDotActive: {
+    backgroundColor: GOLD,
+  },
+  toggleRowLabel: {
+    fontFamily: theme.font.sairaSemiBold,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  },
+  toggleRowLabelActive: {
+    color: theme.colors.text.primary,
+  },
+  toggle: {
+    width: 40,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: theme.colors.border.light,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  toggleActive: {
+    backgroundColor: 'rgba(255, 195, 0, 0.25)',
+  },
+  toggleKnob: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: theme.colors.text.muted,
+  },
+  toggleKnobActive: {
+    backgroundColor: GOLD,
+    alignSelf: 'flex-end',
   },
 })

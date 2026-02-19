@@ -89,7 +89,7 @@ export enum MovementPattern {
   SideDeltsCableLateralRaise = 'SideDeltsCableLateralRaise',
   SideDeltsPress = 'SideDeltsPress',
 }
-export const movementPatternSchema = z.nativeEnum(MovementPattern)
+const movementPatternSchema = z.nativeEnum(MovementPattern)
 
 export const providedExerciseSchema = z.object({
   muscleGroup: muscleGroup,

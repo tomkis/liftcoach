@@ -7,7 +7,6 @@ import {
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   HistoricalResult,
-  movementPatternSchema,
   MuscleGroup,
   muscleGroupSchema,
   OnboardedUser,
@@ -159,16 +158,24 @@ export const getExerciseLibraryData = async () => {
   const rows = await db
     .select()
     .from(schema.exercise)
-    .innerJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
-    .orderBy(schema.exercise.muscleGroup, schema.exerciseMetadata.movementPatternPriority)
+    .orderBy(schema.exercise.name)
 
   return rows.map(r => ({
-    id: r.exercise.id,
-    name: r.exercise.name,
-    muscleGroup: muscleGroupSchema.parse(r.exercise.muscleGroup),
-    movementPattern: movementPatternSchema.parse(r.exercise_metadata.movementPattern),
-    loadingHistory: historyByExercise.get(r.exercise.id) ?? [],
+    id: r.id,
+    name: r.name,
+    muscleGroup: muscleGroupSchema.parse(r.muscleGroup),
+    loadingHistory: historyByExercise.get(r.id) ?? [],
   }))
+}
+
+export const createExercise = async (input: { name: string; muscleGroup: MuscleGroup }) => {
+  await db.insert(schema.exercise).values({
+    id: v4(),
+    name: input.name,
+    muscleGroup: input.muscleGroup,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  })
 }
 
 export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {

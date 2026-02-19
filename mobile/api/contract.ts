@@ -118,6 +118,7 @@ export interface MesoPlannerContext {
 
 export interface ExerciseLibraryContext {
   getExercises: (session: Session) => Promise<ExerciseLibraryItem[]>
+  createExercise: (session: Session, input: { name: string; muscleGroup: MuscleGroup }) => Promise<void>
 }
 
 export interface ContractContext {

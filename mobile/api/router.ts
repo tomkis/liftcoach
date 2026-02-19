@@ -5,6 +5,7 @@ import {
   microcycleWorkoutsTemplateSchema,
   microcycleWorkoutsTemplateWithExercisesSchema,
   muscleGroupPreference,
+  muscleGroupSchema,
   onboardedUserSchema,
   strengthTestSchema,
   volumePerMuscleGroupSchema,
@@ -160,6 +161,11 @@ const exerciseLibrary = trpcInstance.router({
   getExercises: trpcProcedureAuthProcedure.input(z.void()).query(async ({ ctx }) => {
     return await ctx.exerciseLibrary.getExercises(ctx.session)
   }),
+  createExercise: trpcProcedureAuthProcedure
+    .input(z.object({ name: z.string(), muscleGroup: muscleGroupSchema }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.exerciseLibrary.createExercise(ctx.session, input)
+    }),
 })
 
 const mesoPlanner = trpcInstance.router({

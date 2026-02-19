@@ -8,7 +8,7 @@ import { type AddExerciseModalProps, formatLabel, MUSCLE_GROUPS } from './shared
 
 const GOLD = theme.colors.primary.main
 
-export const AddExerciseModal = ({ visible, onClose }: AddExerciseModalProps) => {
+export const AddExerciseModal = ({ visible, onClose, onSubmit }: AddExerciseModalProps) => {
   const [name, setName] = useState('')
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(null)
 
@@ -72,7 +72,7 @@ export const AddExerciseModal = ({ visible, onClose }: AddExerciseModalProps) =>
 
           <Pressable
             style={[s.addBtn, !canAdd && s.addBtnDisabled]}
-            onPress={canAdd ? handleClose : undefined}
+            onPress={canAdd ? () => { onSubmit({ name: name.trim(), muscleGroup: muscleGroup! }); handleClose() } : undefined}
             disabled={!canAdd}
           >
             <Text style={s.addBtnText}>ADD EXERCISE</Text>

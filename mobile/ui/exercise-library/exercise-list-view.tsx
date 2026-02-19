@@ -75,7 +75,7 @@ const ExerciseListCard = ({ exercise, unit }: { exercise: ExerciseLibraryItem; u
             </Text>
             {exercise.doneInPast && <View style={s.performedDot} />}
           </View>
-          <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
+          <Text style={s.patternLabel}>{formatLabel(exercise.muscleGroup)}</Text>
         </View>
         {exercise.doneInPast && <ExerciseStats exercise={exercise} unit={unit} />}
       </View>
@@ -160,6 +160,9 @@ export const ExerciseListView = () => {
   const trpcUtils = trpc.useUtils()
   const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery()
   const { data: exercises, isLoading: isLoadingExercises, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+  const createExercise = trpc.exerciseLibrary.createExercise.useMutation({
+    onSuccess: () => trpcUtils.exerciseLibrary.getExercises.invalidate(),
+  })
   const isLoading = isLoadingExercises || !onboardingInfo
 
   useFocusEffect(
@@ -355,7 +358,7 @@ export const ExerciseListView = () => {
         </View>
       )}
 
-      <AddExerciseModal visible={modalVisible} onClose={() => setModalVisible(false)} />
+      <AddExerciseModal visible={modalVisible} onClose={() => setModalVisible(false)} onSubmit={input => createExercise.mutate(input)} />
     </View>
   )
 }

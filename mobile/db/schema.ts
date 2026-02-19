@@ -1,4 +1,4 @@
-import { index, integer, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, real, sqliteTable, text, unique, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
@@ -28,12 +28,23 @@ export const exercise = sqliteTable('exercise', {
   id: text('id').primaryKey(),
   name: text('name').notNull().unique(),
   muscleGroup: text('muscle_group').notNull(),
-  movementPattern: text('movement_pattern').notNull(),
-  minimumLiftingExperience: text('minimum_lifting_experience').notNull().default('none'),
-  movementPatternPriority: integer('movement_pattern_priority').notNull(),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 })
+
+export const exerciseMetadata = sqliteTable(
+  'exercise_metadata',
+  {
+    id: text('id').primaryKey(),
+    exerciseId: text('exercise_id')
+      .notNull()
+      .references(() => exercise.id),
+    movementPattern: text('movement_pattern').notNull(),
+    movementPatternPriority: integer('movement_pattern_priority').notNull(),
+    minimumLiftingExperience: text('minimum_lifting_experience').notNull().default('none'),
+  },
+  table => [unique('exercise_metadata_exercise_id_unique').on(table.exerciseId)]
+)
 
 export const mesocycle = sqliteTable(
   'mesocycle',

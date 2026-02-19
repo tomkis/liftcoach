@@ -22,15 +22,20 @@ const seedExercises = async () => {
 
   const now = Date.now()
   for (const ex of exerciseSeedData) {
+    const exerciseId = v4()
     await db.insert(schema.exercise).values({
-      id: v4(),
+      id: exerciseId,
       name: ex.name,
       muscleGroup: ex.muscleGroup,
+      createdAt: now,
+      updatedAt: now,
+    })
+    await db.insert(schema.exerciseMetadata).values({
+      id: v4(),
+      exerciseId,
       movementPattern: ex.movementPattern,
       movementPatternPriority: ex.movementPatternPriority,
       minimumLiftingExperience: ex.minimumLiftingExperience,
-      createdAt: now,
-      updatedAt: now,
     })
   }
 }

@@ -24,15 +24,19 @@ import * as schema from './schema'
 const LOCAL_USER_ID = 'local-user'
 
 export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
-  const rows = await db.select().from(schema.exercise).orderBy(schema.exercise.movementPatternPriority)
+  const rows = await db
+    .select()
+    .from(schema.exercise)
+    .innerJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
+    .orderBy(schema.exerciseMetadata.movementPatternPriority)
 
-  return rows.map(e => ({
-    muscleGroup: e.muscleGroup as MuscleGroup,
-    movementPattern: e.movementPattern,
-    name: e.name,
-    minimumLiftingExperience: e.minimumLiftingExperience,
-    movementPatternPriority: e.movementPatternPriority,
-    id: e.id,
+  return rows.map(r => ({
+    muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+    movementPattern: r.exercise_metadata.movementPattern,
+    name: r.exercise.name,
+    minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience,
+    movementPatternPriority: r.exercise_metadata.movementPatternPriority,
+    id: r.exercise.id,
   })) as ProvidedExercise[]
 }
 
@@ -155,14 +159,15 @@ export const getExerciseLibraryData = async () => {
   const rows = await db
     .select()
     .from(schema.exercise)
-    .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
+    .innerJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
+    .orderBy(schema.exercise.muscleGroup, schema.exerciseMetadata.movementPatternPriority)
 
-  return rows.map(e => ({
-    id: e.id,
-    name: e.name,
-    muscleGroup: muscleGroupSchema.parse(e.muscleGroup),
-    movementPattern: movementPatternSchema.parse(e.movementPattern),
-    loadingHistory: historyByExercise.get(e.id) ?? [],
+  return rows.map(r => ({
+    id: r.exercise.id,
+    name: r.exercise.name,
+    muscleGroup: muscleGroupSchema.parse(r.exercise.muscleGroup),
+    movementPattern: movementPatternSchema.parse(r.exercise_metadata.movementPattern),
+    loadingHistory: historyByExercise.get(r.exercise.id) ?? [],
   }))
 }
 

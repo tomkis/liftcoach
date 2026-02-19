@@ -88,7 +88,7 @@ const ExerciseSelectionModal = ({
     return aIsAssigned ? 1 : -1
   })
 
-  const selecteExercise = (name: string) => {
+  const selectExercise = (name: string) => {
     setCurrentlySelectedExercise(e => ({ ...e, name }))
   }
 
@@ -112,7 +112,7 @@ const ExerciseSelectionModal = ({
                     isAssigned && styles.assignedExerciseButton,
                     currentlySelectedExercise.name === exercise.name && styles.selectedExerciseButton,
                   ]}
-                  onPress={() => selecteExercise(exercise.name)}
+                  onPress={() => selectExercise(exercise.name)}
                 >
                   <View style={styles.exerciseInfo}>
                     <Text
@@ -191,20 +191,17 @@ const ExerciseSelectionScreenContent = ({
     }
 
     const updatedExercises = [...selectedExercises]
-    const dayExercises = updatedExercises[selectedDay - 1].exercises
+    const dayIndex = selectedDay - 1
+    const dayExercises = [...updatedExercises[dayIndex].exercises]
     const exerciseIndex = selectedExercise?.exerciseIndex
 
-    if (exerciseIndex !== -1) {
-      const updatedExercise = {
-        ...dayExercises[exerciseIndex],
-        exercise: exercise,
-        sets,
-      }
-      dayExercises[exerciseIndex] = updatedExercise
-      setSelectedExercises(updatedExercises)
-    } else {
-      throw new Error('Illegal State')
+    dayExercises[exerciseIndex] = {
+      ...dayExercises[exerciseIndex],
+      exercise: exercise,
+      sets,
     }
+    updatedExercises[dayIndex] = { ...updatedExercises[dayIndex], exercises: dayExercises }
+    setSelectedExercises(updatedExercises)
 
     setSelectedExercise(null)
   }
@@ -496,12 +493,5 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flex: 1,
-  },
-  muscleGroupTitle: {
-    fontSize: 18,
-    color: theme.colors.text.primary,
-    fontFamily: theme.font.sairaRegular,
-    textTransform: 'capitalize',
-    marginTop: 4,
   },
 })

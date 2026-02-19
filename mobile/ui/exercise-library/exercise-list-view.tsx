@@ -19,12 +19,11 @@ import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 
 import { AddExerciseModal } from './add-exercise-modal/add-exercise-modal'
+import { formatLabel } from './add-exercise-modal/shared'
 
 const GOLD = theme.colors.primary.main
 const SCREEN_WIDTH = Dimensions.get('window').width
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8
-
-const formatLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2')
 
 const trendFromProgress = (state: ProgressState) => {
   if (state === 'progressing') return 'up' as const

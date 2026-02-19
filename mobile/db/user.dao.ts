@@ -7,6 +7,8 @@ import {
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   HistoricalResult,
+  LiftingExperience,
+  MovementPattern,
   MuscleGroup,
   muscleGroupSchema,
   OnboardedUser,
@@ -34,9 +36,9 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
       return {
         type: 'curated' as const,
         muscleGroup: r.exercise.muscleGroup as MuscleGroup,
-        movementPattern: r.exercise_metadata.movementPattern,
+        movementPattern: r.exercise_metadata.movementPattern as MovementPattern,
         name: r.exercise.name,
-        minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience,
+        minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience as LiftingExperience,
         movementPatternPriority: r.exercise_metadata.movementPatternPriority,
         id: r.exercise.id,
       }
@@ -47,7 +49,7 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
       name: r.exercise.name,
       id: r.exercise.id,
     }
-  }) as ProvidedExercise[]
+  })
 }
 
 export const getExerciseWithHistory = async (exerciseId: string) => {

@@ -18,11 +18,12 @@ import type { ExerciseLibraryItem, MuscleGroup, ProgressState } from '@/mobile/d
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 
+import { AddExerciseModal } from './add-exercise-modal/add-exercise-modal'
+import { formatLabel } from './add-exercise-modal/shared'
+
 const GOLD = theme.colors.primary.main
 const SCREEN_WIDTH = Dimensions.get('window').width
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8
-
-const formatLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2')
 
 const trendFromProgress = (state: ProgressState) => {
   if (state === 'progressing') return 'up' as const
@@ -73,7 +74,7 @@ const ExerciseListCard = React.memo(function ExerciseListCard({ exercise, unit }
             </Text>
             {exercise.doneInPast && <View style={s.performedDot} />}
           </View>
-          <Text style={s.patternLabel}>{formatLabel(exercise.movementPattern)}</Text>
+          <Text style={s.patternLabel}>{formatLabel(exercise.muscleGroup)}</Text>
         </View>
         {exercise.doneInPast && <ExerciseStats exercise={exercise} unit={unit} />}
       </View>
@@ -153,10 +154,14 @@ export const ExerciseListView = () => {
   const [performedOnly, setPerformedOnly] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const drawerAnim = useRef(new Animated.Value(0)).current
+  const [modalVisible, setModalVisible] = useState(false)
 
   const trpcUtils = trpc.useUtils()
   const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery()
   const { data: exercises, isLoading: isLoadingExercises, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+  const createExercise = trpc.exerciseLibrary.createExercise.useMutation({
+    onSuccess: () => trpcUtils.exerciseLibrary.getExercises.invalidate(),
+  })
   const isLoading = isLoadingExercises || !onboardingInfo
 
   useFocusEffect(
@@ -258,10 +263,10 @@ export const ExerciseListView = () => {
             <Text style={s.headerTitle}>MY EXERCISES</Text>
           </View>
           <View style={s.headerActions}>
-            {/* <Pressable onPress={() => {}} hitSlop={12} style={s.addButton}>
+            <Pressable onPress={() => setModalVisible(true)} hitSlop={12} style={s.addButton}>
               <View style={s.addIconHLine} />
               <View style={s.addIconVLine} />
-            </Pressable> */}
+            </Pressable>
             <Pressable onPress={openDrawer} hitSlop={12} style={s.filterButton}>
               <FilterIcon active={activeGroup !== null || performedOnly} />
             </Pressable>
@@ -366,6 +371,8 @@ export const ExerciseListView = () => {
           </Animated.View>
         </View>
       )}
+
+      <AddExerciseModal visible={modalVisible} onClose={() => setModalVisible(false)} onSubmit={input => createExercise.mutate(input)} />
     </View>
   )
 }

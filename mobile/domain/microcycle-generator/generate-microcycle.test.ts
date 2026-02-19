@@ -4,17 +4,18 @@ import { describe, expect, it } from 'vitest'
 import { exerciseSeedData } from '../../db/seed/exercises'
 import { AuditTrail } from '../audit-trail'
 import { MicrocycleGeneratorConfig } from '../microcycle'
-import { ProvidedExercise } from '../muscle-group'
+import { CuratedExercise, ProvidedExercise } from '../muscle-group'
 import { LiftingExperience, MuscleGroupPreference, OnboardedUser, TrainingFrequency, Unit } from '../onboarding'
 import { MicrocycleGenerator } from './generate-microcycle'
 import { UserVolumeCalculator } from './user-volume-calculator'
 
 const availableExercises: ProvidedExercise[] = exerciseSeedData.map((e, i) => ({
   ...e,
+  type: 'curated' as const,
   id: `exercise-${i}`,
-  muscleGroup: e.muscleGroup as ProvidedExercise['muscleGroup'],
-  movementPattern: e.movementPattern as ProvidedExercise['movementPattern'],
-  minimumLiftingExperience: e.minimumLiftingExperience as ProvidedExercise['minimumLiftingExperience'],
+  muscleGroup: e.muscleGroup as CuratedExercise['muscleGroup'],
+  movementPattern: e.movementPattern as CuratedExercise['movementPattern'],
+  minimumLiftingExperience: e.minimumLiftingExperience as CuratedExercise['minimumLiftingExperience'],
 }))
 
 const config: MicrocycleGeneratorConfig = {

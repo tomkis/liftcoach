@@ -8,4 +8,7 @@ export const createLocalExerciseLibraryContext = (): ExerciseLibraryContext => (
     const rows = await userDao.getExerciseLibraryData()
     return rows.map(row => new ExerciseAggregateRoot(row).toLibraryItem())
   },
+  createExercise: async (_session, input) => {
+    await userDao.createExercise(input)
+  },
 })

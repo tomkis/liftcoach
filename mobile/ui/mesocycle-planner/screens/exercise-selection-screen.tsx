@@ -23,6 +23,9 @@ import { trpc } from '@/mobile/trpc'
 
 import { ScreenWrapper } from './screen-wrapper'
 
+const getMovementPattern = (exercise: ProvidedExercise): string | undefined =>
+  exercise.type === 'curated' ? exercise.movementPattern : undefined
+
 type ExerciseSelectionScreenProps = {
   navigation: NativeStackNavigationProp<MesocyclePlannerStackParamList, 'ExerciseSelection'>
   route: RouteProp<MesocyclePlannerStackParamList, 'ExerciseSelection'>
@@ -34,6 +37,7 @@ type ExerciseSelectionModalProps = {
   exercises: ProvidedExercise[]
   selectedExercise: { name: string; sets: number; muscleGroup: MuscleGroup }
   selectedMovementPatterns: string[]
+  selectedExerciseIds: string[]
 }
 
 const ExerciseSelectionModal = ({
@@ -42,6 +46,7 @@ const ExerciseSelectionModal = ({
   exercises,
   selectedExercise,
   selectedMovementPatterns,
+  selectedExerciseIds,
 }: ExerciseSelectionModalProps) => {
   const [currentlySelectedExercise, setCurrentlySelectedExercise] = useState<{ name: string; sets: number }>(
     selectedExercise
@@ -68,15 +73,22 @@ const ExerciseSelectionModal = ({
   }
 
   const assignedMovementPatterns = new Set(selectedMovementPatterns)
+  const assignedExerciseIds = new Set(selectedExerciseIds)
+
+  const isExerciseAssigned = (exercise: ProvidedExercise): boolean => {
+    const pattern = getMovementPattern(exercise)
+    if (pattern !== undefined) return assignedMovementPatterns.has(pattern)
+    return assignedExerciseIds.has(exercise.id)
+  }
 
   const sortedExercises = [...exercises].sort((a, b) => {
-    const aIsAssigned = assignedMovementPatterns.has(a.movementPattern)
-    const bIsAssigned = assignedMovementPatterns.has(b.movementPattern)
+    const aIsAssigned = isExerciseAssigned(a)
+    const bIsAssigned = isExerciseAssigned(b)
     if (aIsAssigned === bIsAssigned) return 0
     return aIsAssigned ? 1 : -1
   })
 
-  const selecteExercise = (name: string) => {
+  const selectExercise = (name: string) => {
     setCurrentlySelectedExercise(e => ({ ...e, name }))
   }
 
@@ -90,7 +102,7 @@ const ExerciseSelectionModal = ({
 
           <ScrollView style={styles.exerciseList}>
             {sortedExercises.map(exercise => {
-              const isAssigned = assignedMovementPatterns.has(exercise.movementPattern)
+              const isAssigned = isExerciseAssigned(exercise)
 
               return (
                 <Pressable
@@ -100,7 +112,7 @@ const ExerciseSelectionModal = ({
                     isAssigned && styles.assignedExerciseButton,
                     currentlySelectedExercise.name === exercise.name && styles.selectedExerciseButton,
                   ]}
-                  onPress={() => selecteExercise(exercise.name)}
+                  onPress={() => selectExercise(exercise.name)}
                 >
                   <View style={styles.exerciseInfo}>
                     <Text
@@ -119,7 +131,7 @@ const ExerciseSelectionModal = ({
                         currentlySelectedExercise.name === exercise.name && styles.selectedExerciseButtonText,
                       ]}
                     >
-                      {exercise.movementPattern}
+                      {getMovementPattern(exercise) ?? 'Custom'}
                     </Text>
                   </View>
                 </Pressable>
@@ -179,20 +191,17 @@ const ExerciseSelectionScreenContent = ({
     }
 
     const updatedExercises = [...selectedExercises]
-    const dayExercises = updatedExercises[selectedDay - 1].exercises
+    const dayIndex = selectedDay - 1
+    const dayExercises = [...updatedExercises[dayIndex].exercises]
     const exerciseIndex = selectedExercise?.exerciseIndex
 
-    if (exerciseIndex !== -1) {
-      const updatedExercise = {
-        ...dayExercises[exerciseIndex],
-        exercise: exercise,
-        sets,
-      }
-      dayExercises[exerciseIndex] = updatedExercise
-      setSelectedExercises(updatedExercises)
-    } else {
-      throw new Error('Illegal State')
+    dayExercises[exerciseIndex] = {
+      ...dayExercises[exerciseIndex],
+      exercise: exercise,
+      sets,
     }
+    updatedExercises[dayIndex] = { ...updatedExercises[dayIndex], exercises: dayExercises }
+    setSelectedExercises(updatedExercises)
 
     setSelectedExercise(null)
   }
@@ -236,7 +245,7 @@ const ExerciseSelectionScreenContent = ({
       <ScrollView style={styles.muscleGroupsList}>
         <View onStartShouldSetResponder={() => true}>
           {selectedExercises[selectedDay - 1].exercises.map((selectedExercise, exerciseIndex) => {
-            const movementPattern = selectedExercise.exercise.movementPattern
+            const movementPattern = getMovementPattern(selectedExercise.exercise) ?? 'Custom'
 
             return (
               <View key={selectedExercise.exercise.id} style={styles.exerciseCard}>
@@ -271,7 +280,11 @@ const ExerciseSelectionScreenContent = ({
           key={selectedExercise.exerciseIndex}
           selectedMovementPatterns={currentlySelectedDayExercises
             .filter(e => e.muscleGroup === selectedExercise.muscleGroup)
-            .map(e => e.exercise.movementPattern)}
+            .map(e => getMovementPattern(e.exercise))
+            .filter((p): p is string => p !== undefined)}
+          selectedExerciseIds={currentlySelectedDayExercises
+            .filter(e => e.muscleGroup === selectedExercise.muscleGroup)
+            .map(e => e.exercise.id)}
           onClose={() => {
             setSelectedExercise(null)
           }}
@@ -480,12 +493,5 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flex: 1,
-  },
-  muscleGroupTitle: {
-    fontSize: 18,
-    color: theme.colors.text.primary,
-    fontFamily: theme.font.sairaRegular,
-    textTransform: 'capitalize',
-    marginTop: 4,
   },
 })

@@ -7,7 +7,8 @@ import {
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   HistoricalResult,
-  movementPatternSchema,
+  LiftingExperience,
+  MovementPattern,
   MuscleGroup,
   muscleGroupSchema,
   OnboardedUser,
@@ -24,16 +25,31 @@ import * as schema from './schema'
 const LOCAL_USER_ID = 'local-user'
 
 export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
-  const rows = await db.select().from(schema.exercise).orderBy(schema.exercise.movementPatternPriority)
+  const rows = await db
+    .select()
+    .from(schema.exercise)
+    .leftJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
+    .orderBy(schema.exerciseMetadata.movementPatternPriority)
 
-  return rows.map(e => ({
-    muscleGroup: e.muscleGroup as MuscleGroup,
-    movementPattern: e.movementPattern,
-    name: e.name,
-    minimumLiftingExperience: e.minimumLiftingExperience,
-    movementPatternPriority: e.movementPatternPriority,
-    id: e.id,
-  })) as ProvidedExercise[]
+  return rows.map(r => {
+    if (r.exercise_metadata) {
+      return {
+        type: 'curated' as const,
+        muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+        movementPattern: r.exercise_metadata.movementPattern as MovementPattern,
+        name: r.exercise.name,
+        minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience as LiftingExperience,
+        movementPatternPriority: r.exercise_metadata.movementPatternPriority,
+        id: r.exercise.id,
+      }
+    }
+    return {
+      type: 'custom' as const,
+      muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+      name: r.exercise.name,
+      id: r.exercise.id,
+    }
+  })
 }
 
 export const getExerciseWithHistory = async (exerciseId: string) => {
@@ -155,15 +171,24 @@ export const getExerciseLibraryData = async () => {
   const rows = await db
     .select()
     .from(schema.exercise)
-    .orderBy(schema.exercise.muscleGroup, schema.exercise.movementPatternPriority)
+    .orderBy(schema.exercise.name)
 
-  return rows.map(e => ({
-    id: e.id,
-    name: e.name,
-    muscleGroup: muscleGroupSchema.parse(e.muscleGroup),
-    movementPattern: movementPatternSchema.parse(e.movementPattern),
-    loadingHistory: historyByExercise.get(e.id) ?? [],
+  return rows.map(r => ({
+    id: r.id,
+    name: r.name,
+    muscleGroup: muscleGroupSchema.parse(r.muscleGroup),
+    loadingHistory: historyByExercise.get(r.id) ?? [],
   }))
+}
+
+export const createExercise = async (input: { name: string; muscleGroup: MuscleGroup }) => {
+  await db.insert(schema.exercise).values({
+    id: v4(),
+    name: input.name,
+    muscleGroup: input.muscleGroup,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  })
 }
 
 export const storeOnboardingData = async (onboardedUser: OnboardedUser) => {

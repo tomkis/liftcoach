@@ -9,7 +9,6 @@ export class ExerciseAggregateRoot {
       id: this.data.id,
       name: this.data.name,
       muscleGroup: this.data.muscleGroup,
-      movementPattern: this.data.movementPattern,
     }
 
     const history = this.data.loadingHistory

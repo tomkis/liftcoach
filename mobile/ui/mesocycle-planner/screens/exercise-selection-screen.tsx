@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { assertCurated, MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProvidedExercise } from '@/mobile/domain'
+import { MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProvidedExercise } from '@/mobile/domain'
 import React, { useState } from 'react'
 import {
   KeyboardAvoidingView,
@@ -23,6 +23,9 @@ import { trpc } from '@/mobile/trpc'
 
 import { ScreenWrapper } from './screen-wrapper'
 
+const getMovementPattern = (exercise: ProvidedExercise): string | undefined =>
+  exercise.type === 'curated' ? exercise.movementPattern : undefined
+
 type ExerciseSelectionScreenProps = {
   navigation: NativeStackNavigationProp<MesocyclePlannerStackParamList, 'ExerciseSelection'>
   route: RouteProp<MesocyclePlannerStackParamList, 'ExerciseSelection'>
@@ -34,6 +37,7 @@ type ExerciseSelectionModalProps = {
   exercises: ProvidedExercise[]
   selectedExercise: { name: string; sets: number; muscleGroup: MuscleGroup }
   selectedMovementPatterns: string[]
+  selectedExerciseIds: string[]
 }
 
 const ExerciseSelectionModal = ({
@@ -42,6 +46,7 @@ const ExerciseSelectionModal = ({
   exercises,
   selectedExercise,
   selectedMovementPatterns,
+  selectedExerciseIds,
 }: ExerciseSelectionModalProps) => {
   const [currentlySelectedExercise, setCurrentlySelectedExercise] = useState<{ name: string; sets: number }>(
     selectedExercise
@@ -68,10 +73,17 @@ const ExerciseSelectionModal = ({
   }
 
   const assignedMovementPatterns = new Set(selectedMovementPatterns)
+  const assignedExerciseIds = new Set(selectedExerciseIds)
+
+  const isExerciseAssigned = (exercise: ProvidedExercise): boolean => {
+    const pattern = getMovementPattern(exercise)
+    if (pattern !== undefined) return assignedMovementPatterns.has(pattern)
+    return assignedExerciseIds.has(exercise.id)
+  }
 
   const sortedExercises = [...exercises].sort((a, b) => {
-    const aIsAssigned = assignedMovementPatterns.has(assertCurated(a).movementPattern)
-    const bIsAssigned = assignedMovementPatterns.has(assertCurated(b).movementPattern)
+    const aIsAssigned = isExerciseAssigned(a)
+    const bIsAssigned = isExerciseAssigned(b)
     if (aIsAssigned === bIsAssigned) return 0
     return aIsAssigned ? 1 : -1
   })
@@ -90,7 +102,7 @@ const ExerciseSelectionModal = ({
 
           <ScrollView style={styles.exerciseList}>
             {sortedExercises.map(exercise => {
-              const isAssigned = assignedMovementPatterns.has(assertCurated(exercise).movementPattern)
+              const isAssigned = isExerciseAssigned(exercise)
 
               return (
                 <Pressable
@@ -119,7 +131,7 @@ const ExerciseSelectionModal = ({
                         currentlySelectedExercise.name === exercise.name && styles.selectedExerciseButtonText,
                       ]}
                     >
-                      {assertCurated(exercise).movementPattern}
+                      {getMovementPattern(exercise) ?? 'Custom'}
                     </Text>
                   </View>
                 </Pressable>
@@ -236,7 +248,7 @@ const ExerciseSelectionScreenContent = ({
       <ScrollView style={styles.muscleGroupsList}>
         <View onStartShouldSetResponder={() => true}>
           {selectedExercises[selectedDay - 1].exercises.map((selectedExercise, exerciseIndex) => {
-            const movementPattern = assertCurated(selectedExercise.exercise).movementPattern
+            const movementPattern = getMovementPattern(selectedExercise.exercise) ?? 'Custom'
 
             return (
               <View key={selectedExercise.exercise.id} style={styles.exerciseCard}>
@@ -271,7 +283,11 @@ const ExerciseSelectionScreenContent = ({
           key={selectedExercise.exerciseIndex}
           selectedMovementPatterns={currentlySelectedDayExercises
             .filter(e => e.muscleGroup === selectedExercise.muscleGroup)
-            .map(e => assertCurated(e.exercise).movementPattern)}
+            .map(e => getMovementPattern(e.exercise))
+            .filter((p): p is string => p !== undefined)}
+          selectedExerciseIds={currentlySelectedDayExercises
+            .filter(e => e.muscleGroup === selectedExercise.muscleGroup)
+            .map(e => e.exercise.id)}
           onClose={() => {
             setSelectedExercise(null)
           }}

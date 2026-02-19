@@ -113,13 +113,6 @@ const customExerciseSchema = z.object({
 export const providedExerciseSchema = z.discriminatedUnion('type', [curatedExerciseSchema, customExerciseSchema])
 export type ProvidedExercise = z.infer<typeof providedExerciseSchema>
 export type CuratedExercise = z.infer<typeof curatedExerciseSchema>
-export const assertCurated = (exercise: ProvidedExercise): CuratedExercise => {
-  if (exercise.type !== 'curated') {
-    throw new Error('Only curated exercises supported')
-  }
-  return exercise
-}
-
 export type MovementPatternPriorities = {
   [MuscleGroup.Quads]: MovementPattern[]
   [MuscleGroup.Hamstrings]: MovementPattern[]

@@ -1,4 +1,5 @@
 import {
+  assertCurated,
   BodyPart,
   MovementPattern,
   MovementPatternPriorities,
@@ -86,13 +87,11 @@ export class ExerciseProvider {
       throw new Error('Original exercise not found')
     }
 
-    const originalExerciseMovementPattern = originalExercise.movementPattern
-    if (!originalExerciseMovementPattern) {
-      throw new Error('Original exercise not found in the muscle group')
-    }
+    const curated = assertCurated(originalExercise)
+    const originalExerciseMovementPattern = curated.movementPattern
 
     const currentMovementPatternExercises = this.exercises.filter(
-      e => e.movementPattern === originalExerciseMovementPattern && e.muscleGroup === muscleGroup
+      e => assertCurated(e).movementPattern === originalExerciseMovementPattern && e.muscleGroup === muscleGroup
     )
     const sameMuscleGroupExercises = this.exercises.filter(e => e.muscleGroup === muscleGroup)
 
@@ -114,11 +113,11 @@ export class ExerciseProvider {
     userExperience: LiftingExperience
   ): ProvidedExercise | undefined {
     const exercisesForPattern = this.exercises.filter(
-      e => e.muscleGroup === muscleGroup && e.movementPattern === movementPattern
+      e => e.muscleGroup === muscleGroup && assertCurated(e).movementPattern === movementPattern
     )
 
     const exercisesForExperience = exercisesForPattern.filter(
-      e => experienceToNumber(e.minimumLiftingExperience) <= experienceToNumber(userExperience)
+      e => experienceToNumber(assertCurated(e).minimumLiftingExperience) <= experienceToNumber(userExperience)
     )
 
     if (exercisesForExperience.length === 0) {

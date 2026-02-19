@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProvidedExercise } from '@/mobile/domain'
+import { assertCurated, MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProvidedExercise } from '@/mobile/domain'
 import React, { useState } from 'react'
 import {
   KeyboardAvoidingView,
@@ -70,8 +70,8 @@ const ExerciseSelectionModal = ({
   const assignedMovementPatterns = new Set(selectedMovementPatterns)
 
   const sortedExercises = [...exercises].sort((a, b) => {
-    const aIsAssigned = assignedMovementPatterns.has(a.movementPattern)
-    const bIsAssigned = assignedMovementPatterns.has(b.movementPattern)
+    const aIsAssigned = assignedMovementPatterns.has(assertCurated(a).movementPattern)
+    const bIsAssigned = assignedMovementPatterns.has(assertCurated(b).movementPattern)
     if (aIsAssigned === bIsAssigned) return 0
     return aIsAssigned ? 1 : -1
   })
@@ -90,7 +90,7 @@ const ExerciseSelectionModal = ({
 
           <ScrollView style={styles.exerciseList}>
             {sortedExercises.map(exercise => {
-              const isAssigned = assignedMovementPatterns.has(exercise.movementPattern)
+              const isAssigned = assignedMovementPatterns.has(assertCurated(exercise).movementPattern)
 
               return (
                 <Pressable
@@ -119,7 +119,7 @@ const ExerciseSelectionModal = ({
                         currentlySelectedExercise.name === exercise.name && styles.selectedExerciseButtonText,
                       ]}
                     >
-                      {exercise.movementPattern}
+                      {assertCurated(exercise).movementPattern}
                     </Text>
                   </View>
                 </Pressable>
@@ -236,7 +236,7 @@ const ExerciseSelectionScreenContent = ({
       <ScrollView style={styles.muscleGroupsList}>
         <View onStartShouldSetResponder={() => true}>
           {selectedExercises[selectedDay - 1].exercises.map((selectedExercise, exerciseIndex) => {
-            const movementPattern = selectedExercise.exercise.movementPattern
+            const movementPattern = assertCurated(selectedExercise.exercise).movementPattern
 
             return (
               <View key={selectedExercise.exercise.id} style={styles.exerciseCard}>
@@ -271,7 +271,7 @@ const ExerciseSelectionScreenContent = ({
           key={selectedExercise.exerciseIndex}
           selectedMovementPatterns={currentlySelectedDayExercises
             .filter(e => e.muscleGroup === selectedExercise.muscleGroup)
-            .map(e => e.exercise.movementPattern)}
+            .map(e => assertCurated(e.exercise).movementPattern)}
           onClose={() => {
             setSelectedExercise(null)
           }}

@@ -91,15 +91,34 @@ export enum MovementPattern {
 }
 const movementPatternSchema = z.nativeEnum(MovementPattern)
 
-export const providedExerciseSchema = z.object({
+const providedExerciseBase = {
+  id: z.string(),
+  name: z.string(),
   muscleGroup: muscleGroup,
+}
+
+const curatedExerciseSchema = z.object({
+  ...providedExerciseBase,
+  type: z.literal('curated'),
   movementPattern: movementPatternSchema,
   movementPatternPriority: z.number(),
   minimumLiftingExperience: z.nativeEnum(LiftingExperience),
-  name: z.string(),
-  id: z.string(),
 })
+
+const customExerciseSchema = z.object({
+  ...providedExerciseBase,
+  type: z.literal('custom'),
+})
+
+export const providedExerciseSchema = z.discriminatedUnion('type', [curatedExerciseSchema, customExerciseSchema])
 export type ProvidedExercise = z.infer<typeof providedExerciseSchema>
+export type CuratedExercise = z.infer<typeof curatedExerciseSchema>
+export const assertCurated = (exercise: ProvidedExercise): CuratedExercise => {
+  if (exercise.type !== 'curated') {
+    throw new Error('Only curated exercises supported')
+  }
+  return exercise
+}
 
 export type MovementPatternPriorities = {
   [MuscleGroup.Quads]: MovementPattern[]

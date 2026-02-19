@@ -7,6 +7,7 @@ import { ExercisePicker } from './exercise-picker'
 import { ExerciseProvider } from './exercise-provider'
 
 const makeExercise = (id: string, muscleGroup: MuscleGroup, movementPattern: MovementPattern): ProvidedExercise => ({
+  type: 'curated' as const,
   id,
   name: id,
   muscleGroup,

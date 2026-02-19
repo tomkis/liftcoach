@@ -30,6 +30,7 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
     .orderBy(schema.exerciseMetadata.movementPatternPriority)
 
   return rows.map(r => ({
+    type: 'curated' as const,
     muscleGroup: r.exercise.muscleGroup as MuscleGroup,
     movementPattern: r.exercise_metadata.movementPattern,
     name: r.exercise.name,

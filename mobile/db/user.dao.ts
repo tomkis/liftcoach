@@ -26,18 +26,28 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
   const rows = await db
     .select()
     .from(schema.exercise)
-    .innerJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
+    .leftJoin(schema.exerciseMetadata, eq(schema.exerciseMetadata.exerciseId, schema.exercise.id))
     .orderBy(schema.exerciseMetadata.movementPatternPriority)
 
-  return rows.map(r => ({
-    type: 'curated' as const,
-    muscleGroup: r.exercise.muscleGroup as MuscleGroup,
-    movementPattern: r.exercise_metadata.movementPattern,
-    name: r.exercise.name,
-    minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience,
-    movementPatternPriority: r.exercise_metadata.movementPatternPriority,
-    id: r.exercise.id,
-  })) as ProvidedExercise[]
+  return rows.map(r => {
+    if (r.exercise_metadata) {
+      return {
+        type: 'curated' as const,
+        muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+        movementPattern: r.exercise_metadata.movementPattern,
+        name: r.exercise.name,
+        minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience,
+        movementPatternPriority: r.exercise_metadata.movementPatternPriority,
+        id: r.exercise.id,
+      }
+    }
+    return {
+      type: 'custom' as const,
+      muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+      name: r.exercise.name,
+      id: r.exercise.id,
+    }
+  }) as ProvidedExercise[]
 }
 
 export const getExerciseWithHistory = async (exerciseId: string) => {

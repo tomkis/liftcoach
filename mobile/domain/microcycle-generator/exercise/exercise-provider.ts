@@ -1,6 +1,6 @@
 import {
-  assertCurated,
   BodyPart,
+  CuratedExercise,
   MovementPattern,
   MovementPatternPriorities,
   MuscleGroup,
@@ -87,23 +87,35 @@ export class ExerciseProvider {
       throw new Error('Original exercise not found')
     }
 
-    const curated = assertCurated(originalExercise)
-    const originalExerciseMovementPattern = curated.movementPattern
+    const customExercises = this.exercises.filter(e => e.type === 'custom' && e.muscleGroup === muscleGroup)
 
-    const currentMovementPatternExercises = this.exercises.filter(
-      e => assertCurated(e).movementPattern === originalExerciseMovementPattern && e.muscleGroup === muscleGroup
-    )
+    const samePatternCurated: CuratedExercise[] =
+      originalExercise.type === 'curated'
+        ? (this.exercises.filter(
+            e =>
+              e.type === 'curated' &&
+              e.movementPattern === originalExercise.movementPattern &&
+              e.muscleGroup === muscleGroup
+          ) as CuratedExercise[])
+        : []
+
     const sameMuscleGroupExercises = this.exercises.filter(e => e.muscleGroup === muscleGroup)
 
-    const allBodyPartExercises = expandedMuscleGroup.flatMap(muscleGroup =>
-      Object.values(this.exercises.filter(e => e.muscleGroup === muscleGroup)).flat()
+    const allBodyPartExercises = expandedMuscleGroup.flatMap(mg =>
+      this.exercises.filter(e => e.muscleGroup === mg)
     )
 
     const orderedExercises = [
-      ...new Set([...currentMovementPatternExercises, ...sameMuscleGroupExercises, ...allBodyPartExercises]),
+      ...new Set([...customExercises, ...samePatternCurated, ...sameMuscleGroupExercises, ...allBodyPartExercises]),
     ]
 
     return orderedExercises.filter(e => ![...selectedExercisesId, originalExerciseId].some(ee => ee === e.id))
+  }
+
+  private tryCustom(muscleGroup: MuscleGroup, selectedExercises: ProvidedExercise[]): ProvidedExercise | undefined {
+    return this.exercises.find(
+      e => e.type === 'custom' && e.muscleGroup === muscleGroup && !selectedExercises.some(s => s.id === e.id)
+    )
   }
 
   private tryPattern(
@@ -113,11 +125,11 @@ export class ExerciseProvider {
     userExperience: LiftingExperience
   ): ProvidedExercise | undefined {
     const exercisesForPattern = this.exercises.filter(
-      e => e.muscleGroup === muscleGroup && assertCurated(e).movementPattern === movementPattern
+      e => e.type === 'curated' && e.muscleGroup === muscleGroup && e.movementPattern === movementPattern
     )
 
     const exercisesForExperience = exercisesForPattern.filter(
-      e => experienceToNumber(assertCurated(e).minimumLiftingExperience) <= experienceToNumber(userExperience)
+      e => e.type === 'curated' && experienceToNumber(e.minimumLiftingExperience) <= experienceToNumber(userExperience)
     )
 
     if (exercisesForExperience.length === 0) {
@@ -133,6 +145,9 @@ export class ExerciseProvider {
     selectedExercises: ProvidedExercise[],
     userExperience: LiftingExperience
   ): ProvidedExercise | undefined {
+    const custom = this.tryCustom(muscleGroup, selectedExercises)
+    if (custom) return custom
+
     const patterns = movementPatternsPriorities[muscleGroup]
     const preferredIndex = exerciseNumber % patterns.length
 

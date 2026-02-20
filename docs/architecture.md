@@ -12,7 +12,7 @@ React Native + Expo, TypeScript, SQLite + Drizzle ORM, tRPC (local, no network),
 
 The app uses **tRPC without a network layer**. A custom local link calls the router directly with context implementations backed by SQLite. This gives type-safe API contracts while keeping everything on-device.
 
-Three context interfaces define the API surface: **User**, **Workout**, and **MesoPlanner**. Each is implemented as a local context that reads/writes to SQLite via Drizzle.
+Four context interfaces define the API surface: **User**, **Workout**, **MesoPlanner**, and **ExerciseLibrary**. Each is implemented as a local context that reads/writes to SQLite via Drizzle.
 
 The UI layer consumes these through standard tRPC hooks, so from the UI's perspective it looks like a normal client-server app.
 
@@ -25,6 +25,10 @@ The UI layer consumes these through standard tRPC hooks, so from the UI's perspe
 - **Workout** — A single training session within a microcycle
 - **WorkingExercise** — An exercise assignment within a workout, tracked through a state machine
 - **WorkingSet** — A single set (pending → done/failed)
+
+### Exercises
+
+Exercises come in two flavors: **curated** and **custom**. Curated exercises ship with the app and carry movement pattern classification and experience-level requirements. Custom exercises are user-created — just a name and a target muscle group. Both participate equally in program generation and progression.
 
 ### Exercise State Machine
 
@@ -42,7 +46,7 @@ When a user onboards (or starts a new mesocycle), the generator:
 
 1. Calculates **volume per muscle group** from user preferences and experience
 2. Selects the optimal **split type** (PPL, Upper/Lower, Push/Pull, Full Body) based on volume distribution and available training days
-3. **Picks exercises** matching required movement patterns, filtered by experience level
+3. **Picks exercises** — custom exercises for a muscle group are preferred; curated exercises are selected by movement pattern and experience level as fallback
 4. Creates the first microcycle with exercises in loading/testing state
 
 ### Progression System
@@ -79,7 +83,7 @@ Two top-level flows based on user state:
 
 **Onboarding** — Collects gender, experience level, training frequency, and muscle group priorities (balanced or custom). Generates the first program and lets the user review/edit before confirming.
 
-**Main app** — Three tabs: dashboard (weekly progress + insights), active workout (exercise cards with set tracking), and planning (mesocycle customization). A strength test modal can overlay the main app.
+**Main app** — Three tabs: dashboard (weekly progress + insights), active workout (exercise cards with set tracking), and planning (mesocycle customization). An exercise library lets users browse all exercises and add custom ones. A strength test modal can overlay the main app.
 
 ## Development
 

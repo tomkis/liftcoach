@@ -307,6 +307,9 @@ export const ExerciseLoadTesting = ({
   const isTooManySets = sets.length > moreRepsMessages.length
   const loadingFinished = reachedFailure || stopedVoluntarily || isTooManySets
 
+  const succeededSets = sets.filter(s => s === SetState.SetSucceeded).length
+  const confirmedReps = succeededSets > 0 ? 8 + (succeededSets - 1) * 3 : 0
+
   const failedEarly = useCallback(() => {
     pushToUndoStack(SetState.Failure)
 
@@ -533,9 +536,20 @@ export const ExerciseLoadTesting = ({
                     <>
                       <CardTitle style={styles.h2}>{isTooManySets ? 'Great Job!' : 'Failure is key to improve'}</CardTitle>
                       <BodyText>
-                        {isTooManySets
-                          ? "What's the weight and how many reps did you do?"
-                          : "You'll get better and stronger over time! What was the weight and how many reps did you do?"}
+                        {confirmedReps > 0 ? (
+                          <>
+                            <Text>
+                              {isTooManySets
+                                ? `You've smashed ${confirmedReps} reps so far.`
+                                : `You did ${confirmedReps} reps before your last attempt.`}
+                            </Text>
+                            <Text> What was the weight and how many </Text>
+                            <Text style={styles.emphasized}>total reps</Text>
+                            <Text> did you manage?</Text>
+                          </>
+                        ) : (
+                          "You'll get better and stronger over time! What was the weight and how many reps did you do?"
+                        )}
                       </BodyText>
                     </>
                     <View>

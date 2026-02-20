@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { MuscleGroup } from '@/mobile/domain'
 import React, { useState } from 'react'
 import {
+  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -259,39 +260,12 @@ export const WorkoutSplitScreen = ({ navigation, route }: SplitSelectionScreenPr
       return
     }
 
-    navigation.navigate('ExerciseSelection', {
-      trainingDays: route.params.trainingDays,
-      muscleGroupPreference: route.params.muscleGroupPreference,
-      volumePreferences: route.params.volumePreferences,
-      splitType: route.params.splitType,
-      splitByDay: getSplitByDay(),
-    })
+    navigateToExerciseSelection()
   }
 
   const handleWarningConfirm = () => {
     setIsWarningDialogVisible(false)
-    // Group distributions by day
-    const splitByDay = distributions.reduce(
-      (acc, dist) => {
-        if (!acc[dist.dayIndex]) {
-          acc[dist.dayIndex] = []
-        }
-        acc[dist.dayIndex].push({
-          muscleGroup: dist.muscleGroup,
-          sets: dist.sets,
-        })
-        return acc
-      },
-      {} as { [key: number]: Array<{ muscleGroup: MuscleGroup; sets: number }> }
-    )
-
-    navigation.navigate('ExerciseSelection', {
-      trainingDays: route.params.trainingDays,
-      muscleGroupPreference: route.params.muscleGroupPreference,
-      volumePreferences: route.params.volumePreferences,
-      splitType: route.params.splitType,
-      splitByDay,
-    })
+    navigateToExerciseSelection()
   }
 
   const getDistributedSetsForMuscleGroup = (muscleGroup: MuscleGroup) => {
@@ -309,7 +283,6 @@ export const WorkoutSplitScreen = ({ navigation, route }: SplitSelectionScreenPr
   }))
 
   const getSplitByDay = () => {
-    // Group distributions by day
     return distributions.reduce(
       (acc, dist) => {
         if (!acc[dist.dayIndex]) {
@@ -323,6 +296,21 @@ export const WorkoutSplitScreen = ({ navigation, route }: SplitSelectionScreenPr
       },
       {} as { [key: number]: Array<{ muscleGroup: MuscleGroup; sets: number }> }
     )
+  }
+
+  const navigateToExerciseSelection = () => {
+    const splitByDay = getSplitByDay()
+    if (Object.keys(splitByDay).length === 0) {
+      Alert.alert('Missing exercises', 'Each training day must have at least one exercise.')
+      return
+    }
+    navigation.navigate('ExerciseSelection', {
+      trainingDays: route.params.trainingDays,
+      muscleGroupPreference: route.params.muscleGroupPreference,
+      volumePreferences: route.params.volumePreferences,
+      splitType: route.params.splitType,
+      splitByDay,
+    })
   }
 
   return (

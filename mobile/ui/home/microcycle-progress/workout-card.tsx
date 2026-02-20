@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Unit, WorkingExercise, WorkoutExerciseState } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import React, { useEffect, useRef } from 'react'
 import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { match } from 'ts-pattern'
@@ -38,7 +39,7 @@ const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Uni
 
             return (
               <BodyText style={styles.exerciseDetails}>
-                {exercise.sets.length} sets × {firstSet.reps} reps × {firstSet.weight}{' '}
+                {exercise.sets.length} sets × {firstSet.reps} reps × {formatWeight(firstSet.weight)}{' '}
                 {unit === Unit.Metric ? 'kg' : 'lbs'}
               </BodyText>
             )

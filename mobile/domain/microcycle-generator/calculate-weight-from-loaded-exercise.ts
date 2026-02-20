@@ -1,3 +1,5 @@
+import { prettifyWeight } from '../utils/prettify-weight'
+
 const rpeChart: Record<number, number[]> = {
   1: [100, 97.8, 95.5, 93.9, 92.2, 90.7, 89.2, 87.7, 86.3],
   2: [95.5, 93.9, 92.2, 90.7, 89.2, 87.8, 86.3, 85, 83.7],
@@ -48,7 +50,7 @@ export const calculateWeightFromLoadedExercise = (
   const estimatedOneRm = calculate1RMEplay(weight, reps)
   const rpeCoeff = rpeChart[exercise.targetReps][rpeToRpeIndex[targetRpe]]
 
-  return Math.floor(estimatedOneRm * (rpeCoeff / 100) * userCoefficient)
+  return prettifyWeight(estimatedOneRm * (rpeCoeff / 100) * userCoefficient)
 }
 
 export const calculateRepsFromLoadedExercise = (

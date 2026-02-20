@@ -6,6 +6,7 @@ import {
   Unit,
   WorkingSetState,
 } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import React, { useState } from 'react'
 import {
   Keyboard,
@@ -271,7 +272,7 @@ export const ExercisePending = (props: {
                         },
                       ]}
                     >
-                      {set.reps} reps × {set.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
+                      {set.reps} reps × {formatWeight(set.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
                     </Text>
                   </View>
                   <View style={styles.checkboxContainer}>

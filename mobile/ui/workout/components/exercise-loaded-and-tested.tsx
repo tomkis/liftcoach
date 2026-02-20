@@ -1,11 +1,11 @@
-import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
 import { StyleSheet, Text, View } from 'react-native'
 
-import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
+import { formatUserWeight, formatWeight } from '@/mobile/domain/utils/format-weight'
 import { theme } from '@/mobile/theme/theme'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { Checkbox } from '@/mobile/ui/ds/controls'
-import { BodyText } from '@/mobile/ui/ds/typography'
-import { CardTitle } from '@/mobile/ui/ds/typography'
+import { BodyText, CardTitle } from '@/mobile/ui/ds/typography'
 
 const CARD_PADDING = 18
 
@@ -99,7 +99,7 @@ export const ExerciseLoadedAndTested = (props: {
           <BodyText>
             You have been able to perform <Text style={styles.emphasized}>{exercise.loadingSet.reps} reps</Text> with{' '}
             <Text style={styles.emphasized}>
-              {exercise.loadingSet.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
+              {formatUserWeight(exercise.loadingSet.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
             </Text>
           </BodyText>
           <BodyText>Let&apos;s try out some real training work now!</BodyText>
@@ -119,7 +119,7 @@ export const ExerciseLoadedAndTested = (props: {
                   },
                 ]}
               >
-                {set.reps} reps × {set.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
+                {set.reps} reps × {formatWeight(set.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
               </Text>
             </View>
             <View style={styles.checkboxContainer}>

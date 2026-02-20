@@ -663,11 +663,7 @@ export class MesocycleAggregateRoot {
     const activeWorkout = this.getActiveWorkout()
     const targetReps = 10
 
-    const targetWeight = calculateWeightFromLoadedExercise(
-      { loadingSet, targetReps },
-      targetRpe,
-      this.userCoefficient
-    )
+    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient)
 
     const sets = Array.from({ length: exercise.targetSets }).map((_, index) => ({
       id: v4(),

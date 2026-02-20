@@ -1,4 +1,5 @@
 import { FinishedWorkingExercise, Unit } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
@@ -148,7 +149,7 @@ export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExerc
                     },
                   ]}
                 >
-                  {set.reps} reps × {set.weight} {unit === 'metric' ? 'kg' : 'lbs'}
+                  {set.reps} reps × {formatWeight(set.weight)} {unit === 'metric' ? 'kg' : 'lbs'}
                 </Text>
               </View>
               <View style={styles.checkboxContainer}>

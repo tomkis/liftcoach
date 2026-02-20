@@ -891,6 +891,34 @@ export class MesocycleAggregateRoot {
         type: 'ExerciseWeightChangedTesting',
         payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
       })
+    } else if (
+      exercise.state === WorkoutExerciseState.loaded ||
+      exercise.state === WorkoutExerciseState.tested
+    ) {
+      const newReps = calculateRepsFromLoadedExercise(
+        {
+          loadingSet: exercise.loadingSet,
+          targetWeight: weight,
+        },
+        8
+      )
+
+      if (newReps !== null && newReps !== exercise.sets[0].reps) {
+        this.apply({
+          type: 'ExerciseRepsChangedDueToWeightChange',
+          payload: {
+            workoutExerciseId,
+            newReps,
+            workoutId: activeWorkout.id,
+            microcycleId: activeWorkout.microcycleId,
+          },
+        })
+      }
+
+      this.apply({
+        type: 'ExerciseWeightChangedCalibration',
+        payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+      })
     } else {
       throw new Error('Cant change weight of non-pending or testing exercise')
     }
@@ -1457,6 +1485,25 @@ export class MesocycleAggregateRoot {
                 return {
                   ...exercise,
                   updatedAt: new Date(),
+                }
+              }
+
+              return exercise
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseWeightChangedCalibration' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.workoutExerciseId) {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map(set => {
+                    return { ...set, weight: event.payload.weight }
+                  }),
                 }
               }
 

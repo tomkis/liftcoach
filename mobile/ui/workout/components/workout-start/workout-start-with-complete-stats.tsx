@@ -1,4 +1,5 @@
 import { ProgressionType, WorkoutStatsExercise } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { match } from 'ts-pattern'
@@ -415,7 +416,7 @@ export const WorkoutStartWithCompleteStats = (props: { exercises: CompleteWorkou
             <Text style={styles.exerciseName}>{exercise.exercise.name}</Text>
             <Text style={styles.exerciseDetails}>
               <Text style={styles.emphasized}>{exercise.sets}</Text> sets of{' '}
-              <Text style={styles.emphasized}>{exercise.reps}</Text> reps {exercise.weight && `@ ${exercise.weight} kg`}
+              <Text style={styles.emphasized}>{exercise.reps}</Text> reps {exercise.weight && `@ ${formatWeight(exercise.weight)} kg`}
             </Text>
           </View>
         </TouchableOpacity>

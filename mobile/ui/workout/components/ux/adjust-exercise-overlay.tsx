@@ -3,6 +3,7 @@ import { Unit } from '@/mobile/domain'
 import React, { useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { PrimaryButton, OutlineButton } from '@/mobile/ui/ds/buttons'
 import { ModalShell } from '@/mobile/ui/ds/modals'
 import { theme } from '@/mobile/theme/theme'
@@ -265,7 +266,7 @@ export const AdjustExerciseOverlay = ({
 
           <View style={styles.weightSliderContainer}>
             <View style={styles.weightDisplay}>
-              <Text style={styles.weightDisplayText}>{adjustedWeight}</Text>
+              <Text style={styles.weightDisplayText}>{formatWeight(adjustedWeight)}</Text>
               <Text style={styles.weightDisplayUnit}>{unitLabel}</Text>
             </View>
 
@@ -283,9 +284,9 @@ export const AdjustExerciseOverlay = ({
               />
 
               <View style={styles.sliderLabels}>
-                <Text style={styles.sliderLabel}>{minWeight}</Text>
-                <Text style={styles.sliderLabel}>{originalWeight}</Text>
-                <Text style={styles.sliderLabel}>{maxWeight}</Text>
+                <Text style={styles.sliderLabel}>{formatWeight(minWeight)}</Text>
+                <Text style={styles.sliderLabel}>{formatWeight(originalWeight)}</Text>
+                <Text style={styles.sliderLabel}>{formatWeight(maxWeight)}</Text>
               </View>
             </View>
           </View>

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 export const NumericalInput = (props: {
   width?: number
   value: string | undefined
-  keyboardType?: 'numeric' | 'number-pad'
+  keyboardType?: 'numeric' | 'number-pad' | 'decimal-pad'
   onChange: (value: string) => void
   placeholder?: string
   placeholderTextColor?: string

@@ -249,8 +249,18 @@ export const useCreateWorkoutContext = (
                   ...exercise,
                   testingWeight: weight,
                 }
+              } else if (
+                exercise.state === WorkoutExerciseState.loaded ||
+                exercise.state === WorkoutExerciseState.tested
+              ) {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map(set => {
+                    return { ...set, weight }
+                  }),
+                }
               } else {
-                throw new Error('Illegal State - Exercise is not pending or testing')
+                throw new Error('Illegal State - Exercise is not pending, testing, loaded or tested')
               }
             }
 

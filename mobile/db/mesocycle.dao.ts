@@ -574,6 +574,12 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           .set({ weight: event.payload.weight })
           .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.workoutExerciseId))
       })
+      .with({ type: 'ExerciseWeightChangedCalibration' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ weight: event.payload.weight })
+          .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.workoutExerciseId))
+      })
       .with({ type: 'ExerciseWeightChangedTesting' }, async event => {
         await db
           .update(schema.workoutExercise)

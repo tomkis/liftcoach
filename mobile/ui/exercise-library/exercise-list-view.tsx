@@ -15,6 +15,7 @@ import {
 
 import { Unit } from '@/mobile/domain'
 import type { ExerciseLibraryItem, MuscleGroup, ProgressState } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 
@@ -90,7 +91,7 @@ const ExerciseStats = React.memo(function ExerciseStats({ exercise, unit }: { ex
     <View style={s.cardRight}>
       {hasE1rm ? (
         <>
-          <Text style={s.e1rmValue}>{exercise.estimatedOneRepMax}</Text>
+          <Text style={s.e1rmValue}>{formatWeight(exercise.estimatedOneRepMax)}</Text>
           <View style={s.trendRow}>
             <Text style={s.e1rmUnit}>{unit === Unit.Metric ? 'kg' : 'lbs'}</Text>
             {trend && (

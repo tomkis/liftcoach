@@ -22,6 +22,8 @@ import { BodyText } from '@/mobile/ui/ds/typography'
 import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 
+const parseDecimal = (value: string) => parseFloat(value.replace(',', '.'))
+
 const CARD_PADDING = 18
 
 const styles = StyleSheet.create({
@@ -389,10 +391,10 @@ export const ExerciseLoadTesting = ({
       const getLoadingResult = () => {
         if (stopedVoluntarily) {
           const reps = (sets.length - 1) * 3 + 8
-          const weight = parseFloat(data.weight)
+          const weight = parseDecimal(data.weight)
           return { reps, weight }
         } else {
-          const weight = parseFloat(data.weight)
+          const weight = parseDecimal(data.weight)
           const reps = parseFloat(data.reps || '')
           return { weight, reps }
         }
@@ -497,7 +499,7 @@ export const ExerciseLoadTesting = ({
                             rules={{
                               required: 'Please enter the weight',
                               validate: value => {
-                                const numValue = parseFloat(value)
+                                const numValue = parseDecimal(value)
                                 if (isNaN(numValue) || numValue <= 0) {
                                   return 'Please enter a valid weight'
                                 }
@@ -508,6 +510,7 @@ export const ExerciseLoadTesting = ({
                               <NumericalInput
                                 width={80}
                                 value={field.value}
+                                keyboardType="decimal-pad"
                                 onChange={value => field.onChange(value)}
                                 placeholder="Weight"
                               />
@@ -544,7 +547,7 @@ export const ExerciseLoadTesting = ({
                             rules={{
                               required: 'Please enter the weight',
                               validate: value => {
-                                const numValue = parseFloat(value)
+                                const numValue = parseDecimal(value)
                                 if (isNaN(numValue) || numValue <= 0) {
                                   return 'Please enter a valid weight'
                                 }
@@ -555,6 +558,7 @@ export const ExerciseLoadTesting = ({
                               <NumericalInput
                                 width={80}
                                 value={field.value}
+                                keyboardType="decimal-pad"
                                 onChange={value => field.onChange(value)}
                                 placeholder="Weight"
                               />

@@ -77,6 +77,8 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
     return match(exercise)
       .with({ state: WorkoutExerciseState.pending }, ({ sets }) => sets[0]?.weight)
       .with({ state: WorkoutExerciseState.testing }, ({ testingWeight }) => testingWeight)
+      .with({ state: WorkoutExerciseState.loaded }, ({ sets }) => sets[0]?.weight)
+      .with({ state: WorkoutExerciseState.tested }, ({ sets }) => sets[0]?.weight)
       .otherwise(() => undefined)
   }, [exercise])
 
@@ -130,6 +132,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onSetChanged={onSetChanged}
             onNext={onMoveNextAfterTesting}
             hasMoreExercises={hasMoreExercises}
+            onExtraActions={onExtraActions}
           />
         ))
         .with({ state: WorkoutExerciseState.tested }, exercise => (
@@ -139,6 +142,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onSetChanged={onSetChanged}
             onNext={onMoveNextAfterTesting}
             hasMoreExercises={hasMoreExercises}
+            onExtraActions={onExtraActions}
           />
         ))
         .exhaustive()}
@@ -151,7 +155,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         onWeightChange={onWeightChanged}
         exerciseName={exercise.exercise.name}
         onExerciseReplace={workoutContext.skipExercise}
-        canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing].includes(exercise.state)}
+        canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)}
         unit={workoutContext.unit}
       />
     </ScreenContainer>

@@ -1,4 +1,5 @@
 import { WorkoutStats } from '@/mobile/domain'
+import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 import { WorkoutStartTemplate } from '@/mobile/ui/workout/components/workout-start/workout-start-template'
@@ -60,7 +61,7 @@ export const WorkoutStart = (props: { workoutStats: WorkoutStats; onStartWorkout
                   <Text style={styles.exerciseDetails}>
                     <Text style={styles.emphasized}>{exercise.sets}</Text> sets of{' '}
                     <Text style={styles.emphasized}>{exercise.reps}</Text> reps{' '}
-                    {exercise.weight && `@ ${exercise.weight} kg`}
+                    {exercise.weight && `@ ${formatWeight(exercise.weight)} kg`}
                   </Text>
                 </View>
               </View>

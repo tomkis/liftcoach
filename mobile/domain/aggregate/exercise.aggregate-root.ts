@@ -1,5 +1,6 @@
 import type { ExerciseLibraryData, ExerciseLibraryItem, ProgressState } from '../exercise-library'
 import { calculate1RMEplay } from '../microcycle-generator/calculate-weight-from-loaded-exercise'
+import { prettifyWeight } from '../utils/prettify-weight'
 
 export class ExerciseAggregateRoot {
   constructor(private readonly data: ExerciseLibraryData) {}
@@ -20,7 +21,7 @@ export class ExerciseAggregateRoot {
     return {
       ...base,
       doneInPast: true,
-      estimatedOneRepMax: Math.round(calculate1RMEplay(latest.weight, latest.reps)),
+      estimatedOneRepMax: prettifyWeight(calculate1RMEplay(latest.weight, latest.reps)),
       progressState: this.calculateProgressState(history),
     }
   }

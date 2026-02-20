@@ -663,11 +663,7 @@ export class MesocycleAggregateRoot {
     const activeWorkout = this.getActiveWorkout()
     const targetReps = 10
 
-    const targetWeight = calculateWeightFromLoadedExercise(
-      { loadingSet, targetReps },
-      targetRpe,
-      this.userCoefficient
-    )
+    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient)
 
     const sets = Array.from({ length: exercise.targetSets }).map((_, index) => ({
       id: v4(),
@@ -893,6 +889,34 @@ export class MesocycleAggregateRoot {
     } else if (exercise.state === WorkoutExerciseState.testing) {
       this.apply({
         type: 'ExerciseWeightChangedTesting',
+        payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+      })
+    } else if (
+      exercise.state === WorkoutExerciseState.loaded ||
+      exercise.state === WorkoutExerciseState.tested
+    ) {
+      const newReps = calculateRepsFromLoadedExercise(
+        {
+          loadingSet: exercise.loadingSet,
+          targetWeight: weight,
+        },
+        8
+      )
+
+      if (newReps !== null && newReps !== exercise.sets[0].reps) {
+        this.apply({
+          type: 'ExerciseRepsChangedDueToWeightChange',
+          payload: {
+            workoutExerciseId,
+            newReps,
+            workoutId: activeWorkout.id,
+            microcycleId: activeWorkout.microcycleId,
+          },
+        })
+      }
+
+      this.apply({
+        type: 'ExerciseWeightChangedCalibration',
         payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
       })
     } else {
@@ -1461,6 +1485,25 @@ export class MesocycleAggregateRoot {
                 return {
                   ...exercise,
                   updatedAt: new Date(),
+                }
+              }
+
+              return exercise
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseWeightChangedCalibration' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.workoutExerciseId) {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map(set => {
+                    return { ...set, weight: event.payload.weight }
+                  }),
                 }
               }
 

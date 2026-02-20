@@ -138,6 +138,16 @@ export interface ExerciseWeightChangedPending {
   }
 }
 
+export interface ExerciseWeightChangedCalibration {
+  type: 'ExerciseWeightChangedCalibration'
+  payload: {
+    workoutExerciseId: string
+    weight: number
+    workoutId: string
+    microcycleId: string
+  }
+}
+
 export interface ExerciseRepsChangedDueToWeightChange {
   type: 'ExerciseRepsChangedDueToWeightChange'
   payload: {
@@ -197,6 +207,7 @@ export type MesocycleEvent =
   | SetStateHasChanged
   | ExerciseWeightChangedTesting
   | ExerciseWeightChangedPending
+  | ExerciseWeightChangedCalibration
   | ExerciseRepsChangedDueToWeightChange
   | WorkoutStarted
   | ExerciseUpdated

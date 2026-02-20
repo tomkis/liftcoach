@@ -1,11 +1,12 @@
-import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
+import { formatUserWeight, formatWeight } from '@/mobile/domain/utils/format-weight'
 import { theme } from '@/mobile/theme/theme'
+import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { Checkbox } from '@/mobile/ui/ds/controls'
-import { BodyText } from '@/mobile/ui/ds/typography'
-import { CardTitle } from '@/mobile/ui/ds/typography'
+import { BodyText, CardTitle } from '@/mobile/ui/ds/typography'
+import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 
 const CARD_PADDING = 18
 
@@ -52,6 +53,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  titleButton: {
+    paddingHorizontal: 8,
+    marginTop: -5,
+  },
   h2: {
     fontSize: theme.fontSize.medium,
   },
@@ -82,6 +92,7 @@ export const ExerciseLoadedAndTested = (props: {
   hasMoreExercises: boolean
   onNext: () => void
   onSetChanged: (setId: string, state: WorkingSetState) => void
+  onExtraActions: () => void
   unit: Unit
 }) => {
   const { exercise } = props
@@ -94,12 +105,17 @@ export const ExerciseLoadedAndTested = (props: {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <CardTitle>{exerciseName}</CardTitle>
+        <View style={styles.titleContainer}>
+          <CardTitle>{exerciseName}</CardTitle>
+          <TouchableOpacity style={styles.titleButton} onPress={props.onExtraActions}>
+            <CogwheelFilled color={theme.colors.primary.main} />
+          </TouchableOpacity>
+        </View>
         <View style={{ marginTop: 16 }}>
           <BodyText>
             You have been able to perform <Text style={styles.emphasized}>{exercise.loadingSet.reps} reps</Text> with{' '}
             <Text style={styles.emphasized}>
-              {exercise.loadingSet.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
+              {formatUserWeight(exercise.loadingSet.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
             </Text>
           </BodyText>
           <BodyText>Let&apos;s try out some real training work now!</BodyText>
@@ -119,7 +135,7 @@ export const ExerciseLoadedAndTested = (props: {
                   },
                 ]}
               >
-                {set.reps} reps × {set.weight} {props.unit === 'metric' ? 'kg' : 'lbs'}
+                {set.reps} reps × {formatWeight(set.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
               </Text>
             </View>
             <View style={styles.checkboxContainer}>

@@ -108,8 +108,10 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     mesocycle.finishWorkout(workoutId, lifestyleFeedback)
 
     const microcycleFinished = mesocycle.isActiveMicrocycleFinished()
+    let mesocycleFinished = false
+
     if (microcycleFinished) {
-      const mesocycleFinished = mesocycle.isMesocycleFinished()
+      mesocycleFinished = mesocycle.isMesocycleFinished()
 
       if (mesocycleFinished) {
         const lastTestingResults = await userDao.getLastTestingWeights(
@@ -136,14 +138,14 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         await mesocycleDao.updateMesocycle(mesocycle.events)
         await mesocycleDao.updateMesocycle(newMesocycle.events)
 
-        return newMesocycle.getActiveMicrocycle()
+        return { microcycle: newMesocycle.getActiveMicrocycle(), microcycleFinished, mesocycleFinished }
       } else {
         mesocycle.extendMicrocycle()
       }
     }
 
     await mesocycleDao.updateMesocycle(mesocycle.events)
-    return mesocycle.getActiveMicrocycle()
+    return { microcycle: mesocycle.getActiveMicrocycle(), microcycleFinished, mesocycleFinished }
   }
 
   const getCurrentMicrocycle: WorkoutContext['getCurrentMicrocycle'] = async session => {

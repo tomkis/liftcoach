@@ -55,7 +55,11 @@ export interface WorkoutContext {
   confirmMesocycle: (session: Session) => Promise<void>
   getCycleProgress: (session: Session, exerciseId: string) => Promise<CycleProgress>
   changeMicrocycle: (session: Session, template: MicrocycleWorkoutsTemplateWithExercises) => Promise<Microcycle>
-  finishWorkout: (session: Session, workoutId: string, lifestyleFeedback?: LifestyleFeedback) => Promise<Microcycle>
+  finishWorkout: (
+    session: Session,
+    workoutId: string,
+    lifestyleFeedback?: LifestyleFeedback
+  ) => Promise<{ microcycle: Microcycle; microcycleFinished: boolean; mesocycleFinished: boolean }>
   generateMicrocycle: (session: Session, onboardedUser: OnboardedUser) => Promise<Microcycle>
   getBalancedMuscleGroupPreference: (session: Session) => Promise<MuscleGroupPreference>
   proposeExerciseReplacement: (

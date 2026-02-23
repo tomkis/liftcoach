@@ -6,7 +6,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: IS_PROD ? 'LiftCoach' : '(DEV) LiftCoach',
   slug: 'liftcoach',
-  privacy: 'unlisted',
   scheme: 'liftcoach',
   version: '3.0.2',
   orientation: 'portrait',

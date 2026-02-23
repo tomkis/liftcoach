@@ -22,7 +22,7 @@ interface WorkoutCardProps {
   isExpanded?: boolean
   onPress?: () => void
   isFirstCard?: boolean
-  scrollViewRef?: React.RefObject<ScrollView>
+  scrollViewRef?: React.RefObject<ScrollView | null>
 }
 
 const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Unit }) => {

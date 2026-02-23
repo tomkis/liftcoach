@@ -48,7 +48,7 @@ export const WorkoutContext = React.createContext<null | WorkoutContextType>(nul
 export const useCreateWorkoutContext = (
   workout: MicrocycleWorkout,
   onboardingInfo: OnboardedUser,
-  swiperRef: React.RefObject<Swiper>
+  swiperRef: React.RefObject<Swiper | null>
 ): WorkoutContextType => {
   const tracking = useTracking()
   const { mutateAsync: exerciseSetStateChangedMutation } = trpc.workout.exerciseSetStateChanged.useMutation()

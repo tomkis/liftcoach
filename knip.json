@@ -3,9 +3,8 @@
   "ignoreDependencies": [
     "pino-pretty",
     "@babel/core",
-    "@babel/runtime",
     "@react-native/assets-registry",
-    "expo-modules-autolinking",
+    "@expo/metro-config",
     "eslint-plugin-react-hooks",
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-packagejson",

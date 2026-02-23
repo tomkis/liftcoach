@@ -87,6 +87,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
+  bodySection: {
+    marginTop: 16,
+  },
+  bottomActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 'auto',
+  },
 })
 
 export const ExerciseLoadedAndTested = (props: {
@@ -115,7 +123,7 @@ export const ExerciseLoadedAndTested = (props: {
             <CogwheelFilled color={theme.colors.primary.main} />
           </TouchableOpacity>
         </View>
-        <View style={{ marginTop: 16 }}>
+        <View style={styles.bodySection}>
           <BodyText>
             You have been able to perform <Text style={styles.emphasized}>{exercise.loadingSet.reps} reps</Text> with{' '}
             <Text style={styles.emphasized}>
@@ -164,7 +172,7 @@ export const ExerciseLoadedAndTested = (props: {
         ))}
       </View>
       {allSetsCompleted && (
-        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
+        <View style={styles.bottomActions}>
           <PrimaryButton
             title={props.hasMoreExercises ? 'Move on to the next exercise' : 'Finish Workout!'}
             onPress={props.onNext}
@@ -173,7 +181,7 @@ export const ExerciseLoadedAndTested = (props: {
         </View>
       )}
       {!allSetsCompleted && (
-        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
+        <View style={styles.bottomActions}>
           <OutlineButton title="Retest Weight" onPress={() => setShowUndoModal(true)} style={{ flex: 1 }} />
         </View>
       )}

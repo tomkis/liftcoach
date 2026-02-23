@@ -1,24 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
 
 import { ConfirmationModal } from '@/mobile/ui/ds/modals'
 import { theme } from '@/mobile/theme/theme'
-
-const styles = StyleSheet.create({
-  subtitle: {
-    fontFamily: theme.font.sairaRegular,
-    textAlign: 'left',
-    marginBottom: 12,
-    color: theme.colors.text.primary,
-  },
-  subtitle2: {
-    color: theme.colors.gray.light,
-    fontSize: theme.fontSize.small,
-    fontFamily: theme.font.sairaRegular,
-    textAlign: 'left',
-    marginBottom: 12,
-  },
-})
+import { BodyText } from '@/mobile/ui/ds/typography'
 
 interface UndoExerciseModalProps {
   visible: boolean
@@ -37,8 +21,10 @@ export const UndoExerciseModal = ({ visible, onConfirm, onCancel, title, descrip
       onCancel={onCancel}
       confirmLabel="Undo"
     >
-      <Text style={styles.subtitle}>{description}</Text>
-      <Text style={styles.subtitle2}>You will need to re-complete this exercise before finishing the workout.</Text>
+      <BodyText style={{ marginBottom: 12 }}>{description}</BodyText>
+      <BodyText style={{ color: theme.colors.gray.light, marginBottom: 12 }}>
+        You will need to re-complete this exercise before finishing the workout.
+      </BodyText>
     </ConfirmationModal>
   )
 }

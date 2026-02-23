@@ -11,6 +11,7 @@ import {
   toDateTime,
   WorkingExercise,
   WorkingSet,
+  WorkingSetState,
   WorkoutExerciseState,
   WorkoutState,
 } from '@/mobile/domain'
@@ -617,6 +618,10 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
         }
       })
       .with({ type: 'ExerciseFinishUndone' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ state: WorkingSetState.pending })
+          .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.exerciseId))
         await db
           .update(schema.workoutExercise)
           .set({

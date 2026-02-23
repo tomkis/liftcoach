@@ -201,18 +201,6 @@ export class MesocycleAggregateRoot {
     }
 
     if (exercise.state === WorkoutExerciseState.finished) {
-      exercise.sets.forEach(set => {
-        this.apply({
-          type: 'SetStateHasChanged',
-          payload: {
-            workoutExerciseId: exercise.id,
-            setId: set.id,
-            state: WorkingSetState.pending,
-            workoutId: activeWorkout.id,
-            microcycleId: activeWorkout.microcycleId,
-          },
-        })
-      })
       this.apply({ type: 'ExerciseFinishUndone', payload: eventPayload })
     } else if (exercise.state === WorkoutExerciseState.loaded) {
       this.apply({ type: 'ExerciseLoadUndone', payload: eventPayload })
@@ -1625,6 +1613,7 @@ export class MesocycleAggregateRoot {
                   assesment: undefined,
                   hardAssesmentTag: undefined,
                   exerciseAssesment: undefined,
+                  sets: exercise.sets.map(set => ({ ...set, state: WorkingSetState.pending })),
                 }
               }
               return exercise

@@ -35,6 +35,7 @@ interface WorkoutContextType {
   finishWorkout: () => void
   changeWeight: (exerciseId: string, newWeight: number) => void
   exerciseSetStateChanged: (workingExerciseId: string, setId: string, state: WorkingSetState) => void
+  undoFinishExercise: (exerciseId: string) => void
   isWorkoutFinished: boolean
   lifestyleFeedbackModal: WorkoutLifestyleFeedbackModal
   onLifestyleFeedbackConfirm: (feedback: { dietQuality: number; sleepQuality: number }) => void
@@ -55,6 +56,7 @@ export const useCreateWorkoutContext = (
   const { mutateAsync: finishWorkoutMutation } = trpc.workout.finishWorkout.useMutation()
   const { mutateAsync: exerciseLoadedMutation } = trpc.workout.exerciseLoaded.useMutation()
   const { mutateAsync: exerciseTestedMutation } = trpc.workout.exerciseTested.useMutation()
+  const { mutateAsync: undoExerciseMutation } = trpc.workout.undoExercise.useMutation()
 
   const trpcUtils = trpc.useUtils()
 
@@ -347,6 +349,17 @@ export const useCreateWorkoutContext = (
     [exerciseSetStateChangedMutation, trpcUtils.workout.getWorkout, workout.id]
   )
 
+  const undoFinishExercise = useCallback(
+    async (exerciseId: string) => {
+      await undoExerciseMutation({
+        workoutId: workout.id,
+        workingExerciseId: exerciseId,
+      })
+      await trpcUtils.workout.getWorkout.invalidate()
+    },
+    [undoExerciseMutation, trpcUtils.workout.getWorkout, workout.id]
+  )
+
   return {
     exerciseLoaded,
     exerciseTested,
@@ -355,6 +368,7 @@ export const useCreateWorkoutContext = (
     skipExercise,
     finishWorkout: finishWorkoutAndProvideFeedbackIfNeeded,
     exerciseSetStateChanged,
+    undoFinishExercise,
     changeWeight,
     workout,
     lifestyleFeedbackModal,

@@ -123,7 +123,12 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
           />
         ))
         .with({ state: WorkoutExerciseState.finished }, exercise => (
-          <ExerciseFinished active={active} finishedExercise={exercise} unit={workoutContext.unit} />
+          <ExerciseFinished
+            active={active}
+            finishedExercise={exercise}
+            unit={workoutContext.unit}
+            onUndo={() => workoutContext.undoFinishExercise(exercise.id)}
+          />
         ))
         .with({ state: WorkoutExerciseState.loaded }, exercise => (
           <ExerciseLoadedAndTested
@@ -133,6 +138,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onNext={onMoveNextAfterTesting}
             hasMoreExercises={hasMoreExercises}
             onExtraActions={onExtraActions}
+            onUndo={() => workoutContext.undoFinishExercise(exercise.id)}
           />
         ))
         .with({ state: WorkoutExerciseState.tested }, exercise => (
@@ -143,6 +149,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onNext={onMoveNextAfterTesting}
             hasMoreExercises={hasMoreExercises}
             onExtraActions={onExtraActions}
+            onUndo={() => workoutContext.undoFinishExercise(exercise.id)}
           />
         ))
         .exhaustive()}

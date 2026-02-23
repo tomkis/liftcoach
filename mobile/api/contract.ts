@@ -87,6 +87,7 @@ export interface WorkoutContext {
     workingExerciseId: string,
     exerciseAssesment: ExerciseAssesment
   ) => Promise<void>
+  undoExercise: (session: Session, workoutId: string, workingExerciseId: string) => Promise<void>
   exerciseSetStateChanged: (
     session: Session,
     workoutId: string,

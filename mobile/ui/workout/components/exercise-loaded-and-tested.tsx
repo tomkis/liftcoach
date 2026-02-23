@@ -1,12 +1,14 @@
+import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import { LoadedWorkingExercise, TestedWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
 import { formatUserWeight, formatWeight } from '@/mobile/domain/utils/format-weight'
 import { theme } from '@/mobile/theme/theme'
-import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { OutlineButton, PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { BodyText, CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
+import { UndoExerciseModal } from '@/mobile/ui/workout/components/ux/undo-exercise-modal'
 
 const CARD_PADDING = 18
 
@@ -93,10 +95,12 @@ export const ExerciseLoadedAndTested = (props: {
   onNext: () => void
   onSetChanged: (setId: string, state: WorkingSetState) => void
   onExtraActions: () => void
+  onUndo: () => void
   unit: Unit
 }) => {
   const { exercise } = props
   const exerciseName = exercise.exercise.name
+  const [showUndoModal, setShowUndoModal] = useState(false)
 
   const allSetsCompleted = exercise.sets.every(set =>
     [WorkingSetState.done, WorkingSetState.failed].includes(set.state)
@@ -168,6 +172,21 @@ export const ExerciseLoadedAndTested = (props: {
           />
         </View>
       )}
+      {!allSetsCompleted && (
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 'auto' }}>
+          <OutlineButton title="Retest Weight" onPress={() => setShowUndoModal(true)} style={{ flex: 1 }} />
+        </View>
+      )}
+      <UndoExerciseModal
+        visible={showUndoModal}
+        title="Retest Weight"
+        description="This will discard the current sets and let you redo the test set with a different weight."
+        onConfirm={() => {
+          setShowUndoModal(false)
+          props.onUndo()
+        }}
+        onCancel={() => setShowUndoModal(false)}
+      />
     </View>
   )
 }

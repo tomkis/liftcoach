@@ -11,6 +11,7 @@ import {
   toDateTime,
   WorkingExercise,
   WorkingSet,
+  WorkingSetState,
   WorkoutExerciseState,
   WorkoutState,
 } from '@/mobile/domain'
@@ -615,6 +616,46 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
             updatedAt: now,
           })
         }
+      })
+      .with({ type: 'ExerciseFinishUndone' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ state: WorkingSetState.pending })
+          .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.exerciseId))
+        await db
+          .update(schema.workoutExercise)
+          .set({
+            state: WorkoutExerciseState.pending,
+            assesment: null,
+            hardAssesmentTag: null,
+          })
+          .where(eq(schema.workoutExercise.id, event.payload.exerciseId))
+      })
+      .with({ type: 'ExerciseLoadUndone' }, async event => {
+        await db
+          .delete(schema.workoutExerciseSet)
+          .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.exerciseId))
+        await db
+          .update(schema.workoutExercise)
+          .set({
+            state: WorkoutExerciseState.loading,
+            loadedWeight: null,
+            loadedReps: null,
+          })
+          .where(eq(schema.workoutExercise.id, event.payload.exerciseId))
+      })
+      .with({ type: 'ExerciseTestUndone' }, async event => {
+        await db
+          .delete(schema.workoutExerciseSet)
+          .where(eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.exerciseId))
+        await db
+          .update(schema.workoutExercise)
+          .set({
+            state: WorkoutExerciseState.testing,
+            loadedWeight: null,
+            loadedReps: null,
+          })
+          .where(eq(schema.workoutExercise.id, event.payload.exerciseId))
       })
       .exhaustive()
   }

@@ -182,6 +182,33 @@ export interface MesocycleConfirmed {
   }
 }
 
+export interface ExerciseFinishUndone {
+  type: 'ExerciseFinishUndone'
+  payload: {
+    exerciseId: string
+    microcycleId: string
+    workoutId: string
+  }
+}
+
+export interface ExerciseLoadUndone {
+  type: 'ExerciseLoadUndone'
+  payload: {
+    exerciseId: string
+    microcycleId: string
+    workoutId: string
+  }
+}
+
+export interface ExerciseTestUndone {
+  type: 'ExerciseTestUndone'
+  payload: {
+    exerciseId: string
+    microcycleId: string
+    workoutId: string
+  }
+}
+
 export interface TestingSetsGenerated {
   type: 'TestingSetsGenerated'
   payload: {
@@ -213,3 +240,6 @@ export type MesocycleEvent =
   | ExerciseUpdated
   | MesocycleConfirmed
   | TestingSetsGenerated
+  | ExerciseFinishUndone
+  | ExerciseLoadUndone
+  | ExerciseTestUndone

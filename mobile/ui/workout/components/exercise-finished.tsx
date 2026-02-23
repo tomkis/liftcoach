@@ -1,10 +1,13 @@
 import { FinishedWorkingExercise, Unit } from '@/mobile/domain'
 import { formatWeight } from '@/mobile/domain/utils/format-weight'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
+import { UndoExerciseModal } from '@/mobile/ui/workout/components/ux/undo-exercise-modal'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
+import { OutlineButton } from '@/mobile/ui/ds/buttons'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { CardTitle } from '@/mobile/ui/ds/typography'
 
@@ -81,19 +84,21 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaBold,
     color: theme.colors.primary.main,
   },
-  finishedMessage: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: theme.colors.gray.light,
-    marginTop: 32,
+  undoContainer: {
     paddingHorizontal: CARD_PADDING,
-    paddingBottom: CARD_PADDING,
+    paddingVertical: CARD_PADDING,
   },
 })
 
-export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExercise; active: boolean; unit: Unit }) => {
-  const { finishedExercise, active, unit } = props
+export const ExerciseFinished = (props: {
+  finishedExercise: FinishedWorkingExercise
+  active: boolean
+  unit: Unit
+  onUndo: () => void
+}) => {
+  const { finishedExercise, active, unit, onUndo } = props
   const exerciseName = finishedExercise.exercise.name
+  const [showUndoModal, setShowUndoModal] = useState(false)
 
   const { data: cycleProgress } = trpc.workout.getCycleProgress.useQuery(
     {
@@ -169,8 +174,20 @@ export const ExerciseFinished = (props: { finishedExercise: FinishedWorkingExerc
             </View>
           )
         })}
-        <Text style={styles.finishedMessage}>This exercise has been finished. You can swipe to the next one.</Text>
+        <View style={styles.undoContainer}>
+          <OutlineButton title="Undo" onPress={() => setShowUndoModal(true)} />
+        </View>
       </View>
+      <UndoExerciseModal
+        visible={showUndoModal}
+        title="Undo Exercise"
+        description="This will revert the exercise back to its editable state. All sets will be reset to pending."
+        onConfirm={() => {
+          setShowUndoModal(false)
+          onUndo()
+        }}
+        onCancel={() => setShowUndoModal(false)}
+      />
     </View>
   )
 }

@@ -77,6 +77,32 @@ Uses estimated 1RM (Epley formula) from calibration sets to calculate working we
 
 It takes a mesocycle DTO, validates invariants, applies domain events that mutate state, and collects events for persistence. This is the most important piece of the codebase — nearly all business logic lives here or is called from here.
 
+### Domain Event Design
+
+Each event describes **one specific thing that happened** in the domain. An observer reading just the event log should understand what the user did without looking at any handler code. Prefer multiple specific events over a single generic event with discriminator fields — even if handlers share structure.
+
+**Bad** — generic event with branching:
+```ts
+interface ExerciseUndone {
+  type: 'ExerciseUndone'
+  payload: { exerciseId: string; fromState: 'finished' | 'loaded' | 'tested' }
+}
+```
+
+**Good** — one event per domain occurrence:
+```ts
+interface ExerciseFinishUndone { type: 'ExerciseFinishUndone'; payload: { exerciseId: string } }
+interface ExerciseLoadUndone   { type: 'ExerciseLoadUndone';   payload: { exerciseId: string } }
+interface ExerciseTestUndone   { type: 'ExerciseTestUndone';   payload: { exerciseId: string } }
+```
+
+Events flow through three handlers that must stay in sync:
+1. **Aggregate `apply()`** — in-memory state mutation
+2. **DAO `updateMesocycle()`** — SQLite persistence
+3. **`MesocycleEvent` union** — type-level exhaustiveness check
+
+The union + `ts-pattern` exhaustive matching ensures a compile error if any handler misses a new event.
+
 ## Navigation
 
 Two top-level flows based on user state:

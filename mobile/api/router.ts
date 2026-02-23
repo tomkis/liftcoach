@@ -127,6 +127,11 @@ const workout = trpcInstance.router({
         input.exerciseAssesment
       )
     }),
+  undoExercise: trpcProcedureAuthProcedure
+    .input(z.object({ workoutId: z.string(), workingExerciseId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.workout.undoExercise(ctx.session, input.workoutId, input.workingExerciseId)
+    }),
   exerciseSetStateChanged: trpcProcedureAuthProcedure
     .input(
       z.object({

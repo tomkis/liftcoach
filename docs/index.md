@@ -2,3 +2,4 @@
 [Basic Code Standards for consistency](./code-standards.md)
 [Workout Progression](./progression.md)
 [Design System](./design-system.md)
+[Exercise State Machine](./exercise-states.md)

@@ -169,6 +169,46 @@ export class MesocycleAggregateRoot {
     })
   }
 
+  undoExercise(exerciseId: string) {
+    const activeWorkout = this.getActiveWorkout()
+    const exercise = activeWorkout.exercises.find(exercise => exercise.id === exerciseId)
+    if (!exercise) {
+      throw new Error('Exercise not found in the workout')
+    }
+
+    const allowedStates = [WorkoutExerciseState.finished, WorkoutExerciseState.loaded, WorkoutExerciseState.tested]
+    if (!allowedStates.includes(exercise.state)) {
+      throw new Error(`Exercise is in ${exercise.state} state, cant undo`)
+    }
+
+    if (activeWorkout.state === WorkoutState.completed) {
+      throw new Error('Workout is already completed, cant undo exercise')
+    }
+
+    this.apply({
+      type: 'ExerciseUpdated',
+      payload: {
+        workoutExerciseId: exercise.id,
+        workoutId: activeWorkout.id,
+        microcycleId: activeWorkout.microcycleId,
+      },
+    })
+
+    const eventPayload = {
+      exerciseId,
+      workoutId: activeWorkout.id,
+      microcycleId: activeWorkout.microcycleId,
+    }
+
+    if (exercise.state === WorkoutExerciseState.finished) {
+      this.apply({ type: 'ExerciseFinishUndone', payload: eventPayload })
+    } else if (exercise.state === WorkoutExerciseState.loaded) {
+      this.apply({ type: 'ExerciseLoadUndone', payload: eventPayload })
+    } else if (exercise.state === WorkoutExerciseState.tested) {
+      this.apply({ type: 'ExerciseTestUndone', payload: eventPayload })
+    }
+  }
+
   finishWorkout(workoutId: string, lifestyleFeedback?: LifestyleFeedback) {
     const microcycle = this.getMicrocycleForWorkout(workoutId)
     if (!microcycle) {
@@ -1557,6 +1597,62 @@ export class MesocycleAggregateRoot {
               if (exercise.id === event.payload.exerciseId) {
                 return { ...exercise, sets: event.payload.sets }
               }
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseFinishUndone' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.exerciseId) {
+                return {
+                  ...exercise,
+                  state: WorkoutExerciseState.pending,
+                  assesment: undefined,
+                  hardAssesmentTag: undefined,
+                  exerciseAssesment: undefined,
+                  sets: exercise.sets.map(set => ({ ...set, state: WorkingSetState.pending })),
+                }
+              }
+              return exercise
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseLoadUndone' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.exerciseId) {
+                return {
+                  ...exercise,
+                  state: WorkoutExerciseState.loading,
+                  loadingSet: undefined,
+                  sets: [],
+                }
+              }
+              return exercise
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseTestUndone' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.exerciseId) {
+                return {
+                  ...exercise,
+                  state: WorkoutExerciseState.testing,
+                  loadingSet: undefined,
+                  sets: [],
+                }
+              }
+              return exercise
             }),
           } as MicrocycleWorkout
         })

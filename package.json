@@ -1,6 +1,6 @@
 {
   "name": "liftcoach",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -8,14 +8,14 @@
   "scripts": {
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "knip": "knip",
     "lint": "eslint mobile/",
+    "seed:load": "bash scripts/load-seed.sh",
+    "seed:snapshot": "bash scripts/snapshot-seed.sh",
     "start": "expo start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "web": "expo run:web",
-    "knip": "knip",
-    "seed:snapshot": "bash scripts/snapshot-seed.sh",
-    "seed:load": "bash scripts/load-seed.sh"
+    "web": "expo run:web"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",

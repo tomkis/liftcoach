@@ -10,7 +10,7 @@ import { AccentCard } from '@/mobile/ui/ds/surfaces'
 import { WorkoutCard } from './workout-card'
 
 interface VerticalWorkoutCardsProps {
-  scrollViewRef: React.RefObject<ScrollView>
+  scrollViewRef: React.RefObject<ScrollView | null>
   unit: Unit
   workouts: Array<{
     id: string

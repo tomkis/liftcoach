@@ -82,16 +82,16 @@ const AppComponent = () => {
 
   return (
     <SafeAreaProvider>
-      <TrackingProvider>
-        <trpc.Provider client={trpcClient} queryClient={queryClient}>
-          <QueryClientProvider client={queryClient}>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <TrackingProvider>
             <NavigationContainer>
               <RootStack />
               <StatusBar style="light" />
             </NavigationContainer>
-          </QueryClientProvider>
-        </trpc.Provider>
-      </TrackingProvider>
+          </TrackingProvider>
+        </QueryClientProvider>
+      </trpc.Provider>
     </SafeAreaProvider>
   )
 }

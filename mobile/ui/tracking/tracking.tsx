@@ -1,16 +1,22 @@
-import { LiftingExperience, Unit } from '@/mobile/domain'
 import * as React from 'react'
 
+import { LiftingExperience, Unit } from '@/mobile/domain'
+import { trpc } from '@/mobile/trpc'
+import { mixpanel, mixpanelReady } from '@/mobile/ui/tracking/mixpanel'
+
 const TrackingContext = React.createContext<boolean>(false)
+
+const track = (event: string, props?: Record<string, unknown>) => {
+  console.log(`[tracking] ${event}`, props ?? '')
+  if (mixpanel) {
+    void mixpanelReady.then(() => mixpanel!.track(event, props))
+  }
+}
 
 export const useTracking = () => {
   const initialized = React.useContext(TrackingContext)
   if (!initialized) {
     throw new Error('useTracking must be used within a TrackingProvider')
-  }
-
-  const track = (event: string, props?: Record<string, unknown>) => {
-    console.log(`[tracking] ${event}`, props ?? '')
   }
 
   return {
@@ -76,6 +82,27 @@ export const useTracking = () => {
       warmupToggled: () => {
         track('Workout - Warmup Toggled')
       },
+      exerciseLoaded: (exerciseName: string) => {
+        track('Workout - Exercise Loaded', { exerciseName })
+      },
+      exerciseTested: (exerciseName: string) => {
+        track('Workout - Exercise Tested', { exerciseName })
+      },
+      exerciseFinished: (exerciseName: string) => {
+        track('Workout - Exercise Finished', { exerciseName })
+      },
+      lifestyleFeedbackProvided: (feedback: { dietQuality: number; sleepQuality: number }) => {
+        track('Workout - Lifestyle Feedback Provided', feedback)
+      },
+      workoutCompleted: () => {
+        track('Workout - Completed')
+      },
+      microcycleCompleted: (weekIndex: number) => {
+        track('Workout - Microcycle Completed', { weekIndex })
+      },
+      mesocycleCompleted: () => {
+        track('Workout - Mesocycle Completed')
+      },
     },
 
     appStarted: () => {
@@ -116,5 +143,22 @@ export const useTracking = () => {
 }
 
 export const TrackingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery(undefined, {
+    retry: false,
+  })
+
+  React.useEffect(() => {
+    if (!onboardingInfo || !mixpanel) return
+
+    void mixpanelReady.then(() =>
+      mixpanel!.registerSuperProperties({
+        gender: onboardingInfo.gender,
+        unit: onboardingInfo.unit,
+        liftingExperience: onboardingInfo.liftingExperience,
+        trainingFrequency: onboardingInfo.trainingFrequency,
+      })
+    )
+  }, [onboardingInfo])
+
   return <TrackingContext.Provider value={true}>{children}</TrackingContext.Provider>
 }

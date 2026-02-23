@@ -16,6 +16,7 @@ import {
 import React, { useCallback, useMemo, useState } from 'react'
 import Swiper from 'react-native-swiper'
 
+import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { useResetToHomeNavigation } from '@/mobile/ui/workout/hooks/use-workout-navigation'
 import { trpc } from '@/mobile/trpc'
 
@@ -49,6 +50,7 @@ export const useCreateWorkoutContext = (
   onboardingInfo: OnboardedUser,
   swiperRef: React.RefObject<Swiper>
 ): WorkoutContextType => {
+  const tracking = useTracking()
   const { mutateAsync: exerciseSetStateChangedMutation } = trpc.workout.exerciseSetStateChanged.useMutation()
   const { mutateAsync: changeWeightMutation } = trpc.workout.exerciseChangeWeight.useMutation()
   const { mutateAsync: exerciseFinishedMutation } = trpc.workout.exerciseFinished.useMutation()
@@ -101,11 +103,21 @@ export const useCreateWorkoutContext = (
 
   const finishWorkoutInternal = useCallback(
     async (lifestyleFeedback?: LifestyleFeedback) => {
-      await finishWorkoutMutation({ workoutId: workout.id, lifestyleFeedback })
+      const { microcycle, microcycleFinished, mesocycleFinished } = await finishWorkoutMutation({
+        workoutId: workout.id,
+        lifestyleFeedback,
+      })
+      tracking.workout.workoutCompleted()
+      if (microcycleFinished) {
+        tracking.workout.microcycleCompleted(microcycle.index)
+      }
+      if (mesocycleFinished) {
+        tracking.workout.mesocycleCompleted()
+      }
       await trpcUtils.workout.invalidate()
       resetToHome()
     },
-    [finishWorkoutMutation, trpcUtils.workout, resetToHome, workout.id]
+    [finishWorkoutMutation, trpcUtils.workout, resetToHome, workout.id, tracking]
   )
 
   const finishWorkoutAndProvideFeedbackIfNeeded = useCallback(async () => {
@@ -134,9 +146,10 @@ export const useCreateWorkoutContext = (
   const onLifestyleFeedbackConfirm = useCallback(
     async (feedback: LifestyleFeedback) => {
       setLifestyleFeedbackModal(WorkoutLifestyleFeedbackModal.NotNeeded)
+      tracking.workout.lifestyleFeedbackProvided(feedback)
       await finishWorkoutInternal(feedback)
     },
-    [finishWorkoutInternal]
+    [finishWorkoutInternal, tracking]
   )
 
   const testingSetsExerciseCompleted = useCallback(
@@ -157,10 +170,11 @@ export const useCreateWorkoutContext = (
         workoutId: workout.id,
         reachedFailure,
       })
+      tracking.workout.exerciseLoaded(exercise.exercise.name)
 
       void trpcUtils.workout.getWorkout.invalidate()
     },
-    [exerciseLoadedMutation, trpcUtils.workout.getWorkout, workout.exercises, workout.id]
+    [exerciseLoadedMutation, trpcUtils.workout.getWorkout, workout.exercises, workout.id, tracking]
   )
 
   const exerciseTested = useCallback(
@@ -172,10 +186,11 @@ export const useCreateWorkoutContext = (
         loadingSet,
         workoutId: workout.id,
       })
+      tracking.workout.exerciseTested(exercise.exercise.name)
 
       void trpcUtils.workout.getWorkout.invalidate()
     },
-    [exerciseTestedMutation, trpcUtils.workout.getWorkout, workout.exercises, workout.id]
+    [exerciseTestedMutation, trpcUtils.workout.getWorkout, workout.exercises, workout.id, tracking]
   )
 
   const exerciseDone = useCallback(
@@ -187,10 +202,11 @@ export const useCreateWorkoutContext = (
         workingExerciseId: workingExercise.id,
         exerciseAssesment,
       })
+      tracking.workout.exerciseFinished(workingExercise.exercise.name)
       trpcUtils.workout.getWorkout.invalidate()
       goToNextExercise(workingExercise.id)
     },
-    [exerciseFinishedMutation, goToNextExercise, trpcUtils.workout.getWorkout, workout.exercises, workout.id]
+    [exerciseFinishedMutation, goToNextExercise, trpcUtils.workout.getWorkout, workout.exercises, workout.id, tracking]
   )
 
   const skipExercise = useCallback(

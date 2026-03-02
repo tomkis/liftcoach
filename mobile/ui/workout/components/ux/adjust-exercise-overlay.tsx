@@ -100,7 +100,7 @@ interface SomethingWentWrongOverlayProps {
   onWeightChange?: (exerciseId: string, newWeight: number) => void
   exerciseName?: string
   onExerciseReplace?: (exerciseId: string, replacementExerciseId: string) => void
-  canReplaceExercise?: boolean
+  canReplaceExercise: boolean
   canChangeWeight?: boolean
   unit: Unit
 }

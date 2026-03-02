@@ -100,6 +100,7 @@ interface SomethingWentWrongOverlayProps {
   onWeightChange?: (exerciseId: string, newWeight: number) => void
   exerciseName?: string
   onExerciseReplace?: (exerciseId: string, replacementExerciseId: string) => void
+  canReplaceExercise?: boolean
   canChangeWeight?: boolean
   unit: Unit
 }
@@ -203,6 +204,7 @@ export const AdjustExerciseOverlay = ({
   onWeightChange,
   exerciseName,
   onExerciseReplace,
+  canReplaceExercise,
   canChangeWeight,
   unit,
 }: SomethingWentWrongOverlayProps) => {
@@ -323,7 +325,9 @@ export const AdjustExerciseOverlay = ({
           {canChangeWeight && (
             <PrimaryButton title="Change Weight" onPress={handleChangeWeightPress} style={styles.option} />
           )}
-          <PrimaryButton title="Replace Exercise" onPress={handleReplaceExercisePress} style={styles.option} />
+          {canReplaceExercise && (
+            <PrimaryButton title="Replace Exercise" onPress={handleReplaceExercisePress} style={styles.option} />
+          )}
         </View>
 
         <OutlineButton title="Cancel" onPress={handleCancel} style={styles.cancelButton} />

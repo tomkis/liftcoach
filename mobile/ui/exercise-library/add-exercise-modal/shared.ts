@@ -4,6 +4,7 @@ export type AddExerciseModalProps = {
   visible: boolean
   onClose: () => void
   onSubmit: (input: { name: string; muscleGroup: MuscleGroup }) => void
+  lockedMuscleGroup?: MuscleGroup
 }
 
 export const MUSCLE_GROUPS = Object.values(MuscleGroup)

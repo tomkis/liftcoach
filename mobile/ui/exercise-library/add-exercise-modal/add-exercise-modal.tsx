@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { type MuscleGroup } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
@@ -8,21 +8,21 @@ import { type AddExerciseModalProps, formatLabel, MUSCLE_GROUPS } from './shared
 
 const GOLD = theme.colors.primary.main
 
-export const AddExerciseModal = ({ visible, onClose, onSubmit }: AddExerciseModalProps) => {
+export const AddExerciseModal = ({ visible, onClose, onSubmit, lockedMuscleGroup }: AddExerciseModalProps) => {
   const [name, setName] = useState('')
-  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(null)
+  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(lockedMuscleGroup ?? null)
 
   const canAdd = name.trim().length > 0 && muscleGroup !== null
 
   const handleClose = () => {
     setName('')
-    setMuscleGroup(null)
+    setMuscleGroup(lockedMuscleGroup ?? null)
     onClose()
   }
 
   return (
     <Modal transparent visible={visible} animationType="slide">
-      <View style={s.overlay}>
+      <KeyboardAvoidingView style={s.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <Pressable style={s.overlayTap} onPress={handleClose} />
         <View style={s.sheet}>
           <View style={s.handle} />
@@ -59,8 +59,9 @@ export const AddExerciseModal = ({ visible, onClose, onSubmit }: AddExerciseModa
               {MUSCLE_GROUPS.map(mg => (
                 <Pressable
                   key={mg}
-                  style={[s.chip, mg === muscleGroup && s.chipSelected]}
+                  style={[s.chip, mg === muscleGroup && s.chipSelected, lockedMuscleGroup && s.chipLocked]}
                   onPress={() => setMuscleGroup(mg)}
+                  disabled={!!lockedMuscleGroup}
                 >
                   <Text style={[s.chipText, mg === muscleGroup && s.chipTextSelected]}>
                     {formatLabel(mg)}
@@ -78,7 +79,7 @@ export const AddExerciseModal = ({ visible, onClose, onSubmit }: AddExerciseModa
             <Text style={s.addBtnText}>ADD EXERCISE</Text>
           </Pressable>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   )
 }
@@ -192,6 +193,9 @@ const s = StyleSheet.create({
   chipSelected: {
     borderColor: GOLD,
     backgroundColor: 'rgba(255,195,0,0.06)',
+  },
+  chipLocked: {
+    opacity: 0.5,
   },
   chipText: {
     fontFamily: theme.font.sairaSemiBold,

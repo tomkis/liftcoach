@@ -14,6 +14,7 @@ import {
   WorkoutContext,
   WorkoutLifestyleFeedbackModal,
 } from '@/mobile/ui/workout/hooks/use-workout-context'
+import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 
@@ -90,12 +91,14 @@ export const WorkoutStack = () => {
 const styles = StyleSheet.create({
   pager: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   slide: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width,
+    backgroundColor: theme.colors.background,
   },
   pagination: {
     position: 'absolute',

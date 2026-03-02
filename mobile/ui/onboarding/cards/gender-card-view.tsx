@@ -2,7 +2,7 @@ import femaleImage from '@/assets/images/female-select.png'
 import maleImage from '@/assets/images/male-select.png'
 import { useCallback } from 'react'
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { ScreenHeading } from '@/mobile/ui/ds/typography'
 import { CaptionText } from '@/mobile/ui/ds/typography'

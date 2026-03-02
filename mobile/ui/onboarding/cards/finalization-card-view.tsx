@@ -2,7 +2,7 @@ import finalImage from '@/assets/images/final.png'
 import { onboardedUserSchema, Unit } from '@/mobile/domain'
 import { useCallback, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { PrivacyPolicyModal } from '@/mobile/ui/onboarding/cards/modals/privacy-policy-modal'
 import { TermsAndConditionsModal } from '@/mobile/ui/onboarding/cards/modals/terms-and-conditions-modal'

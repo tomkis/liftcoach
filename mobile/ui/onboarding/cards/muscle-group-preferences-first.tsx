@@ -1,6 +1,6 @@
 import musclePreferencesImage from '@/assets/images/workout-experience.png'
 import { Image, StyleSheet, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
 import { ScreenHeading } from '@/mobile/ui/ds/typography'

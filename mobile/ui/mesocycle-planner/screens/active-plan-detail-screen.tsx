@@ -21,8 +21,8 @@ export const ActivePlanDetailScreen = () => {
   const navigation = useNavigation()
   const insets = useSafeAreaInsets()
   const trpcUtils = trpc.useUtils()
-  const { data: activePlan, isLoading: isLoadingPlan } = trpc.workout.getActivePlanSummary.useQuery()
-  const { data: microcycle, isLoading: isLoadingMicrocycle } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const { data: activePlan, isPending: isPendingPlan } = trpc.workout.getActivePlanSummary.useQuery()
+  const { data: microcycle, isPending: isPendingMicrocycle } = trpc.workout.getCurrentMicrocycle.useQuery()
 
   useFocusEffect(
     useCallback(() => {
@@ -31,7 +31,7 @@ export const ActivePlanDetailScreen = () => {
     }, [trpcUtils])
   )
 
-  if (isLoadingPlan || isLoadingMicrocycle || !activePlan || !microcycle) {
+  if (isPendingPlan || isPendingMicrocycle || !activePlan || !microcycle) {
     return (
       <View style={[styles.root, { paddingTop: insets.top + 8, justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator color={theme.colors.primary.main} />

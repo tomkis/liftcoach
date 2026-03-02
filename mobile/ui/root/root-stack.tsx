@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator()
 
 const RootStackWithAuth = () => {
   const isOnboardedQuery = trpc.user.getOnboardingInfo.useQuery()
-  if (isOnboardedQuery.isLoading) {
+  if (isOnboardedQuery.isPending) {
     return <EmptyWrapper />
   }
 
@@ -24,7 +24,7 @@ const RootStackWithAuth = () => {
 export const RootStack = () => {
   const user = trpc.user.me.useQuery(undefined, { retry: false })
 
-  if (user.isLoading) {
+  if (user.isPending) {
     return <EmptyWrapper />
   }
 

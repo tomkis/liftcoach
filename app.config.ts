@@ -16,13 +16,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     resizeMode: 'contain',
     backgroundColor: '#121212',
   },
-  assetBundlePatterns: ['**/*'],
   ios: {
+    newArchEnabled: true,
     supportsTablet: false,
     bundleIdentifier: 'com.liftcoach.app',
     config: {
       usesNonExemptEncryption: false,
     },
+  },
+  android: {
+    newArchEnabled: true,
+    package: 'com.liftcoach.app',
   },
   extra: {
     eas: {

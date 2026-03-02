@@ -56,8 +56,8 @@ const Foobar = (props: {
 export const ChangeMicrocycleCardView = () => {
   const trpcUtils = trpc.useUtils()
   const replaceExercise = trpc.workout.replaceExercise.useMutation()
-  const { data: onboardingInfo, isLoading: isOnboardingInfoLoading } = trpc.user.getOnboardingInfo.useQuery()
-  const { data: microcycle, isLoading: isMicrocycleLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const { data: onboardingInfo, isPending: isOnboardingInfoPending } = trpc.user.getOnboardingInfo.useQuery()
+  const { data: microcycle, isPending: isMicrocyclePending } = trpc.workout.getCurrentMicrocycle.useQuery()
   const insets = useSafeAreaInsets()
   const onboardingContext = useOnboardingContext()
   const tracking = useTracking()
@@ -68,7 +68,7 @@ export const ChangeMicrocycleCardView = () => {
     workoutId: string
   } | null>(null)
 
-  if (isOnboardingInfoLoading || isMicrocycleLoading || !microcycle || !onboardingInfo) {
+  if (isOnboardingInfoPending || isMicrocyclePending || !microcycle || !onboardingInfo) {
     return (
       <View style={[styles.container, { paddingTop: insets.top + 20 }]}>
         <Text style={styles.loadingText}>Loading microcycle...</Text>

@@ -14,7 +14,7 @@ import {
   WorkoutExerciseState,
 } from '@/mobile/domain'
 import React, { useCallback, useMemo, useState } from 'react'
-import Swiper from 'react-native-swiper'
+import type PagerView from 'react-native-pager-view'
 
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { useResetToHomeNavigation } from '@/mobile/ui/workout/hooks/use-workout-navigation'
@@ -48,7 +48,7 @@ export const WorkoutContext = React.createContext<null | WorkoutContextType>(nul
 export const useCreateWorkoutContext = (
   workout: MicrocycleWorkout,
   onboardingInfo: OnboardedUser,
-  swiperRef: React.RefObject<Swiper | null>
+  pagerRef: React.RefObject<PagerView | null>
 ): WorkoutContextType => {
   const tracking = useTracking()
   const { mutateAsync: exerciseSetStateChangedMutation } = trpc.workout.exerciseSetStateChanged.useMutation()
@@ -135,12 +135,12 @@ export const useCreateWorkoutContext = (
       const nextPendingExerciseIndex = findNextPendingExerciseIndex(({ id }) => id !== ignoreExerciseId)
 
       if (nextPendingExerciseIndex !== -1) {
-        swiperRef.current?.scrollTo(nextPendingExerciseIndex, true)
+        pagerRef.current?.setPage(nextPendingExerciseIndex)
       } else {
         finishWorkoutAndProvideFeedbackIfNeeded()
       }
     },
-    [findNextPendingExerciseIndex, swiperRef, finishWorkoutAndProvideFeedbackIfNeeded]
+    [findNextPendingExerciseIndex, pagerRef, finishWorkoutAndProvideFeedbackIfNeeded]
   )
 
   const onLifestyleFeedbackConfirm = useCallback(

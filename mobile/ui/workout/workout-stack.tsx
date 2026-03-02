@@ -1,9 +1,10 @@
 import { MicrocycleWorkout, OnboardedUser } from '@/mobile/domain'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
+import PagerView, { type PagerViewOnPageSelectedEvent } from 'react-native-pager-view'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Swiper from 'react-native-swiper'
 
+import { PaginationDots } from '@/mobile/ui/components/pagination-dots'
 import { useTracking } from '@/mobile/ui/tracking/tracking'
 import { ExerciseCard } from '@/mobile/ui/workout/components/exercise-card'
 import { LifestyleFeedbackModal } from '@/mobile/ui/workout/components/ux/lifestyle-feedback-modal'
@@ -19,21 +20,25 @@ import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 
 const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; onboardingInfo: OnboardedUser }) => {
   const [activeIndex, setActiveIndex] = useState(0)
-  const swiperRef = useRef<Swiper>(null)
-  const workoutContext = useCreateWorkoutContext(props.workout, props.onboardingInfo, swiperRef)
+  const pagerRef = useRef<PagerView>(null)
+  const workoutContext = useCreateWorkoutContext(props.workout, props.onboardingInfo, pagerRef)
   const insets = useSafeAreaInsets()
+
+  const onPageSelected = useCallback((e: PagerViewOnPageSelectedEvent) => {
+    setActiveIndex(e.nativeEvent.position)
+  }, [])
 
   return (
     <WorkoutContext.Provider value={workoutContext}>
-      <Swiper
-        style={styles.wrapper}
-        showsButtons={false}
-        loop={false}
-        ref={swiperRef}
-        dotColor={theme.colors.text.primary}
-        activeDotColor={theme.colors.primary.main}
-        onIndexChanged={setActiveIndex}
-        paginationStyle={[styles.pagination, { top: insets.top }]}
+      <View style={styles.pagination}>
+        <View style={{ height: insets.top }} />
+        <PaginationDots count={props.workout.exercises.length} activeIndex={activeIndex} />
+      </View>
+      <PagerView
+        style={styles.pager}
+        initialPage={0}
+        ref={pagerRef}
+        onPageSelected={onPageSelected}
       >
         {props.workout.exercises.map((_, index) => {
           return (
@@ -42,7 +47,7 @@ const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; on
             </View>
           )
         })}
-      </Swiper>
+      </PagerView>
       <LifestyleFeedbackModal
         visible={workoutContext.lifestyleFeedbackModal !== WorkoutLifestyleFeedbackModal.NotNeeded}
         reason={workoutContext.lifestyleFeedbackModal}
@@ -53,9 +58,9 @@ const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; on
 }
 
 export const WorkoutStack = () => {
-  const { data: onboardingInfo, isLoading: isOnboardingInfoLoading } = trpc.user.getOnboardingInfo.useQuery()
-  const { data: workout, isLoading: isWorkoutLoading } = trpc.workout.getWorkout.useQuery()
-  const { data: workoutStats, isLoading: isWorkoutStatsLoading } = trpc.workout.getWorkoutStats.useQuery()
+  const { data: onboardingInfo, isPending: isOnboardingInfoLoading } = trpc.user.getOnboardingInfo.useQuery()
+  const { data: workout, isPending: isWorkoutLoading } = trpc.workout.getWorkout.useQuery()
+  const { data: workoutStats, isPending: isWorkoutStatsLoading } = trpc.workout.getWorkoutStats.useQuery()
   const { mutateAsync: startWorkout } = trpc.workout.startWorkout.useMutation()
   const trpcUtils = trpc.useUtils()
   const tracking = useTracking()
@@ -84,19 +89,24 @@ export const WorkoutStack = () => {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {},
+  pager: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   slide: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width,
+    backgroundColor: theme.colors.background,
   },
   pagination: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 'auto',
-    height: 20,
+    zIndex: 1,
+    height: 'auto',
+    paddingBottom: 4,
   },
 })

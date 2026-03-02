@@ -1,9 +1,10 @@
 import { Reps } from '@/mobile/domain'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Modal, StyleSheet, Text, View } from 'react-native'
+import PagerView, { type PagerViewOnPageSelectedEvent } from 'react-native-pager-view'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Swiper from 'react-native-swiper'
 
+import { PaginationDots } from '@/mobile/ui/components/pagination-dots'
 import { HorizontalButtonRow } from '@/mobile/ui/ds/layout'
 import { CardWrapper } from '@/mobile/ui/home-testing/components/card-wrapper'
 import { ContentContainer } from '@/mobile/ui/home-testing/components/content-container'
@@ -32,11 +33,10 @@ const styles = StyleSheet.create({
   },
   pagination: {
     position: 'absolute',
-    top: 60,
     left: 0,
     right: 0,
-    bottom: 'auto',
-    height: 20,
+    zIndex: 1,
+    paddingBottom: 4,
   },
   card: {
     backgroundColor: theme.colors.backgroundLight,
@@ -279,7 +279,8 @@ const TestStrengthCard = ({
 }
 
 export const TestStrengthSwiper = () => {
-  const swiperRef = useRef<Swiper>(null)
+  const pagerRef = useRef<PagerView>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
   const insets = useSafeAreaInsets()
   const navigation = useHomeTestingNavigation()
   const utils = trpc.useUtils()
@@ -290,6 +291,10 @@ export const TestStrengthSwiper = () => {
     [HomeTestingMuscleGroup.Chest]: null,
     [HomeTestingMuscleGroup.Back]: null,
   })
+
+  const onPageSelected = useCallback((e: PagerViewOnPageSelectedEvent) => {
+    setActiveIndex(e.nativeEvent.position)
+  }, [])
 
   const handleNextMuscleGroup = () => {
     const finished = Object.values(results).every(result => result !== null)
@@ -328,36 +333,39 @@ export const TestStrengthSwiper = () => {
       navigation.navigate('Results', results as TestingResults)
     }
 
-    swiperRef.current?.scrollBy(1)
+    pagerRef.current?.setPage(activeIndex + 1)
   }
 
   return (
-    <Swiper
-      showsButtons={false}
-      loop={false}
-      ref={swiperRef}
-      dotColor={theme.colors.text.primary}
-      activeDotColor={theme.colors.primary.main}
-      paginationStyle={[styles.pagination, { top: insets.top }]}
-    >
-      {progression.map((muscleGroup, index) => (
-        <View key={index} style={styles.slide}>
-          <TestStrengthCard
-            muscleGroup={muscleGroup.muscleGroup}
-            title={muscleGroup.title}
-            next={index < progression.length - 1 ? progression[index + 1].title : null}
-            exercises={muscleGroup.exercises}
-            result={results[muscleGroup.muscleGroup]}
-            setResult={result => {
-              setResults(prev => ({ ...prev, [muscleGroup.muscleGroup]: result }))
-            }}
-            onNextMuscleGroup={handleNextMuscleGroup}
-            onAbortTest={() => {
-              navigation.getParent()?.navigate('TabNavigator')
-            }}
-          />
-        </View>
-      ))}
-    </Swiper>
+    <View style={{ flex: 1 }}>
+      <View style={[styles.pagination, { top: insets.top }]}>
+        <PaginationDots count={progression.length} activeIndex={activeIndex} />
+      </View>
+      <PagerView
+        style={{ flex: 1 }}
+        initialPage={0}
+        ref={pagerRef}
+        onPageSelected={onPageSelected}
+      >
+        {progression.map((muscleGroup, index) => (
+          <View key={index} style={styles.slide}>
+            <TestStrengthCard
+              muscleGroup={muscleGroup.muscleGroup}
+              title={muscleGroup.title}
+              next={index < progression.length - 1 ? progression[index + 1].title : null}
+              exercises={muscleGroup.exercises}
+              result={results[muscleGroup.muscleGroup]}
+              setResult={result => {
+                setResults(prev => ({ ...prev, [muscleGroup.muscleGroup]: result }))
+              }}
+              onNextMuscleGroup={handleNextMuscleGroup}
+              onAbortTest={() => {
+                navigation.getParent()?.navigate('TabNavigator')
+              }}
+            />
+          </View>
+        ))}
+      </PagerView>
+    </View>
   )
 }

@@ -1,7 +1,7 @@
 import workoutImage from '@/assets/images/backpack.png'
 import { useCallback } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useHomeTestingNavigation } from '@/mobile/ui/home-testing/use-navigation'

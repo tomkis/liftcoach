@@ -1,7 +1,7 @@
 import chestImage from '@/assets/images/chest-intro.png'
 import { useEffect } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'

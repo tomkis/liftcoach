@@ -133,7 +133,7 @@ const SplitTypeForm = ({ proposedSplit, trainingDays, onContinue }: SplitTypeFor
 }
 
 export const SplitTypeSelectionScreen = ({ navigation, route }: SplitTypeSelectionScreenProps) => {
-  const { data: proposedSplit, isLoading } = trpc.mesoPlanner.proposeSplit.useQuery({
+  const { data: proposedSplit, isPending } = trpc.mesoPlanner.proposeSplit.useQuery({
     volumePerMuscleGroup: route.params.volumePreferences.reduce(
       (acc, { muscleGroup, sets }) => {
         acc[muscleGroup] = sets
@@ -144,7 +144,7 @@ export const SplitTypeSelectionScreen = ({ navigation, route }: SplitTypeSelecti
     trainingDays: route.params.trainingDays,
   })
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <ScreenWrapper title="Preferred Split" onNext={() => {}} includeScrollView>
         <View style={styles.loadingContainer}>

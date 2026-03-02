@@ -161,12 +161,12 @@ const VolumeForm = ({ proposedVolume, onSubmit }: VolumeFormProps) => {
 }
 
 export const VolumePreferencesScreen = ({ navigation, route }: VolumePreferencesScreenProps) => {
-  const { data: proposedVolume, isLoading } = trpc.mesoPlanner.proposeVolume.useQuery({
+  const { data: proposedVolume, isPending } = trpc.mesoPlanner.proposeVolume.useQuery({
     muscleGroupPreference: route.params.muscleGroupPreference,
     trainingDays: route.params.trainingDays,
   })
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <ScreenWrapper title="Volume Preferences" onNext={() => {}} includeScrollView>
         <View style={styles.loadingContainer}>

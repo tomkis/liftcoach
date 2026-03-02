@@ -2,7 +2,7 @@ import workoutExperienceImage from '@/assets/images/workout-experience-2.png'
 import { LiftingExperience } from '@/mobile/domain'
 import { useCallback } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { degToStartEnd } from '@/mobile/ui/onboarding/cards/ux/deg-to-start'
 import { ScreenHeading } from '@/mobile/ui/ds/typography'

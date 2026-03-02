@@ -12,13 +12,13 @@ import { getTrainingTitle } from '@/mobile/ui/ux/get-training-title'
 import { VerticalWorkoutCards } from './swipeable-workout-card'
 
 export const MicrocycleProgressView = () => {
-  const { data: dashboardData, isLoading: isDashboardLoading } = trpc.user.getDashboardData.useQuery()
-  const { data: microcycle, isLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const { data: dashboardData, isPending: isDashboardPending } = trpc.user.getDashboardData.useQuery()
+  const { data: microcycle, isPending } = trpc.workout.getCurrentMicrocycle.useQuery()
   const scrollViewRef = useRef<ScrollView>(null)
 
   const insets = useSafeAreaInsets()
 
-  if (isLoading || !microcycle || isDashboardLoading || !dashboardData) {
+  if (isPending || !microcycle || isDashboardPending || !dashboardData) {
     return <EmptyWrapper />
   }
 

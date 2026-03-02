@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
 })
 
 export const ApproveCycleCardView = () => {
-  const { data: microcycle, isLoading } = trpc.workout.getCurrentMicrocycle.useQuery()
+  const { data: microcycle, isPending } = trpc.workout.getCurrentMicrocycle.useQuery()
   const insets = useSafeAreaInsets()
   const onboardingContext = useOnboardingContext()
 
-  if (!microcycle || isLoading) {
+  if (!microcycle || isPending) {
     return <EmptyWrapper />
   }
 

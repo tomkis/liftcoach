@@ -159,11 +159,11 @@ export const ExerciseListView = () => {
 
   const trpcUtils = trpc.useUtils()
   const { data: onboardingInfo } = trpc.user.getOnboardingInfo.useQuery()
-  const { data: exercises, isLoading: isLoadingExercises, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
+  const { data: exercises, isPending: isPendingExercises, isError, refetch } = trpc.exerciseLibrary.getExercises.useQuery()
   const createExercise = trpc.exerciseLibrary.createExercise.useMutation({
     onSuccess: () => trpcUtils.exerciseLibrary.getExercises.invalidate(),
   })
-  const isLoading = isLoadingExercises || !onboardingInfo
+  const isPending = isPendingExercises || !onboardingInfo
 
   useFocusEffect(
     useCallback(() => {
@@ -236,7 +236,7 @@ export const ExerciseListView = () => {
     outputRange: [DRAWER_WIDTH, 0],
   })
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <View style={s.loadingContainer}>
         <ActivityIndicator color={GOLD} />

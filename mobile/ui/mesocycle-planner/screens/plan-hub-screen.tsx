@@ -30,7 +30,7 @@ const KeyValue = ({ label, value, accent }: { label: string; value: string; acce
 export const PlanHubScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<MesocyclePlannerStackParamList>>()
   const insets = useSafeAreaInsets()
-  const { data: activePlan, isLoading } = trpc.workout.getActivePlanSummary.useQuery()
+  const { data: activePlan, isPending } = trpc.workout.getActivePlanSummary.useQuery()
   const tracking = useTracking()
 
   const onViewActivePlan = () => {
@@ -42,7 +42,7 @@ export const PlanHubScreen = () => {
     navigation.navigate('TrainingDays')
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
         <ActivityIndicator size="large" color={theme.colors.primary.main} />

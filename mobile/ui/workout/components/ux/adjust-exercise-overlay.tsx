@@ -1,9 +1,10 @@
 import Slider from '@react-native-community/slider'
 import { Unit } from '@/mobile/domain'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import { formatWeight } from '@/mobile/domain/utils/format-weight'
+import { AddExerciseModal } from '@/mobile/ui/exercise-library/add-exercise-modal/add-exercise-modal'
 import { PrimaryButton, OutlineButton } from '@/mobile/ui/ds/buttons'
 import { ModalShell } from '@/mobile/ui/ds/modals'
 import { theme } from '@/mobile/theme/theme'
@@ -114,8 +115,33 @@ export const ProposeExerciseReplacementModal = ({
 }: Pick<SomethingWentWrongOverlayProps, 'exerciseName' | 'exerciseId' | 'onExerciseReplace' | 'onCancel'> & {
   handleReplaceExerciseCancel: () => void
 }) => {
+  const trpcUtils = trpc.useUtils()
   const proposeReplacement = trpc.workout.proposeExerciseReplacementQuery.useQuery({ workoutExerciseId: exerciseId })
   const [selectedReplacementId, setSelectedReplacementId] = useState<string | null>(null)
+  const [addExerciseVisible, setAddExerciseVisible] = useState(false)
+  const [pendingExerciseName, setPendingExerciseName] = useState<string | null>(null)
+  const listRef = useRef<FlatList>(null)
+
+  const createExercise = trpc.exerciseLibrary.createExercise.useMutation({
+    onSuccess: async (_data, variables) => {
+      setPendingExerciseName(variables.name)
+      await Promise.all([
+        trpcUtils.workout.proposeExerciseReplacementQuery.invalidate(),
+        trpcUtils.exerciseLibrary.getExercises.invalidate(),
+      ])
+    },
+  })
+
+  useEffect(() => {
+    if (pendingExerciseName && proposeReplacement.data) {
+      const createdIndex = proposeReplacement.data.findIndex(e => e.name === pendingExerciseName)
+      if (createdIndex !== -1) {
+        setSelectedReplacementId(proposeReplacement.data[createdIndex]!.id)
+        setPendingExerciseName(null)
+        setTimeout(() => listRef.current?.scrollToIndex({ index: createdIndex, animated: true }), 100)
+      }
+    }
+  }, [pendingExerciseName, proposeReplacement.data])
 
   const handleReplaceExerciseConfirm = () => {
     if (selectedReplacementId && exerciseId && onExerciseReplace) {
@@ -140,6 +166,7 @@ export const ProposeExerciseReplacementModal = ({
         <>
           {proposeReplacement.data.length ? (
             <FlatList
+              ref={listRef}
               data={proposeReplacement.data}
               keyExtractor={item => item.id}
               style={styles.exerciseList}
@@ -163,11 +190,25 @@ export const ProposeExerciseReplacementModal = ({
                   </Text>
                 </TouchableOpacity>
               )}
+              ListFooterComponent={
+                <OutlineButton
+                  title="Create Custom Exercise"
+                  onPress={() => setAddExerciseVisible(true)}
+                  style={{ marginTop: 12 }}
+                />
+              }
             />
           ) : (
-            <Text style={[styles.weightInputLabel]}>
-              There&apos;s no available exercise that can be used for replacement.
-            </Text>
+            <>
+              <Text style={[styles.weightInputLabel]}>
+                There&apos;s no available exercise that can be used for replacement.
+              </Text>
+              <OutlineButton
+                title="Create Custom Exercise"
+                onPress={() => setAddExerciseVisible(true)}
+                style={{ marginTop: 12 }}
+              />
+            </>
           )}
 
           <Text style={[styles.weightInputLabel, { color: theme.colors.gray.light }]}>
@@ -191,6 +232,15 @@ export const ProposeExerciseReplacementModal = ({
         </>
       ) : (
         <></>
+      )}
+
+      {addExerciseVisible && (
+        <AddExerciseModal
+          visible
+          onClose={() => setAddExerciseVisible(false)}
+          onSubmit={input => createExercise.mutate(input)}
+          lockedMuscleGroup={proposeReplacement.data?.[0]?.muscleGroup}
+        />
       )}
     </>
   )

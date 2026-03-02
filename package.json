@@ -41,7 +41,6 @@
     "mixpanel-react-native": "^3.3.0",
     "pino-pretty": "^11.2.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
     "react-hook-form": "^7.53.0",
     "react-native": "0.81.5",
     "react-native-get-random-values": "^1.11.0",

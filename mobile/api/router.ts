@@ -1,4 +1,5 @@
 import {
+  EquipmentType,
   exerciseAssesment,
   lifestyleFeedbackSchema,
   loadingSetSchema,
@@ -167,7 +168,7 @@ const exerciseLibrary = trpcInstance.router({
     return await ctx.exerciseLibrary.getExercises(ctx.session)
   }),
   createExercise: trpcProcedureAuthProcedure
-    .input(z.object({ name: z.string(), muscleGroup: muscleGroupSchema }))
+    .input(z.object({ name: z.string(), muscleGroup: muscleGroupSchema, equipmentType: z.nativeEnum(EquipmentType) }))
     .mutation(async ({ ctx, input }) => {
       await ctx.exerciseLibrary.createExercise(ctx.session, input)
     }),

@@ -10,17 +10,24 @@ import {
   MicrocycleGenerator,
   systemConfig,
   toDateTime,
+  Unit,
 } from '@/mobile/domain'
 
 import * as mesocycleDao from '../db/mesocycle.dao'
 import * as userDao from '../db/user.dao'
+
+const getUnit = async (): Promise<Unit> => {
+  const onboardedUser = await userDao.getOnboardingData()
+  if (!onboardedUser) throw new Error('User not onboarded')
+  return onboardedUser.unit
+}
 
 export const createLocalWorkoutContext = (): WorkoutContext => {
   const startWorkout: WorkoutContext['startWorkout'] = async (session: Session) => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.startWorkout()
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -29,7 +36,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
 
     const getExerciseIdsInNextWorkout = () => {
       const nextActiveWorkout = mesocycle.getNextActiveWorkout()
@@ -45,7 +52,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) return null
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     return mesocycle.getActivePlanSummary()
   }
 
@@ -53,7 +60,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
 
     if (mesocycle.hasActiveWorkout()) {
       return mesocycle.getActiveWorkout()
@@ -91,7 +98,8 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         isConfirmed: false,
         microcycles: [],
       },
-      getUserCoefficient(session)
+      getUserCoefficient(session),
+      onboardedUser.unit
     )
 
     mesocycle.initializeMesocycle(microcycle, mesocycle.isConfirmed())
@@ -104,7 +112,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
 
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.finishWorkout(workoutId, lifestyleFeedback)
 
     const microcycleFinished = mesocycle.isActiveMicrocycleFinished()
@@ -131,7 +139,8 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
             isConfirmed: true,
             microcycles: [],
           },
-          getUserCoefficient(session)
+          getUserCoefficient(session),
+          await getUnit()
         )
 
         newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed())
@@ -152,7 +161,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     return mesocycle.getActiveMicrocycle()
   }
 
@@ -164,7 +173,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
 
     const proposedExercises = mesocycle.proposeExerciseReplacement(workoutExerciseId, availableExercises)
     const allExercises = await userDao.getAvailableExercises()
@@ -190,7 +199,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     if (!mesocycleId) throw new Error('No active mesocycle')
     const replacingExercise = await userDao.getExerciseWithHistory(replacementExerciseId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     const workingExercise = mesocycle.replaceExercise(workoutExerciseId, replacingExercise, workoutId)
     await mesocycleDao.updateMesocycle(mesocycle.events)
     return workingExercise
@@ -205,7 +214,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
   ) => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.setStateHasChanged(workoutExerciseId, setId, state)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -224,7 +233,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     if (!workoutExercise) throw new Error('Workout Exercise not found')
 
     const exercise = await userDao.getExerciseWithHistory(workoutExercise.exercise.id)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.exerciseWeightChanged(workoutExerciseId, weight, exercise.historicalResult)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -237,7 +246,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
   ) => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.finishExercise(workingExerciseId, exerciseAssesment)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -249,7 +258,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
   ) => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.undoExercise(workingExerciseId)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -263,7 +272,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
   ) => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.exerciseLoaded(workoutExerciseId, loadingSet, reachedFailure)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -276,7 +285,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
   ) => {
     const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.exerciseTested(workoutExerciseId, loadingSet)
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
@@ -295,7 +304,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
       new AuditTrail()
     )
 
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.terminateMesocycle()
     await mesocycleDao.updateMesocycle(mesocycle.events)
 
@@ -319,7 +328,8 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         microcycles: [],
         isConfirmed: true,
       },
-      getUserCoefficient(session)
+      getUserCoefficient(session),
+      onboardedUser.unit
     )
 
     newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed())
@@ -332,7 +342,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     return await mesocycle.getCycleProgressForExercise(exerciseId)
   }
 
@@ -351,7 +361,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), await getUnit())
     mesocycle.confirmMesocycle()
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }

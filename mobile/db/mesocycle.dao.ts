@@ -41,6 +41,7 @@ const mapWorkoutExerciseToDTO = (
       id: exerciseRow.id,
       name: exerciseRow.name,
       muscleGroup: exerciseRow.muscleGroup,
+      equipmentType: exerciseRow.equipmentType,
     },
     targetReps: row.targetReps,
     targetSets: row.targetSets,

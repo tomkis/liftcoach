@@ -3,6 +3,7 @@ import { and, desc, eq, gte, inArray, isNull, or, sql } from 'drizzle-orm'
 import { v4 } from 'uuid'
 
 import {
+  EquipmentType,
   ExerciseAssesmentScore,
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
@@ -36,6 +37,7 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
       return {
         type: 'curated' as const,
         muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+        equipmentType: r.exercise.equipmentType as EquipmentType,
         movementPattern: r.exercise_metadata.movementPattern as MovementPattern,
         name: r.exercise.name,
         minimumLiftingExperience: r.exercise_metadata.minimumLiftingExperience as LiftingExperience,
@@ -46,6 +48,7 @@ export const getAvailableExercises = async (): Promise<ProvidedExercise[]> => {
     return {
       type: 'custom' as const,
       muscleGroup: r.exercise.muscleGroup as MuscleGroup,
+      equipmentType: r.exercise.equipmentType as EquipmentType,
       name: r.exercise.name,
       id: r.exercise.id,
     }
@@ -102,6 +105,7 @@ export const getExerciseWithHistory = async (exerciseId: string) => {
       id: exerciseRow.id,
       name: exerciseRow.name,
       muscleGroup: exerciseRow.muscleGroup as MuscleGroup,
+      equipmentType: exerciseRow.equipmentType as EquipmentType,
     },
     historicalResult: getHistoricalResults(),
   }
@@ -181,11 +185,12 @@ export const getExerciseLibraryData = async () => {
   }))
 }
 
-export const createExercise = async (input: { name: string; muscleGroup: MuscleGroup }) => {
+export const createExercise = async (input: { name: string; muscleGroup: MuscleGroup; equipmentType: EquipmentType }) => {
   await db.insert(schema.exercise).values({
     id: v4(),
     name: input.name,
     muscleGroup: input.muscleGroup,
+    equipmentType: input.equipmentType,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   })

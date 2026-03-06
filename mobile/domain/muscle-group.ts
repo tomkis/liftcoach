@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { LiftingExperience } from './onboarding'
+import { EquipmentType } from './weight-snapping'
 
 export enum BodyPart {
   Legs = 'Legs',
@@ -95,6 +96,7 @@ const providedExerciseBase = {
   id: z.string(),
   name: z.string(),
   muscleGroup: muscleGroup,
+  equipmentType: z.nativeEnum(EquipmentType),
 }
 
 const curatedExerciseSchema = z.object({

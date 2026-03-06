@@ -30,6 +30,8 @@ import { ExerciseProvider } from '../microcycle-generator/exercise/exercise-prov
 import { ProvidedExercise } from '../muscle-group'
 import { applySetProgression, getRepsForCycle } from '../progression/apply-set-progression'
 import { getProgressionType } from '../progression/get-progression-type'
+import { Unit } from '../onboarding'
+import { snapWeight } from '../weight-snapping'
 import { HistoricalResult } from '../user/user.types'
 import { dateTimeFormat, toDateTime } from '../utils/date'
 import {
@@ -55,7 +57,8 @@ export class MesocycleAggregateRoot {
 
   constructor(
     private readonly mesocycleDTO: MesocycleType,
-    private readonly userCoefficient: number
+    private readonly userCoefficient: number,
+    private readonly unit: Unit
   ) {
     this.checkInvariants()
   }
@@ -365,7 +368,7 @@ export class MesocycleAggregateRoot {
             return {
               id: v4(),
               state: WorkingSetState.pending,
-              weight: calculateWeightFromLoadedExercise({ loadingSet, targetReps: repCount }, 6, this.userCoefficient),
+              weight: calculateWeightFromLoadedExercise({ loadingSet, targetReps: repCount }, 6, this.userCoefficient, exercise.exercise.equipmentType, this.unit),
               orderIndex: index,
               reps: repCount,
             }
@@ -386,7 +389,7 @@ export class MesocycleAggregateRoot {
           progressionType,
           sets: exercise.sets.map(set => {
             const lastReps = pastExerciseResults[pastExerciseResults.length - 1].exercise.sets[0].reps
-            const progressionResult = applySetProgression(progressionType, lastReps, set)
+            const progressionResult = applySetProgression(progressionType, lastReps, set, exercise.exercise.equipmentType, this.unit)
 
             return {
               id: v4(),
@@ -703,7 +706,7 @@ export class MesocycleAggregateRoot {
     const activeWorkout = this.getActiveWorkout()
     const targetReps = 10
 
-    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient)
+    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient, exercise.exercise.equipmentType, this.unit)
 
     const sets = Array.from({ length: exercise.targetSets }).map((_, index) => ({
       id: v4(),
@@ -788,7 +791,9 @@ export class MesocycleAggregateRoot {
               targetReps: 8,
             },
             10,
-            this.userCoefficient
+            this.userCoefficient,
+            replacingExercise.exercise.equipmentType,
+            this.unit
           )
 
           return {
@@ -808,7 +813,9 @@ export class MesocycleAggregateRoot {
               targetReps: 8,
             },
             10,
-            this.userCoefficient
+            this.userCoefficient,
+            replacingExercise.exercise.equipmentType,
+            this.unit
           )
 
           return {
@@ -835,7 +842,9 @@ export class MesocycleAggregateRoot {
               targetReps: historicalResult.targetReps,
             },
             6,
-            this.userCoefficient
+            this.userCoefficient,
+            replacingExercise.exercise.equipmentType,
+            this.unit
           )
 
           const newExercise: PendingWorkingExercise = {
@@ -885,13 +894,14 @@ export class MesocycleAggregateRoot {
     if (!exercise) {
       throw new Error('Exercise not found in the workout')
     }
+
+    const snappedWeight = snapWeight(weight, exercise.exercise.equipmentType, this.unit)
     this.apply({
       type: 'ExerciseUpdated',
       payload: { workoutExerciseId, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
     })
 
     if (exercise.state === WorkoutExerciseState.pending) {
-      // TODO: Make it smarter
       if (!historicalResults) {
         throw new Error('Historical result not found')
       }
@@ -901,7 +911,7 @@ export class MesocycleAggregateRoot {
             weight: historicalResults.loadedWeight,
             reps: historicalResults.loadedReps,
           },
-          targetWeight: weight,
+          targetWeight: snappedWeight,
         },
         this.getCurrentRpe()
       )
@@ -924,12 +934,12 @@ export class MesocycleAggregateRoot {
 
       this.apply({
         type: 'ExerciseWeightChangedPending',
-        payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+        payload: { workoutExerciseId, weight: snappedWeight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
       })
     } else if (exercise.state === WorkoutExerciseState.testing) {
       this.apply({
         type: 'ExerciseWeightChangedTesting',
-        payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+        payload: { workoutExerciseId, weight: snappedWeight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
       })
     } else if (
       exercise.state === WorkoutExerciseState.loaded ||
@@ -938,7 +948,7 @@ export class MesocycleAggregateRoot {
       const newReps = calculateRepsFromLoadedExercise(
         {
           loadingSet: exercise.loadingSet,
-          targetWeight: weight,
+          targetWeight: snappedWeight,
         },
         8
       )
@@ -957,7 +967,7 @@ export class MesocycleAggregateRoot {
 
       this.apply({
         type: 'ExerciseWeightChangedCalibration',
-        payload: { workoutExerciseId, weight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+        payload: { workoutExerciseId, weight: snappedWeight, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
       })
     } else {
       throw new Error('Cant change weight of non-pending or testing exercise')

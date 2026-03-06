@@ -1,5 +1,6 @@
 import Slider from '@react-native-community/slider'
-import { Unit } from '@/mobile/domain'
+import { EquipmentType, Unit } from '@/mobile/domain'
+import { getSliderStep, snapWeight } from '@/mobile/domain/weight-snapping'
 import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -104,6 +105,7 @@ interface SomethingWentWrongOverlayProps {
   canReplaceExercise: boolean
   canChangeWeight?: boolean
   unit: Unit
+  equipmentType: EquipmentType
 }
 
 export const ProposeExerciseReplacementModal = ({
@@ -257,6 +259,7 @@ export const AdjustExerciseOverlay = ({
   canReplaceExercise,
   canChangeWeight,
   unit,
+  equipmentType,
 }: SomethingWentWrongOverlayProps) => {
   const [showWeightInput, setShowWeightInput] = useState(false)
   const [showReplaceExercise, setShowReplaceExercise] = useState(false)
@@ -302,9 +305,10 @@ export const AdjustExerciseOverlay = ({
     const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
     const originalWeight = currentWeight || 0
 
-    const minWeight = Math.max(0, originalWeight - (unit === 'metric' ? 10 : 25))
-    const maxWeight = originalWeight + (unit === 'metric' ? 10 : 25)
-    const step = unit === 'metric' ? 1 : 5
+    const step = getSliderStep(equipmentType, unit)
+    const range = unit === 'metric' ? 10 : 25
+    const minWeight = Math.max(0, snapWeight(originalWeight - range, equipmentType, unit))
+    const maxWeight = snapWeight(originalWeight + range, equipmentType, unit)
 
     return (
       <>

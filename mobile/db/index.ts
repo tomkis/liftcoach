@@ -27,6 +27,7 @@ const seedExercises = async () => {
       id: exerciseId,
       name: ex.name,
       muscleGroup: ex.muscleGroup,
+      equipmentType: ex.equipmentType,
       createdAt: now,
       updatedAt: now,
     })

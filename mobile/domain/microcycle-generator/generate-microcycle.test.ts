@@ -6,6 +6,7 @@ import { AuditTrail } from '../audit-trail'
 import { MicrocycleGeneratorConfig } from '../microcycle'
 import { CuratedExercise, ProvidedExercise } from '../muscle-group'
 import { LiftingExperience, MuscleGroupPreference, OnboardedUser, TrainingFrequency, Unit } from '../onboarding'
+import { EquipmentType } from '../weight-snapping'
 import { MicrocycleGenerator } from './generate-microcycle'
 import { UserVolumeCalculator } from './user-volume-calculator'
 
@@ -16,6 +17,7 @@ const availableExercises: ProvidedExercise[] = exerciseSeedData.map((e, i) => ({
   muscleGroup: e.muscleGroup as CuratedExercise['muscleGroup'],
   movementPattern: e.movementPattern as CuratedExercise['movementPattern'],
   minimumLiftingExperience: e.minimumLiftingExperience as CuratedExercise['minimumLiftingExperience'],
+  equipmentType: e.equipmentType as EquipmentType,
 }))
 
 const config: MicrocycleGeneratorConfig = {

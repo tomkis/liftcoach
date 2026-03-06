@@ -11,7 +11,7 @@ The power of this approach is forced separation of concerns: each step builds on
 
 ## The 4 Steps
 
-Work through these steps **in order**. Complete and confirm each step with the user before moving to the next. Encourage iteration — it's cheap to change a design, expensive to change code.
+Work through these steps **in order**. Complete and confirm each step with the user before moving to the next. Encourage iteration — it's cheap to change a design, expensive to change code. Before moving to next step, ALWAYS ask user if he's happy with the result of the current step and summarize what you know.
 
 ### Step 1: Capabilities
 

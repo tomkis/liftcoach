@@ -5,6 +5,7 @@ import {
   MesocycleAggregateRoot,
   systemConfig,
   TrainingFrequency,
+  Unit,
   UserVolumeCalculator,
 } from '@/mobile/domain'
 
@@ -19,7 +20,9 @@ export const createLocalUserContext = (): UserContext => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (mesocycleId) {
       const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-      const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+      const onboardedUser = await userDao.getOnboardingData()
+      const unit = onboardedUser?.unit ?? Unit.Metric
+      const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), unit)
       hasActiveWorkout = mesocycle.hasActiveWorkout()
     }
 
@@ -54,7 +57,7 @@ export const createLocalUserContext = (): UserContext => {
     if (!mesocycleId) throw new Error('No active mesocycle')
 
     const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
-    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session), onboardingData.unit)
     const cycleProgress = mesocycle.getCurrentCycleIndex()
     const insights = mesocycle.getLiftCoachInsights()
     const avgVolume = mesocycle.getRollingAverageVolume()

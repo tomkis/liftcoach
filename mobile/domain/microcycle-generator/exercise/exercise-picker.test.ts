@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { MicrocycleWorkoutsTemplate, MovementPattern, MuscleGroup, ProvidedExercise } from '../../muscle-group'
 import { LiftingExperience } from '../../onboarding'
+import { EquipmentType } from '../../weight-snapping'
 
 import { ExercisePicker } from './exercise-picker'
 import { ExerciseProvider } from './exercise-provider'
@@ -11,6 +12,7 @@ const makeExercise = (id: string, muscleGroup: MuscleGroup, movementPattern: Mov
   id,
   name: id,
   muscleGroup,
+  equipmentType: EquipmentType.Barbell,
   movementPattern,
   movementPatternPriority: 0,
   minimumLiftingExperience: LiftingExperience.None,
@@ -21,6 +23,7 @@ const makeCustomExercise = (id: string, muscleGroup: MuscleGroup): ProvidedExerc
   id,
   name: id,
   muscleGroup,
+  equipmentType: EquipmentType.Machine,
 })
 
 describe('ExercisePicker', () => {
@@ -41,6 +44,7 @@ describe('ExercisePicker', () => {
         id: 'curated-1',
         name: 'curated-1',
         muscleGroup: MuscleGroup.Chest,
+        equipmentType: EquipmentType.Barbell,
         movementPattern: MovementPattern.ChestUpper,
         movementPatternPriority: 0,
         minimumLiftingExperience: LiftingExperience.Expert,

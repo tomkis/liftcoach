@@ -15,3 +15,5 @@ Many gym-goers have the discipline to show up consistently but lack structured t
 - After each change run `pnpm test` to run vitest tests
 
 **IMPORTANT**: Before proposing a plan or writing any code, ALWAYS ensure you understand the project by going through the `docs/index.md`. You NEED to understand what the project is, what it solves and how its built.
+
+**IMPORTANT**: For any non-trivial feature or architectural change, use the `design-first-engineering` skill to iterate on the design before writing code. Walk through Capabilities, Components, Interactions, and Contracts with the user first.

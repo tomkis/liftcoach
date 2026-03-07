@@ -1,0 +1,1 @@
+ALTER TABLE `mesocycle` ADD `unit` text DEFAULT 'metric' NOT NULL;

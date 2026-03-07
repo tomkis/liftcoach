@@ -57,10 +57,13 @@ export class MesocycleAggregateRoot {
 
   constructor(
     private readonly mesocycleDTO: MesocycleType,
-    private readonly userCoefficient: number,
-    private readonly unit: Unit
+    private readonly userCoefficient: number
   ) {
     this.checkInvariants()
+  }
+
+  private get unit(): Unit {
+    return this.mesocycleDTO.unit
   }
 
   private isWorkoutExerciseFinished(workoutExercise: WorkingExercise) {
@@ -650,7 +653,13 @@ export class MesocycleAggregateRoot {
   initializeMesocycle(microcycle: Microcycle, isConfirmed: boolean) {
     this.apply({
       type: 'MesocycleInitialized',
-      payload: { microcycle, mesocycleId: microcycle.mesocycleId, when: this.mesocycleDTO.createdAt, isConfirmed },
+      payload: {
+        microcycle,
+        mesocycleId: microcycle.mesocycleId,
+        when: this.mesocycleDTO.createdAt,
+        isConfirmed,
+        unit: this.unit,
+      },
     })
   }
 

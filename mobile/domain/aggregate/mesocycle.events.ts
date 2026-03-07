@@ -3,6 +3,7 @@ import {
   LifestyleFeedback,
   LoadingSet,
   Microcycle,
+  Unit,
   WorkingExercise,
   WorkingSet,
   WorkingSetState,
@@ -56,6 +57,7 @@ export interface MesocycleInitialized {
     mesocycleId: string
     when: string
     isConfirmed: boolean
+    unit: Unit
   }
 }
 

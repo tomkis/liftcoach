@@ -9,6 +9,7 @@ import {
   Microcycle as MicrocycleType,
   TestedWorkingExercise,
   toDateTime,
+  Unit,
   WorkingExercise,
   WorkingSet,
   WorkingSetState,
@@ -223,6 +224,7 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     id: meso.id,
     createdAt: toDateTime(new Date(meso.createdAt)),
     isConfirmed: meso.isConfirmed === 1,
+    unit: meso.unit as Unit,
     microcycles: microcycles
       .map(mc => {
         const mcWorkouts = workouts.filter(w => w.microcycleId === mc.id)
@@ -438,6 +440,7 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           userId: LOCAL_USER_ID,
           createdAt: new Date(event.payload.when).getTime(),
           isConfirmed: event.payload.isConfirmed ? 1 : 0,
+          unit: event.payload.unit,
         })
         await insertMicrocycle(event.payload.microcycle)
       })

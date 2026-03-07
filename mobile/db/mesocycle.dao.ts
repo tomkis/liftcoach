@@ -199,7 +199,8 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     .from(schema.onboardingData)
     .where(eq(schema.onboardingData.userId, meso.userId))
     .then(r => r[0])
-  const unit = (onboardingData?.unit as Unit) ?? Unit.Metric
+  if (!onboardingData) throw new Error('Onboarding data not found')
+  const unit = onboardingData.unit as Unit
 
   const microcycles = await db
     .select()

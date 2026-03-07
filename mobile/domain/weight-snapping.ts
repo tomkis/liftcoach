@@ -33,24 +33,5 @@ export const snapWeight = (weight: number, equipmentType: EquipmentType, unit: U
   return Math.round(weight / increment) * increment
 }
 
-export const getSliderStep = (equipmentType: EquipmentType, unit: Unit): number => {
-  if (unit === Unit.Imperial) {
-    switch (equipmentType) {
-      case EquipmentType.Barbell:
-        return 5
-      case EquipmentType.Dumbbell:
-        return 5
-      case EquipmentType.Machine:
-        return 5
-    }
-  }
-
-  switch (equipmentType) {
-    case EquipmentType.Barbell:
-      return 2.5
-    case EquipmentType.Dumbbell:
-      return 2
-    case EquipmentType.Machine:
-      return 2.5
-  }
-}
+export const getSliderStep = (equipmentType: EquipmentType, unit: Unit, weight: number): number =>
+  getIncrement(equipmentType, unit, weight)

@@ -58,22 +58,26 @@ describe('snapWeight', () => {
 
 describe('getSliderStep', () => {
   it('returns 2.5 for barbell metric', () => {
-    expect(getSliderStep(EquipmentType.Barbell, Unit.Metric)).toBe(2.5)
+    expect(getSliderStep(EquipmentType.Barbell, Unit.Metric, 60)).toBe(2.5)
   })
 
-  it('returns 2 for dumbbell metric', () => {
-    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric)).toBe(2)
+  it('returns 1 for dumbbell metric under 10kg', () => {
+    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric, 7)).toBe(1)
+  })
+
+  it('returns 2 for dumbbell metric at 10kg and above', () => {
+    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric, 12)).toBe(2)
   })
 
   it('returns 2.5 for machine metric', () => {
-    expect(getSliderStep(EquipmentType.Machine, Unit.Metric)).toBe(2.5)
+    expect(getSliderStep(EquipmentType.Machine, Unit.Metric, 40)).toBe(2.5)
   })
 
   it('returns 5 for barbell imperial', () => {
-    expect(getSliderStep(EquipmentType.Barbell, Unit.Imperial)).toBe(5)
+    expect(getSliderStep(EquipmentType.Barbell, Unit.Imperial, 135)).toBe(5)
   })
 
   it('returns 5 for machine imperial', () => {
-    expect(getSliderStep(EquipmentType.Machine, Unit.Imperial)).toBe(5)
+    expect(getSliderStep(EquipmentType.Machine, Unit.Imperial, 100)).toBe(5)
   })
 })

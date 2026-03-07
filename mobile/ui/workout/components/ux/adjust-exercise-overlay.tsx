@@ -305,7 +305,7 @@ export const AdjustExerciseOverlay = ({
     const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
     const originalWeight = currentWeight || 0
 
-    const step = getSliderStep(equipmentType, unit)
+    const step = getSliderStep(equipmentType, unit, originalWeight)
     const range = unit === 'metric' ? 10 : 25
     const minWeight = Math.max(0, snapWeight(originalWeight - range, equipmentType, unit))
     const maxWeight = snapWeight(originalWeight + range, equipmentType, unit)

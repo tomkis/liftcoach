@@ -57,10 +57,13 @@ export class MesocycleAggregateRoot {
 
   constructor(
     private readonly mesocycleDTO: MesocycleType,
-    private readonly userCoefficient: number,
-    private readonly unit: Unit
+    private readonly userCoefficient: number
   ) {
     this.checkInvariants()
+  }
+
+  private get unit(): Unit {
+    return this.mesocycleDTO.unit
   }
 
   private isWorkoutExerciseFinished(workoutExercise: WorkingExercise) {

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { MuscleGroup } from './muscle-group'
+import { Unit } from './onboarding'
 import { exerciseSchema, ProgressionType, workingExerciseSchema } from './working-exercise'
 
 export enum WorkoutState {
@@ -59,6 +60,7 @@ export const mesocycleSchema = z.object({
   id: z.string().uuid(),
   createdAt: z.string(),
   isConfirmed: z.boolean(),
+  unit: z.nativeEnum(Unit),
   microcycles: z.array(microcycleSchema),
   finishedAt: z.string().optional(),
 })

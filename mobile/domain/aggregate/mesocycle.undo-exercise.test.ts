@@ -146,6 +146,7 @@ const makeMesocycleWithAggregate = (exercises: WorkingExercise[], workoutOverrid
     id: v4(),
     createdAt: '2026-01-01T00:00:00Z',
     isConfirmed: true,
+    unit: Unit.Metric,
     microcycles: [
       {
         id: microcycleId,
@@ -166,7 +167,7 @@ const makeMesocycleWithAggregate = (exercises: WorkingExercise[], workoutOverrid
     ],
   }
 
-  const aggregate = new MesocycleAggregateRoot(dto, 1, Unit.Metric)
+  const aggregate = new MesocycleAggregateRoot(dto, 1)
 
   return { aggregate, dto, workoutId, microcycleId }
 }

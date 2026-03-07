@@ -80,4 +80,20 @@ describe('getSliderStep', () => {
   it('returns 5 for machine imperial', () => {
     expect(getSliderStep(EquipmentType.Machine, Unit.Imperial)).toBe(5)
   })
+
+  it.each([
+    [EquipmentType.Barbell, Unit.Metric],
+    [EquipmentType.Dumbbell, Unit.Metric],
+    [EquipmentType.Machine, Unit.Metric],
+    [EquipmentType.Barbell, Unit.Imperial],
+    [EquipmentType.Dumbbell, Unit.Imperial],
+    [EquipmentType.Machine, Unit.Imperial],
+  ])('slider step for %s/%s evenly divides all snapped weights', (equipment, unit) => {
+    const step = getSliderStep(equipment, unit)
+    // Every snapped weight must be reachable by the slider (a multiple of its step)
+    for (let w = 0; w <= 100; w++) {
+      const snapped = snapWeight(w, equipment, unit)
+      expect(snapped % step).toBe(0)
+    }
+  })
 })

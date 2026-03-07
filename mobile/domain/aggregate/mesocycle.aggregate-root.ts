@@ -653,13 +653,7 @@ export class MesocycleAggregateRoot {
   initializeMesocycle(microcycle: Microcycle, isConfirmed: boolean) {
     this.apply({
       type: 'MesocycleInitialized',
-      payload: {
-        microcycle,
-        mesocycleId: microcycle.mesocycleId,
-        when: this.mesocycleDTO.createdAt,
-        isConfirmed,
-        unit: this.unit,
-      },
+      payload: { microcycle, mesocycleId: microcycle.mesocycleId, when: this.mesocycleDTO.createdAt, isConfirmed },
     })
   }
 

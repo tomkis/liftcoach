@@ -194,6 +194,13 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
   const meso = await db.select().from(schema.mesocycle).where(eq(schema.mesocycle.id, id)).then(r => r[0])
   if (!meso) throw new Error('Mesocycle not found')
 
+  const onboardingData = await db
+    .select({ unit: schema.onboardingData.unit })
+    .from(schema.onboardingData)
+    .where(eq(schema.onboardingData.userId, meso.userId))
+    .then(r => r[0])
+  const unit = (onboardingData?.unit as Unit) ?? Unit.Metric
+
   const microcycles = await db
     .select()
     .from(schema.microcycle)
@@ -224,7 +231,7 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     id: meso.id,
     createdAt: toDateTime(new Date(meso.createdAt)),
     isConfirmed: meso.isConfirmed === 1,
-    unit: meso.unit as Unit,
+    unit,
     microcycles: microcycles
       .map(mc => {
         const mcWorkouts = workouts.filter(w => w.microcycleId === mc.id)
@@ -440,7 +447,6 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           userId: LOCAL_USER_ID,
           createdAt: new Date(event.payload.when).getTime(),
           isConfirmed: event.payload.isConfirmed ? 1 : 0,
-          unit: event.payload.unit,
         })
         await insertMicrocycle(event.payload.microcycle)
       })

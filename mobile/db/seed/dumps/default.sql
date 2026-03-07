@@ -1,7 +1,6 @@
 INSERT INTO __drizzle_migrations VALUES(NULL,'',1770631599943);
 INSERT INTO __drizzle_migrations VALUES(NULL,'0001_tense_tyger_tiger',1771433422855);
 INSERT INTO __drizzle_migrations VALUES(NULL,'0002_sloppy_patriot',1771433422856);
-INSERT INTO __drizzle_migrations VALUES(NULL,'0003_add_unit_to_mesocycle',1773100800000);
 INSERT INTO exercise VALUES('413db5a0-47fb-48da-b9c3-d3267c427613','Leg Press','Quads',1770959304028,1770959304028,'barbell');
 INSERT INTO exercise VALUES('dbcaf166-8f74-404d-a8dc-14aa36aa2532','Single Leg Press','Quads',1770959304028,1770959304028,'barbell');
 INSERT INTO exercise VALUES('cb84c17d-1b79-4b23-a6a4-5947a545d141','Smith Machine Bulgarian Split Squat','Quads',1770959304028,1770959304028,'barbell');

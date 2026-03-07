@@ -55,7 +55,6 @@ export const mesocycle = sqliteTable(
       .notNull()
       .references(() => user.id),
     isConfirmed: integer('is_confirmed').notNull(),
-    unit: text('unit').notNull().default('metric'),
     finishedAt: integer('finished_at'),
     createdAt: integer('created_at').notNull(),
   },

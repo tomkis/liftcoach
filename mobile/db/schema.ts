@@ -28,7 +28,7 @@ export const exercise = sqliteTable('exercise', {
   id: text('id').primaryKey(),
   name: text('name').notNull().unique(),
   muscleGroup: text('muscle_group').notNull(),
-  equipmentType: text('equipment_type').notNull().default('machine'),
+  loadingType: text('loading_type').notNull().default('stack'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 })

@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { Mesocycle, WorkoutState } from '../microcycle'
 import { MuscleGroup } from '../muscle-group'
 import { Unit } from '../onboarding'
-import { EquipmentType } from '../weight-snapping'
+import { LoadingType } from '../weight-snapping'
 import {
   ExerciseAssesmentScore,
   HardAssesmentTag,
@@ -19,7 +19,7 @@ const makeExercise = () => ({
   id: v4(),
   name: 'Bench Press',
   muscleGroup: MuscleGroup.Chest,
-  equipmentType: EquipmentType.Barbell,
+  loadingType: LoadingType.DoublePlates,
 })
 
 const makeSet = (overrides?: Record<string, unknown>) => ({

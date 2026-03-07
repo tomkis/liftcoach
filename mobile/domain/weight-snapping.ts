@@ -1,26 +1,28 @@
 import { Unit } from './onboarding'
 
-export enum EquipmentType {
-  Barbell = 'barbell',
+export enum LoadingType {
+  DoublePlates = 'double_plates',
   Dumbbell = 'dumbbell',
-  Machine = 'machine',
+  Plates = 'plates',
+  Stack = 'stack',
 }
 
-export const getIncrement = (equipmentType: EquipmentType, unit: Unit): number => {
+export const getIncrement = (loadingType: LoadingType, unit: Unit): number => {
   if (unit === Unit.Imperial) {
     return 5
   }
 
-  switch (equipmentType) {
-    case EquipmentType.Barbell:
-    case EquipmentType.Machine:
+  switch (loadingType) {
+    case LoadingType.DoublePlates:
+    case LoadingType.Plates:
+    case LoadingType.Stack:
       return 2.5
-    case EquipmentType.Dumbbell:
+    case LoadingType.Dumbbell:
       return 1
   }
 }
 
-export const snapWeight = (weight: number, equipmentType: EquipmentType, unit: Unit): number => {
-  const increment = getIncrement(equipmentType, unit)
+export const snapWeight = (weight: number, loadingType: LoadingType, unit: Unit): number => {
+  const increment = getIncrement(loadingType, unit)
   return Math.round(weight / increment) * increment
 }

@@ -371,7 +371,7 @@ export class MesocycleAggregateRoot {
             return {
               id: v4(),
               state: WorkingSetState.pending,
-              weight: calculateWeightFromLoadedExercise({ loadingSet, targetReps: repCount }, 6, this.userCoefficient, exercise.exercise.equipmentType, this.unit),
+              weight: calculateWeightFromLoadedExercise({ loadingSet, targetReps: repCount }, 6, this.userCoefficient, exercise.exercise.loadingType, this.unit),
               orderIndex: index,
               reps: repCount,
             }
@@ -392,7 +392,7 @@ export class MesocycleAggregateRoot {
           progressionType,
           sets: exercise.sets.map(set => {
             const lastReps = pastExerciseResults[pastExerciseResults.length - 1].exercise.sets[0].reps
-            const progressionResult = applySetProgression(progressionType, lastReps, set, exercise.exercise.equipmentType, this.unit)
+            const progressionResult = applySetProgression(progressionType, lastReps, set, exercise.exercise.loadingType, this.unit)
 
             return {
               id: v4(),
@@ -709,7 +709,7 @@ export class MesocycleAggregateRoot {
     const activeWorkout = this.getActiveWorkout()
     const targetReps = 10
 
-    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient, exercise.exercise.equipmentType, this.unit)
+    const targetWeight = calculateWeightFromLoadedExercise({ loadingSet, targetReps }, targetRpe, this.userCoefficient, exercise.exercise.loadingType, this.unit)
 
     const sets = Array.from({ length: exercise.targetSets }).map((_, index) => ({
       id: v4(),
@@ -795,7 +795,7 @@ export class MesocycleAggregateRoot {
             },
             10,
             this.userCoefficient,
-            replacingExercise.exercise.equipmentType,
+            replacingExercise.exercise.loadingType,
             this.unit
           )
 
@@ -817,7 +817,7 @@ export class MesocycleAggregateRoot {
             },
             10,
             this.userCoefficient,
-            replacingExercise.exercise.equipmentType,
+            replacingExercise.exercise.loadingType,
             this.unit
           )
 
@@ -846,7 +846,7 @@ export class MesocycleAggregateRoot {
             },
             6,
             this.userCoefficient,
-            replacingExercise.exercise.equipmentType,
+            replacingExercise.exercise.loadingType,
             this.unit
           )
 
@@ -898,7 +898,7 @@ export class MesocycleAggregateRoot {
       throw new Error('Exercise not found in the workout')
     }
 
-    const snappedWeight = snapWeight(weight, exercise.exercise.equipmentType, this.unit)
+    const snappedWeight = snapWeight(weight, exercise.exercise.loadingType, this.unit)
     this.apply({
       type: 'ExerciseUpdated',
       payload: { workoutExerciseId, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },

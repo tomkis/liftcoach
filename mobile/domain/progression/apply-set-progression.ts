@@ -1,5 +1,5 @@
 import { Unit } from '../onboarding'
-import { EquipmentType, snapWeight } from '../weight-snapping'
+import { LoadingType, snapWeight } from '../weight-snapping'
 import { ProgressionType } from '../working-exercise'
 
 const htRange = { min: 8, max: 12 }
@@ -12,7 +12,7 @@ export const applySetProgression = (
   progressionType: ProgressionType,
   lastReps: number,
   set: { reps: number; weight: number },
-  equipmentType: EquipmentType,
+  loadingType: LoadingType,
   unit: Unit
 ): { weight: number; reps: number } => {
   switch (progressionType) {
@@ -20,7 +20,7 @@ export const applySetProgression = (
     case ProgressionType.LoweredWeightTooManyFailures:
     case ProgressionType.RegressTooMuchVolume:
       return {
-        weight: snapWeight(set.weight * 0.9, equipmentType, unit),
+        weight: snapWeight(set.weight * 0.9, loadingType, unit),
         reps: set.reps,
       }
 

@@ -305,7 +305,7 @@ export const AdjustExerciseOverlay = ({
     const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
     const originalWeight = currentWeight || 0
 
-    const step = getSliderStep(equipmentType, unit, originalWeight)
+    const step = getSliderStep(equipmentType, unit)
     const range = unit === 'metric' ? 10 : 25
     const minWeight = Math.max(0, snapWeight(originalWeight - range, equipmentType, unit))
     const maxWeight = snapWeight(originalWeight + range, equipmentType, unit)
@@ -333,7 +333,7 @@ export const AdjustExerciseOverlay = ({
                 maximumValue={maxWeight}
                 step={step}
                 value={adjustedWeight}
-                onValueChange={setAdjustedWeight}
+                onValueChange={(v) => setAdjustedWeight(snapWeight(v, equipmentType, unit))}
                 minimumTrackTintColor={theme.colors.primary.main}
                 maximumTrackTintColor={theme.colors.gray.light}
                 thumbTintColor={theme.colors.primary.main}

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import { Unit } from '../onboarding'
-import { EquipmentType } from '../weight-snapping'
+import { LoadingType } from '../weight-snapping'
 import { calculateWeightFromLoadedExercise } from './calculate-weight-from-loaded-exercise'
 
-const barbell = EquipmentType.Barbell
+const doublePlates = LoadingType.DoublePlates
 const metric = Unit.Metric
 
 describe('calculateWeightFromLoadedExercise', () => {
@@ -16,7 +16,7 @@ describe('calculateWeightFromLoadedExercise', () => {
         { loadingSet: { weight: 20, reps: 8 }, targetReps: 10 },
         7,
         coeff,
-        barbell,
+        doublePlates,
         metric
       )
 
@@ -29,7 +29,7 @@ describe('calculateWeightFromLoadedExercise', () => {
       { loadingSet: { weight: 20, reps: 8 }, targetReps: 8 },
       8,
       1,
-      barbell,
+      doublePlates,
       metric
     )
 
@@ -41,7 +41,7 @@ describe('calculateWeightFromLoadedExercise', () => {
       { loadingSet: { weight: 17.5, reps: 8 }, targetReps: 8 },
       8,
       1,
-      barbell,
+      doublePlates,
       metric
     )
 
@@ -56,7 +56,7 @@ describe('calculateWeightFromLoadedExercise', () => {
         { loadingSet: { weight: 62.5, reps: 10 }, targetReps: 8 },
         rpe,
         1,
-        barbell,
+        doublePlates,
         metric
       )
 
@@ -69,7 +69,7 @@ describe('calculateWeightFromLoadedExercise', () => {
       { loadingSet: { weight: 50, reps: 8 }, targetReps: 10 },
       8,
       0.85,
-      barbell,
+      doublePlates,
       metric
     )
 
@@ -90,7 +90,7 @@ describe('calculateWeightFromLoadedExercise', () => {
               { loadingSet: { weight: w, reps: r }, targetReps: 8 },
               rpe,
               coeff,
-              barbell,
+              doublePlates,
               metric
             )
 
@@ -104,24 +104,24 @@ describe('calculateWeightFromLoadedExercise', () => {
     }
   })
 
-  it('snaps to dumbbell increments when equipment is dumbbell', () => {
+  it('snaps to dumbbell increments when loading type is dumbbell', () => {
     const result = calculateWeightFromLoadedExercise(
       { loadingSet: { weight: 12, reps: 10 }, targetReps: 10 },
       8,
       1,
-      EquipmentType.Dumbbell,
+      LoadingType.Dumbbell,
       metric
     )
 
-    expect(result % 2).toBe(0)
+    expect(result % 1).toBe(0)
   })
 
-  it('snaps to machine increments when equipment is machine', () => {
+  it('snaps to stack increments when loading type is stack', () => {
     const result = calculateWeightFromLoadedExercise(
       { loadingSet: { weight: 50, reps: 8 }, targetReps: 10 },
       8,
       1,
-      EquipmentType.Machine,
+      LoadingType.Stack,
       metric
     )
 

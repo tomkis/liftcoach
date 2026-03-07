@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { MuscleGroup } from './muscle-group'
-import { EquipmentType } from './weight-snapping'
+import { LoadingType } from './weight-snapping'
 
 export enum WorkoutExerciseState {
   loading = 'loading',
@@ -67,7 +67,7 @@ export const exerciseSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   muscleGroup: z.nativeEnum(MuscleGroup),
-  equipmentType: z.nativeEnum(EquipmentType),
+  loadingType: z.nativeEnum(LoadingType),
 })
 export type Exercise = z.infer<typeof exerciseSchema>
 

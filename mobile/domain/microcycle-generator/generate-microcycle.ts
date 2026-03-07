@@ -117,7 +117,7 @@ export class MicrocycleGenerator {
             id,
             createdAt,
             state: WorkoutExerciseState.loading,
-            exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, equipmentType: exercise.exercise.equipmentType },
+            exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, loadingType: exercise.exercise.loadingType },
             targetSets: exercise.sets,
             targetReps: exercise.targetReps,
             orderIndex: exerciseIndex,
@@ -135,7 +135,7 @@ export class MicrocycleGenerator {
               },
               10,
               userCoefficient,
-              exercise.exercise.equipmentType,
+              exercise.exercise.loadingType,
               this.onboardedUser.unit
             )
 
@@ -143,7 +143,7 @@ export class MicrocycleGenerator {
               id,
               createdAt,
               state: WorkoutExerciseState.testing,
-              exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, equipmentType: exercise.exercise.equipmentType },
+              exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, loadingType: exercise.exercise.loadingType },
               orderIndex: exerciseIndex,
               targetSets: exercise.sets,
               targetReps: exercise.targetReps,

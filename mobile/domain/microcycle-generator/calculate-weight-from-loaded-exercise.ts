@@ -1,5 +1,5 @@
 import { Unit } from '../onboarding'
-import { EquipmentType, snapWeight } from '../weight-snapping'
+import { LoadingType, snapWeight } from '../weight-snapping'
 
 const rpeChart: Record<number, number[]> = {
   1: [100, 97.8, 95.5, 93.9, 92.2, 90.7, 89.2, 87.7, 86.3],
@@ -42,7 +42,7 @@ export const calculateWeightFromLoadedExercise = (
   },
   targetRpe: number,
   userCoefficient: number,
-  equipmentType: EquipmentType,
+  loadingType: LoadingType,
   unit: Unit
 ) => {
   if (targetRpe < 6 || targetRpe > 10) {
@@ -53,7 +53,7 @@ export const calculateWeightFromLoadedExercise = (
   const estimatedOneRm = calculate1RMEplay(weight, reps)
   const rpeCoeff = rpeChart[exercise.targetReps][rpeToRpeIndex[targetRpe]]
 
-  return snapWeight(estimatedOneRm * (rpeCoeff / 100) * userCoefficient, equipmentType, unit)
+  return snapWeight(estimatedOneRm * (rpeCoeff / 100) * userCoefficient, loadingType, unit)
 }
 
 export const calculateRepsFromLoadedExercise = (

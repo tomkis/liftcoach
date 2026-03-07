@@ -165,7 +165,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         canReplaceExercise={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loading].includes(exercise.state)}
         canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)}
         unit={workoutContext.unit}
-        equipmentType={exercise.exercise.equipmentType}
+        loadingType={exercise.exercise.loadingType}
       />
     </ScreenContainer>
   )

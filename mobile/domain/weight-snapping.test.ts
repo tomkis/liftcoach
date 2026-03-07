@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { Unit } from './onboarding'
-import { EquipmentType, getSliderStep, snapWeight } from './weight-snapping'
+import { EquipmentType, getIncrement, snapWeight } from './weight-snapping'
 
 describe('snapWeight', () => {
   describe('metric', () => {
@@ -13,16 +13,11 @@ describe('snapWeight', () => {
       expect(snapWeight(61.5, EquipmentType.Barbell, Unit.Metric)).toBe(62.5)
     })
 
-    it('dumbbell snaps to 1kg under 10kg', () => {
+    it('dumbbell snaps to 1kg increments', () => {
       expect(snapWeight(7.3, EquipmentType.Dumbbell, Unit.Metric)).toBe(7)
       expect(snapWeight(7.6, EquipmentType.Dumbbell, Unit.Metric)).toBe(8)
-      expect(snapWeight(9, EquipmentType.Dumbbell, Unit.Metric)).toBe(9)
-    })
-
-    it('dumbbell snaps to 2kg at 10kg and above', () => {
-      expect(snapWeight(11, EquipmentType.Dumbbell, Unit.Metric)).toBe(12)
-      expect(snapWeight(13, EquipmentType.Dumbbell, Unit.Metric)).toBe(14)
-      expect(snapWeight(15, EquipmentType.Dumbbell, Unit.Metric)).toBe(16)
+      expect(snapWeight(11, EquipmentType.Dumbbell, Unit.Metric)).toBe(11)
+      expect(snapWeight(15.4, EquipmentType.Dumbbell, Unit.Metric)).toBe(15)
       expect(snapWeight(20, EquipmentType.Dumbbell, Unit.Metric)).toBe(20)
     })
 
@@ -56,28 +51,37 @@ describe('snapWeight', () => {
   })
 })
 
-describe('getSliderStep', () => {
+describe('getIncrement', () => {
   it('returns 2.5 for barbell metric', () => {
-    expect(getSliderStep(EquipmentType.Barbell, Unit.Metric)).toBe(2.5)
+    expect(getIncrement(EquipmentType.Barbell, Unit.Metric)).toBe(2.5)
   })
 
-  it('returns 1 for dumbbell metric (smallest valid increment)', () => {
-    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric)).toBe(1)
+  it('returns 1 for dumbbell metric', () => {
+    expect(getIncrement(EquipmentType.Dumbbell, Unit.Metric)).toBe(1)
   })
 
   it('returns 2.5 for machine metric', () => {
-    expect(getSliderStep(EquipmentType.Machine, Unit.Metric)).toBe(2.5)
+    expect(getIncrement(EquipmentType.Machine, Unit.Metric)).toBe(2.5)
   })
 
-  it('returns 5 for barbell imperial', () => {
-    expect(getSliderStep(EquipmentType.Barbell, Unit.Imperial)).toBe(5)
+  it('returns 5 for all imperial equipment', () => {
+    expect(getIncrement(EquipmentType.Barbell, Unit.Imperial)).toBe(5)
+    expect(getIncrement(EquipmentType.Dumbbell, Unit.Imperial)).toBe(5)
+    expect(getIncrement(EquipmentType.Machine, Unit.Imperial)).toBe(5)
   })
 
-  it('returns 5 for dumbbell imperial', () => {
-    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Imperial)).toBe(5)
-  })
-
-  it('returns 5 for machine imperial', () => {
-    expect(getSliderStep(EquipmentType.Machine, Unit.Imperial)).toBe(5)
+  it.each([
+    [EquipmentType.Barbell, Unit.Metric],
+    [EquipmentType.Dumbbell, Unit.Metric],
+    [EquipmentType.Machine, Unit.Metric],
+    [EquipmentType.Barbell, Unit.Imperial],
+    [EquipmentType.Dumbbell, Unit.Imperial],
+    [EquipmentType.Machine, Unit.Imperial],
+  ])('increment for %s/%s evenly divides all snapped weights', (equipment, unit) => {
+    const step = getIncrement(equipment, unit)
+    for (let w = 0; w <= 100; w++) {
+      const snapped = snapWeight(w, equipment, unit)
+      expect(snapped % step).toBe(0)
+    }
   })
 })

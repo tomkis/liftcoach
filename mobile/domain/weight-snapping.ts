@@ -8,33 +8,6 @@ export enum EquipmentType {
 
 const getIncrement = (equipmentType: EquipmentType, unit: Unit, weight: number): number => {
   if (unit === Unit.Imperial) {
-    switch (equipmentType) {
-      case EquipmentType.Barbell:
-        return 5
-      case EquipmentType.Dumbbell:
-        return 5
-      case EquipmentType.Machine:
-        return 5
-    }
-  }
-
-  switch (equipmentType) {
-    case EquipmentType.Barbell:
-      return 2.5
-    case EquipmentType.Dumbbell:
-      return weight < 10 ? 1 : 2
-    case EquipmentType.Machine:
-      return 2.5
-  }
-}
-
-export const snapWeight = (weight: number, equipmentType: EquipmentType, unit: Unit): number => {
-  const increment = getIncrement(equipmentType, unit, weight)
-  return Math.round(weight / increment) * increment
-}
-
-export const getSliderStep = (equipmentType: EquipmentType, unit: Unit): number => {
-  if (unit === Unit.Imperial) {
     return 5
   }
 
@@ -43,6 +16,18 @@ export const getSliderStep = (equipmentType: EquipmentType, unit: Unit): number 
     case EquipmentType.Machine:
       return 2.5
     case EquipmentType.Dumbbell:
-      return 1
+      return weight < 10 ? 1 : 2
   }
 }
+
+export const snapWeight = (weight: number, equipmentType: EquipmentType, unit: Unit): number => {
+  const increment = getIncrement(equipmentType, unit, weight)
+  return Math.round(weight / increment) * increment
+}
+
+/**
+ * Returns the smallest valid increment for the given equipment/unit combo.
+ * Used as the slider step so users can reach any valid weight.
+ */
+export const getSliderStep = (equipmentType: EquipmentType, unit: Unit): number =>
+  getIncrement(equipmentType, unit, 0)

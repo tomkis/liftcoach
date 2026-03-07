@@ -9,6 +9,7 @@ import {
   Microcycle as MicrocycleType,
   TestedWorkingExercise,
   toDateTime,
+  Unit,
   WorkingExercise,
   WorkingSet,
   WorkingSetState,
@@ -41,6 +42,7 @@ const mapWorkoutExerciseToDTO = (
       id: exerciseRow.id,
       name: exerciseRow.name,
       muscleGroup: exerciseRow.muscleGroup,
+      loadingType: exerciseRow.loadingType,
     },
     targetReps: row.targetReps,
     targetSets: row.targetSets,
@@ -192,6 +194,14 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
   const meso = await db.select().from(schema.mesocycle).where(eq(schema.mesocycle.id, id)).then(r => r[0])
   if (!meso) throw new Error('Mesocycle not found')
 
+  const onboardingData = await db
+    .select({ unit: schema.onboardingData.unit })
+    .from(schema.onboardingData)
+    .where(eq(schema.onboardingData.userId, meso.userId))
+    .then(r => r[0])
+  if (!onboardingData) throw new Error('Onboarding data not found')
+  const unit = onboardingData.unit as Unit
+
   const microcycles = await db
     .select()
     .from(schema.microcycle)
@@ -222,6 +232,7 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     id: meso.id,
     createdAt: toDateTime(new Date(meso.createdAt)),
     isConfirmed: meso.isConfirmed === 1,
+    unit,
     microcycles: microcycles
       .map(mc => {
         const mcWorkouts = workouts.filter(w => w.microcycleId === mc.id)

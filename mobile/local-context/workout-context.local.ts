@@ -89,6 +89,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         createdAt: toDateTime(new Date()),
         finishedAt: undefined,
         isConfirmed: false,
+        unit: onboardedUser.unit,
         microcycles: [],
       },
       getUserCoefficient(session)
@@ -129,6 +130,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
             createdAt: toDateTime(new Date()),
             finishedAt: undefined,
             isConfirmed: true,
+            unit: mesocycleDto.unit,
             microcycles: [],
           },
           getUserCoefficient(session)
@@ -318,6 +320,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         finishedAt: undefined,
         microcycles: [],
         isConfirmed: true,
+        unit: onboardedUser.unit,
       },
       getUserCoefficient(session)
     )

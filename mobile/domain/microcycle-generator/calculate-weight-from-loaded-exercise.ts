@@ -1,4 +1,5 @@
-import { prettifyWeight } from '../utils/prettify-weight'
+import { Unit } from '../onboarding'
+import { LoadingType, snapWeight } from '../weight-snapping'
 
 const rpeChart: Record<number, number[]> = {
   1: [100, 97.8, 95.5, 93.9, 92.2, 90.7, 89.2, 87.7, 86.3],
@@ -40,7 +41,9 @@ export const calculateWeightFromLoadedExercise = (
     targetReps: number
   },
   targetRpe: number,
-  userCoefficient: number
+  userCoefficient: number,
+  loadingType: LoadingType,
+  unit: Unit
 ) => {
   if (targetRpe < 6 || targetRpe > 10) {
     throw new Error('Invalid target rpe')
@@ -50,7 +53,7 @@ export const calculateWeightFromLoadedExercise = (
   const estimatedOneRm = calculate1RMEplay(weight, reps)
   const rpeCoeff = rpeChart[exercise.targetReps][rpeToRpeIndex[targetRpe]]
 
-  return prettifyWeight(estimatedOneRm * (rpeCoeff / 100) * userCoefficient)
+  return snapWeight(estimatedOneRm * (rpeCoeff / 100) * userCoefficient, loadingType, unit)
 }
 
 export const calculateRepsFromLoadedExercise = (

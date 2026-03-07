@@ -1,22 +1,24 @@
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
-import { type MuscleGroup } from '@/mobile/domain'
+import { LoadingType, type MuscleGroup } from '@/mobile/domain'
 import { theme } from '@/mobile/theme/theme'
 
-import { type AddExerciseModalProps, formatLabel, MUSCLE_GROUPS } from './shared'
+import { type AddExerciseModalProps, LOADING_TYPES, formatLabel, MUSCLE_GROUPS } from './shared'
 
 const GOLD = theme.colors.primary.main
 
 export const AddExerciseModal = ({ visible, onClose, onSubmit, lockedMuscleGroup }: AddExerciseModalProps) => {
   const [name, setName] = useState('')
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(lockedMuscleGroup ?? null)
+  const [loadingType, setLoadingType] = useState<LoadingType | null>(null)
 
-  const canAdd = name.trim().length > 0 && muscleGroup !== null
+  const canAdd = name.trim().length > 0 && muscleGroup !== null && loadingType !== null
 
   const handleClose = () => {
     setName('')
     setMuscleGroup(lockedMuscleGroup ?? null)
+    setLoadingType(null)
     onClose()
   }
 
@@ -69,11 +71,31 @@ export const AddExerciseModal = ({ visible, onClose, onSubmit, lockedMuscleGroup
                 </Pressable>
               ))}
             </View>
+
+            <View style={s.fieldLabelRow}>
+              <View style={s.fieldNum}>
+                <Text style={s.fieldNumText}>3</Text>
+              </View>
+              <Text style={s.fieldLabel}>LOADING TYPE</Text>
+            </View>
+            <View style={s.tagCloud}>
+              {LOADING_TYPES.map(lt => (
+                <Pressable
+                  key={lt}
+                  style={[s.chip, lt === loadingType && s.chipSelected]}
+                  onPress={() => setLoadingType(lt)}
+                >
+                  <Text style={[s.chipText, lt === loadingType && s.chipTextSelected]}>
+                    {formatLabel(lt)}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
           </ScrollView>
 
           <Pressable
             style={[s.addBtn, !canAdd && s.addBtnDisabled]}
-            onPress={canAdd ? () => { onSubmit({ name: name.trim(), muscleGroup: muscleGroup! }); handleClose() } : undefined}
+            onPress={canAdd ? () => { onSubmit({ name: name.trim(), muscleGroup: muscleGroup!, loadingType: loadingType! }); handleClose() } : undefined}
             disabled={!canAdd}
           >
             <Text style={s.addBtnText}>ADD EXERCISE</Text>

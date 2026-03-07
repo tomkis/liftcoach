@@ -1,6 +1,6 @@
+import { Unit } from '../onboarding'
+import { LoadingType, snapWeight } from '../weight-snapping'
 import { ProgressionType } from '../working-exercise'
-
-import { prettifyWeight } from '../utils/prettify-weight'
 
 const htRange = { min: 8, max: 12 }
 
@@ -11,14 +11,16 @@ const incrementReps = (lastReps: number) => {
 export const applySetProgression = (
   progressionType: ProgressionType,
   lastReps: number,
-  set: { reps: number; weight: number }
+  set: { reps: number; weight: number },
+  loadingType: LoadingType,
+  unit: Unit
 ): { weight: number; reps: number } => {
   switch (progressionType) {
     case ProgressionType.LoweredWeightTooHeavy:
     case ProgressionType.LoweredWeightTooManyFailures:
     case ProgressionType.RegressTooMuchVolume:
       return {
-        weight: prettifyWeight(set.weight * 0.9),
+        weight: snapWeight(set.weight * 0.9, loadingType, unit),
         reps: set.reps,
       }
 

@@ -15,6 +15,20 @@
       "when": 1771433422855,
       "tag": "0001_tense_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1772808820723,
+      "tag": "0002_sloppy_patriot",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772895220723,
+      "tag": "0003_rename_equipment_type_to_loading_type",
+      "breakpoints": true
     }
   ]
 }

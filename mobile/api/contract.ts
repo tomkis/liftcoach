@@ -2,6 +2,7 @@ import {
   ActivePlanSummary,
   CycleProgress,
   DashboardData,
+  LoadingType,
   ExerciseAssesment,
   ExerciseLibraryItem,
   LifestyleFeedback,
@@ -123,7 +124,7 @@ export interface MesoPlannerContext {
 
 export interface ExerciseLibraryContext {
   getExercises: (session: Session) => Promise<ExerciseLibraryItem[]>
-  createExercise: (session: Session, input: { name: string; muscleGroup: MuscleGroup }) => Promise<void>
+  createExercise: (session: Session, input: { name: string; muscleGroup: MuscleGroup; loadingType: LoadingType }) => Promise<void>
 }
 
 export interface ContractContext {

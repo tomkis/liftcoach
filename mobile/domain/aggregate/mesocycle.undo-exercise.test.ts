@@ -3,6 +3,8 @@ import { v4 } from 'uuid'
 
 import { Mesocycle, WorkoutState } from '../microcycle'
 import { MuscleGroup } from '../muscle-group'
+import { Unit } from '../onboarding'
+import { LoadingType } from '../weight-snapping'
 import {
   ExerciseAssesmentScore,
   HardAssesmentTag,
@@ -17,6 +19,7 @@ const makeExercise = () => ({
   id: v4(),
   name: 'Bench Press',
   muscleGroup: MuscleGroup.Chest,
+  loadingType: LoadingType.DoublePlates,
 })
 
 const makeSet = (overrides?: Record<string, unknown>) => ({
@@ -143,6 +146,7 @@ const makeMesocycleWithAggregate = (exercises: WorkingExercise[], workoutOverrid
     id: v4(),
     createdAt: '2026-01-01T00:00:00Z',
     isConfirmed: true,
+    unit: Unit.Metric,
     microcycles: [
       {
         id: microcycleId,

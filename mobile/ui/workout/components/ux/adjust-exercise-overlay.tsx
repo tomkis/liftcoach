@@ -1,5 +1,6 @@
 import Slider from '@react-native-community/slider'
-import { Unit } from '@/mobile/domain'
+import { LoadingType, Unit } from '@/mobile/domain'
+import { getIncrement, snapWeight } from '@/mobile/domain/weight-snapping'
 import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -104,6 +105,7 @@ interface SomethingWentWrongOverlayProps {
   canReplaceExercise: boolean
   canChangeWeight?: boolean
   unit: Unit
+  loadingType: LoadingType
 }
 
 export const ProposeExerciseReplacementModal = ({
@@ -257,6 +259,7 @@ export const AdjustExerciseOverlay = ({
   canReplaceExercise,
   canChangeWeight,
   unit,
+  loadingType,
 }: SomethingWentWrongOverlayProps) => {
   const [showWeightInput, setShowWeightInput] = useState(false)
   const [showReplaceExercise, setShowReplaceExercise] = useState(false)
@@ -302,9 +305,10 @@ export const AdjustExerciseOverlay = ({
     const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
     const originalWeight = currentWeight || 0
 
-    const minWeight = Math.max(0, originalWeight - (unit === 'metric' ? 10 : 25))
-    const maxWeight = originalWeight + (unit === 'metric' ? 10 : 25)
-    const step = unit === 'metric' ? 1 : 5
+    const step = getIncrement(loadingType, unit)
+    const range = unit === 'metric' ? 10 : 25
+    const minWeight = Math.max(0, snapWeight(originalWeight - range, loadingType, unit))
+    const maxWeight = snapWeight(originalWeight + range, loadingType, unit)
 
     return (
       <>
@@ -329,7 +333,7 @@ export const AdjustExerciseOverlay = ({
                 maximumValue={maxWeight}
                 step={step}
                 value={adjustedWeight}
-                onValueChange={setAdjustedWeight}
+                onValueChange={(v) => setAdjustedWeight(snapWeight(v, loadingType, unit))}
                 minimumTrackTintColor={theme.colors.primary.main}
                 maximumTrackTintColor={theme.colors.gray.light}
                 thumbTintColor={theme.colors.primary.main}

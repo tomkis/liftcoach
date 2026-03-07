@@ -61,8 +61,8 @@ describe('getSliderStep', () => {
     expect(getSliderStep(EquipmentType.Barbell, Unit.Metric)).toBe(2.5)
   })
 
-  it('returns 2 for dumbbell metric', () => {
-    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric)).toBe(2)
+  it('returns 1 for dumbbell metric (smallest valid increment)', () => {
+    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Metric)).toBe(1)
   })
 
   it('returns 2.5 for machine metric', () => {
@@ -71,6 +71,10 @@ describe('getSliderStep', () => {
 
   it('returns 5 for barbell imperial', () => {
     expect(getSliderStep(EquipmentType.Barbell, Unit.Imperial)).toBe(5)
+  })
+
+  it('returns 5 for dumbbell imperial', () => {
+    expect(getSliderStep(EquipmentType.Dumbbell, Unit.Imperial)).toBe(5)
   })
 
   it('returns 5 for machine imperial', () => {

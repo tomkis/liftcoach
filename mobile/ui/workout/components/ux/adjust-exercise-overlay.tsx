@@ -333,7 +333,7 @@ export const AdjustExerciseOverlay = ({
                 maximumValue={maxWeight}
                 step={step}
                 value={adjustedWeight}
-                onValueChange={setAdjustedWeight}
+                onValueChange={(v) => setAdjustedWeight(snapWeight(v, equipmentType, unit))}
                 minimumTrackTintColor={theme.colors.primary.main}
                 maximumTrackTintColor={theme.colors.gray.light}
                 thumbTintColor={theme.colors.primary.main}

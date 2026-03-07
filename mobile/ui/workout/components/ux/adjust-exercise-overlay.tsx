@@ -1,6 +1,6 @@
 import Slider from '@react-native-community/slider'
 import { EquipmentType, Unit } from '@/mobile/domain'
-import { getSliderStep, snapWeight } from '@/mobile/domain/weight-snapping'
+import { getIncrement, snapWeight } from '@/mobile/domain/weight-snapping'
 import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -305,7 +305,7 @@ export const AdjustExerciseOverlay = ({
     const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
     const originalWeight = currentWeight || 0
 
-    const step = getSliderStep(equipmentType, unit)
+    const step = getIncrement(equipmentType, unit)
     const range = unit === 'metric' ? 10 : 25
     const minWeight = Math.max(0, snapWeight(originalWeight - range, equipmentType, unit))
     const maxWeight = snapWeight(originalWeight + range, equipmentType, unit)

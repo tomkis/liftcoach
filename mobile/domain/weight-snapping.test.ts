@@ -21,10 +21,11 @@ describe('snapWeight', () => {
       expect(snapWeight(20, LoadingType.Dumbbell, Unit.Metric)).toBe(20)
     })
 
-    it('stack snaps to 2.5kg increments', () => {
-      expect(snapWeight(37, LoadingType.Stack, Unit.Metric)).toBe(37.5)
-      expect(snapWeight(36, LoadingType.Stack, Unit.Metric)).toBe(35)
+    it('stack snaps to 5kg increments', () => {
+      expect(snapWeight(37, LoadingType.Stack, Unit.Metric)).toBe(35)
+      expect(snapWeight(38, LoadingType.Stack, Unit.Metric)).toBe(40)
       expect(snapWeight(41, LoadingType.Stack, Unit.Metric)).toBe(40)
+      expect(snapWeight(43, LoadingType.Stack, Unit.Metric)).toBe(45)
     })
 
     it('plates snaps to 2.5kg increments', () => {
@@ -71,8 +72,8 @@ describe('getIncrement', () => {
     expect(getIncrement(LoadingType.Dumbbell, Unit.Metric)).toBe(1)
   })
 
-  it('returns 2.5 for stack metric', () => {
-    expect(getIncrement(LoadingType.Stack, Unit.Metric)).toBe(2.5)
+  it('returns 5 for stack metric', () => {
+    expect(getIncrement(LoadingType.Stack, Unit.Metric)).toBe(5)
   })
 
   it('returns 2.5 for plates metric', () => {

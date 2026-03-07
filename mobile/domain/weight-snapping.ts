@@ -15,8 +15,9 @@ export const getIncrement = (loadingType: LoadingType, unit: Unit): number => {
   switch (loadingType) {
     case LoadingType.DoublePlates:
     case LoadingType.Plates:
-    case LoadingType.Stack:
       return 2.5
+    case LoadingType.Stack:
+      return 5
     case LoadingType.Dumbbell:
       return 1
   }

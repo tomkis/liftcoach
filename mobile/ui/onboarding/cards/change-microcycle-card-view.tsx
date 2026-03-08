@@ -1,4 +1,4 @@
-import { getTrainingFrequencyCount } from '@/mobile/domain'
+import { getTrainingFrequencyCount, type MuscleGroup } from '@/mobile/domain'
 import { useState } from 'react'
 import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -29,12 +29,13 @@ const getWorkoutTitle = (index: number) => {
   }
 }
 
-const Foobar = (props: {
+const ExerciseReplacementModal = (props: {
   exerciseId: string
   exerciseName: string
   onExerciseReplace: (exerciseId: string, replacementExerciseId: string) => void
   onCancel: () => void
   handleReplaceExerciseCancel: () => void
+  exerciseMuscleGroup: MuscleGroup
 }) => {
   return (
     <Modal transparent={true} visible={true} animationType="fade">
@@ -46,6 +47,7 @@ const Foobar = (props: {
             onExerciseReplace={props.onExerciseReplace}
             onCancel={props.onCancel}
             handleReplaceExerciseCancel={props.handleReplaceExerciseCancel}
+            lockedMuscleGroup={props.exerciseMuscleGroup}
           />
         </View>
       </View>
@@ -66,6 +68,7 @@ export const ChangeMicrocycleCardView = () => {
     id: string
     name: string
     workoutId: string
+    muscleGroup: MuscleGroup
   } | null>(null)
 
   if (isOnboardingInfoPending || isMicrocyclePending || !microcycle || !onboardingInfo) {
@@ -79,7 +82,7 @@ export const ChangeMicrocycleCardView = () => {
   const trainingFrequencyDays = getTrainingFrequencyCount(onboardingInfo.trainingFrequency)
   const realNumberOfTrainings = microcycle.workouts.length
 
-  const handleEditExercise = (exercise: { id: string; name: string; workoutId: string }) => {
+  const handleEditExercise = (exercise: { id: string; name: string; workoutId: string; muscleGroup: MuscleGroup }) => {
     setSelectedExercise(exercise)
   }
 
@@ -154,6 +157,7 @@ export const ChangeMicrocycleCardView = () => {
                                   id: item.id,
                                   name: item.exercise.name,
                                   workoutId: workout.id,
+                                  muscleGroup: item.exercise.muscleGroup,
                                 })
                               }}
                             >
@@ -179,12 +183,13 @@ export const ChangeMicrocycleCardView = () => {
         </View>
       </View>
       {selectedExercise && (
-        <Foobar
+        <ExerciseReplacementModal
           exerciseId={selectedExercise.id}
           exerciseName={selectedExercise.name}
           onExerciseReplace={handleExerciseReplace}
           onCancel={handleCloseAdjustOverlay}
           handleReplaceExerciseCancel={handleCloseAdjustOverlay}
+          exerciseMuscleGroup={selectedExercise.muscleGroup}
         />
       )}
     </>

@@ -10,6 +10,7 @@ import { PrimaryButton, OutlineButton } from '@/mobile/ui/ds/buttons'
 import { ModalShell } from '@/mobile/ui/ds/modals'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
+import { type MuscleGroup } from '@/mobile/domain/muscle-group'
 
 const styles = StyleSheet.create({
   optionsContainer: {
@@ -114,8 +115,10 @@ export const ProposeExerciseReplacementModal = ({
   handleReplaceExerciseCancel,
   onExerciseReplace,
   onCancel,
+  lockedMuscleGroup,
 }: Pick<SomethingWentWrongOverlayProps, 'exerciseName' | 'exerciseId' | 'onExerciseReplace' | 'onCancel'> & {
   handleReplaceExerciseCancel: () => void
+  lockedMuscleGroup?: MuscleGroup
 }) => {
   const trpcUtils = trpc.useUtils()
   const proposeReplacement = trpc.workout.proposeExerciseReplacementQuery.useQuery({ workoutExerciseId: exerciseId })
@@ -241,7 +244,7 @@ export const ProposeExerciseReplacementModal = ({
           visible
           onClose={() => setAddExerciseVisible(false)}
           onSubmit={input => createExercise.mutate(input)}
-          lockedMuscleGroup={proposeReplacement.data?.[0]?.muscleGroup}
+          lockedMuscleGroup={lockedMuscleGroup ?? proposeReplacement.data?.[0]?.muscleGroup}
         />
       )}
     </>

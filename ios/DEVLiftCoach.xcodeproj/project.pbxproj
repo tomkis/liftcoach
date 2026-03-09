@@ -148,7 +148,7 @@
 				1424C24C735B4D8083C35363 /* Assets.xcassets */,
 			);
 			name = LiftCoachWatch;
-			path = /Users/tomkis/dev/liftcoach/ios/LiftCoachWatch;
+			path = LiftCoachWatch;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {

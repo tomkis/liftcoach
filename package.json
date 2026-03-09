@@ -7,7 +7,7 @@
   "main": "mobile/index.ts",
   "scripts": {
     "android": "expo run:android",
-    "ios": "expo run:ios",
+    "ios": "expo run:ios --scheme DEVLiftCoach",
     "knip": "knip",
     "lint": "eslint mobile/",
     "seed:load": "bash scripts/load-seed.sh",

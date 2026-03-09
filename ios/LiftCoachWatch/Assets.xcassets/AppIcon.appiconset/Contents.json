@@ -1,0 +1,50 @@
+{
+  "images": [
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "40x40",
+      "role": "appLauncher",
+      "subtype": "38mm"
+    },
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "44x44",
+      "role": "appLauncher",
+      "subtype": "40mm"
+    },
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "46x46",
+      "role": "appLauncher",
+      "subtype": "41mm"
+    },
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "50x50",
+      "role": "appLauncher",
+      "subtype": "44mm"
+    },
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "51x51",
+      "role": "appLauncher",
+      "subtype": "45mm"
+    },
+    {
+      "idiom": "watch",
+      "scale": "2x",
+      "size": "54x54",
+      "role": "appLauncher",
+      "subtype": "49mm"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

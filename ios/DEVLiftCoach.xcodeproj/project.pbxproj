@@ -471,7 +471,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev;
 				PRODUCT_NAME = DEVLiftCoach;
 				SWIFT_OBJC_BRIDGING_HEADER = "DEVLiftCoach/DEVLiftCoach-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -503,7 +503,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev;
 				PRODUCT_NAME = DEVLiftCoach;
 				SWIFT_OBJC_BRIDGING_HEADER = "DEVLiftCoach/DEVLiftCoach-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -524,10 +524,10 @@
 				DEVELOPMENT_TEAM = NHA8NL9BKR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -667,10 +667,10 @@
 				DEVELOPMENT_TEAM = NHA8NL9BKR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = YES;

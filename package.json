@@ -6,8 +6,6 @@
   "type": "module",
   "main": "mobile/index.ts",
   "scripts": {
-    "android": "expo run:android",
-    "ios": "expo run:ios",
     "knip": "knip",
     "lint": "eslint mobile/",
     "seed:load": "bash scripts/load-seed.sh",

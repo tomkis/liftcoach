@@ -36,7 +36,11 @@ export const AddExerciseModal = ({ visible, onClose, onSubmit, lockedMuscleGroup
             </Pressable>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} style={s.scrollBody}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={s.scrollBody}
+            keyboardShouldPersistTaps="handled"
+          >
             <View style={s.fieldLabelRow}>
               <View style={s.fieldNum}>
                 <Text style={s.fieldNumText}>1</Text>
@@ -91,15 +95,15 @@ export const AddExerciseModal = ({ visible, onClose, onSubmit, lockedMuscleGroup
                 </Pressable>
               ))}
             </View>
-          </ScrollView>
 
-          <Pressable
-            style={[s.addBtn, !canAdd && s.addBtnDisabled]}
-            onPress={canAdd ? () => { onSubmit({ name: name.trim(), muscleGroup: muscleGroup!, loadingType: loadingType! }); handleClose() } : undefined}
-            disabled={!canAdd}
-          >
-            <Text style={s.addBtnText}>ADD EXERCISE</Text>
-          </Pressable>
+            <Pressable
+              style={[s.addBtn, !canAdd && s.addBtnDisabled]}
+              onPress={canAdd ? () => { onSubmit({ name: name.trim(), muscleGroup: muscleGroup!, loadingType: loadingType! }); handleClose() } : undefined}
+              disabled={!canAdd}
+            >
+              <Text style={s.addBtnText}>ADD EXERCISE</Text>
+            </Pressable>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -119,7 +123,6 @@ const s = StyleSheet.create({
     backgroundColor: theme.colors.backgroundLight,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingBottom: 32,
     maxHeight: '85%',
   },
   handle: {
@@ -228,8 +231,8 @@ const s = StyleSheet.create({
     color: GOLD,
   },
   addBtn: {
-    marginHorizontal: 20,
     marginTop: 8,
+    marginBottom: 32,
     backgroundColor: GOLD,
     borderRadius: 10,
     paddingVertical: 14,

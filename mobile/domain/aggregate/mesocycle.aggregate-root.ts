@@ -148,7 +148,7 @@ export class MesocycleAggregateRoot {
     return this.mesocycleDTO.isConfirmed
   }
 
-  finishExercise(exerciseId: string, exerciseAssesment: ExerciseAssesment) {
+  finishExercise(exerciseId: string, exerciseAssesment: ExerciseAssesment | null) {
     const activeWorkout = this.getActiveWorkout()
     const exercise = activeWorkout.exercises.find(exercise => exercise.id === exerciseId)
     if (!exercise) {
@@ -803,6 +803,21 @@ export class MesocycleAggregateRoot {
         targetReps: originalExercise.targetReps,
       }
 
+      if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
+        return {
+          ...replacingExerciseBase,
+          state: WorkoutExerciseState.pending,
+          progressionType: ProgressionType.CustomUserProvided,
+          sets: Array.from({ length: originalExercise.targetSets }).map((_, index) => ({
+            id: v4(),
+            state: WorkingSetState.pending,
+            weight: null,
+            reps: null,
+            orderIndex: index,
+          })),
+        }
+      }
+
       const historicalResult = replacingExercise.historicalResult
       if (historicalResult === null) {
         return {
@@ -1025,6 +1040,27 @@ export class MesocycleAggregateRoot {
     this.apply({
       type: 'ExerciseWeightChangedPending',
       payload: { workoutExerciseId, weight, workoutId, microcycleId: microcycleId },
+    })
+  }
+
+  changeReps(workoutExerciseId: string, reps: number) {
+    const activeWorkout = this.getActiveWorkout()
+    const exercise = activeWorkout.exercises.find(exercise => exercise.id === workoutExerciseId)
+    if (!exercise) {
+      throw new Error('Exercise not found in the workout')
+    }
+
+    if (exercise.state !== WorkoutExerciseState.pending) {
+      throw new Error('Cant change reps of non-pending exercise')
+    }
+
+    this.apply({
+      type: 'ExerciseUpdated',
+      payload: { workoutExerciseId, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
+    })
+    this.apply({
+      type: 'ExerciseRepsChanged',
+      payload: { workoutExerciseId, reps, workoutId: activeWorkout.id, microcycleId: activeWorkout.microcycleId },
     })
   }
 
@@ -1463,16 +1499,18 @@ export class MesocycleAggregateRoot {
             ...workout,
             exercises: workout.exercises.map(exercise => {
               if (exercise.id === event.payload.exerciseId) {
-                const assessmentData = match(event.payload.exerciseAssesment)
-                  .with({ assesment: ExerciseAssesmentScore.Hard }, assessment => ({
-                    assesment: assessment.assesment,
-                    hardAssesmentTag: assessment.assesmentTag,
-                  }))
-                  .with({ assesment: ExerciseAssesmentScore.Ideal }, assessment => ({
-                    assesment: assessment.assesment,
-                    hardAssesmentTag: null,
-                  }))
-                  .exhaustive()
+                const assessmentData = event.payload.exerciseAssesment
+                  ? match(event.payload.exerciseAssesment)
+                    .with({ assesment: ExerciseAssesmentScore.Hard }, assessment => ({
+                      assesment: assessment.assesment,
+                      hardAssesmentTag: assessment.assesmentTag,
+                    }))
+                    .with({ assesment: ExerciseAssesmentScore.Ideal }, assessment => ({
+                      assesment: assessment.assesment,
+                      hardAssesmentTag: null,
+                    }))
+                    .exhaustive()
+                  : { assesment: null, hardAssesmentTag: null }
 
                 return {
                   ...exercise,
@@ -1511,6 +1549,27 @@ export class MesocycleAggregateRoot {
                   sets: exercise.sets.map(set => {
                     if (set.id === event.payload.setId) {
                       return { ...set, state: event.payload.state }
+                    }
+                    return set
+                  }),
+                }
+              }
+              return exercise
+            }),
+          } as MicrocycleWorkout
+        })
+      })
+      .with({ type: 'ExerciseRepsChanged' }, event => {
+        updateMicrocycleWorkout(event.payload.microcycleId, event.payload.workoutId, workout => {
+          return {
+            ...workout,
+            exercises: workout.exercises.map(exercise => {
+              if (exercise.id === event.payload.workoutExerciseId) {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map(set => {
+                    if (set.state === WorkingSetState.pending) {
+                      return { ...set, reps: event.payload.reps }
                     }
                     return set
                   }),

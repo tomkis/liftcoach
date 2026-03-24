@@ -3,6 +3,7 @@ import {
   ExerciseAssesmentScore,
   HardAssesmentTag,
   PendingWorkingExercise,
+  ProgressionMode,
   Unit,
   WorkingSetState,
 } from '@/mobile/domain'
@@ -121,11 +122,12 @@ export const ExercisePending = (props: {
   pendingExercise: PendingWorkingExercise
   hasMoreExercises: boolean
   onSkipped: (pendingExerciseId: string, newExerciseId: string | null) => void
-  onNext: (exerciseAssesment: ExerciseAssesment) => void
+  onNext: (exerciseAssesment: ExerciseAssesment | null) => void
   onExtraActions: () => void
   onSetChanged: (setId: string, state: WorkingSetState) => void
   onWeightChanged: (exerciseId: string, newWeight: number) => void
   unit: Unit
+  progressionMode: ProgressionMode
 }) => {
   const { pendingExercise } = props
   const [showIncompleteSetsModal, setShowIncompleteSetsModal] = useState(false)
@@ -168,17 +170,18 @@ export const ExercisePending = (props: {
   const hasFailedSets = failedSets.length > 0
 
   const handleNextButtonPress = () => {
+    if (props.progressionMode === ProgressionMode.Custom) {
+      props.onNext(null)
+      return
+    }
+
     if (allSetsCompleted) {
-      // All sets are completed, check if any are failed
       if (hasFailedSets) {
-        // Some sets failed, show hard assessment modal
         setShowHardAssessmentModal(true)
       } else {
-        // All sets completed successfully
         props.onNext({ assesment: ExerciseAssesmentScore.Ideal })
       }
     } else {
-      // Some sets are still pending, show confirmation modal
       setShowIncompleteSetsModal(true)
     }
   }

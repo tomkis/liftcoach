@@ -7,6 +7,7 @@ import {
   MicrocycleWorkout,
   OnboardedUser,
   PendingWorkingExercise,
+  ProgressionMode,
   TestedWorkingExercise,
   Unit,
   WorkingExercise,
@@ -27,14 +28,15 @@ export enum WorkoutLifestyleFeedbackModal {
 }
 
 interface WorkoutContextType {
-  workout: MicrocycleWorkout
+  workout: MicrocycleWorkout & { progressionMode: ProgressionMode }
   exerciseLoaded: (loadingSet: LoadingSet, exerciseIndex: number, reachedFailure: boolean) => void
   exerciseTested: (loadingSet: LoadingSet, exerciseIndex: number) => void
   testingSetsExerciseCompleted: (exerciseIndex: number) => void
-  exerciseDone: (exerciseIndex: number, exerciseAssesment: ExerciseAssesment) => void
+  exerciseDone: (exerciseIndex: number, exerciseAssesment: ExerciseAssesment | null) => void
   skipExercise: (pendingExerciseId: string, newExerciseId: string | null) => Promise<void>
   finishWorkout: () => void
   changeWeight: (exerciseId: string, newWeight: number) => void
+  changeReps: (exerciseId: string, newReps: number) => void
   exerciseSetStateChanged: (workingExerciseId: string, setId: string, state: WorkingSetState) => void
   undoFinishExercise: (exerciseId: string) => void
   isWorkoutFinished: boolean
@@ -46,13 +48,14 @@ interface WorkoutContextType {
 export const WorkoutContext = React.createContext<null | WorkoutContextType>(null)
 
 export const useCreateWorkoutContext = (
-  workout: MicrocycleWorkout,
+  workout: MicrocycleWorkout & { progressionMode: ProgressionMode },
   onboardingInfo: OnboardedUser,
   pagerRef: React.RefObject<PagerView | null>
 ): WorkoutContextType => {
   const tracking = useTracking()
   const { mutateAsync: exerciseSetStateChangedMutation } = trpc.workout.exerciseSetStateChanged.useMutation()
   const { mutateAsync: changeWeightMutation } = trpc.workout.exerciseChangeWeight.useMutation()
+  const { mutateAsync: changeRepsMutation } = trpc.workout.exerciseChangeReps.useMutation()
   const { mutateAsync: exerciseFinishedMutation } = trpc.workout.exerciseFinished.useMutation()
   const { mutateAsync: replaceExerciseMutation } = trpc.workout.replaceExercise.useMutation()
   const { mutateAsync: finishWorkoutMutation } = trpc.workout.finishWorkout.useMutation()
@@ -121,6 +124,11 @@ export const useCreateWorkoutContext = (
   )
 
   const finishWorkoutAndProvideFeedbackIfNeeded = useCallback(async () => {
+    if (workout.progressionMode === ProgressionMode.Custom) {
+      await finishWorkoutInternal()
+      return
+    }
+
     if (isAnyExerciseHard) {
       setLifestyleFeedbackModal(WorkoutLifestyleFeedbackModal.HardSets)
     } else if (isAnyFailedSets) {
@@ -128,7 +136,7 @@ export const useCreateWorkoutContext = (
     } else {
       await finishWorkoutInternal()
     }
-  }, [isAnyExerciseHard, isAnyFailedSets, finishWorkoutInternal])
+  }, [workout.progressionMode, isAnyExerciseHard, isAnyFailedSets, finishWorkoutInternal])
 
   const goToNextExercise = useCallback(
     async (ignoreExerciseId: string) => {
@@ -194,7 +202,7 @@ export const useCreateWorkoutContext = (
   )
 
   const exerciseDone = useCallback(
-    async (exerciseIndex: number, exerciseAssesment: ExerciseAssesment) => {
+    async (exerciseIndex: number, exerciseAssesment: ExerciseAssesment | null) => {
       const workingExercise = workout.exercises[exerciseIndex]
 
       await exerciseFinishedMutation({
@@ -303,6 +311,48 @@ export const useCreateWorkoutContext = (
     [changeWeightMutation, trpcUtils.workout.getWorkout, workout.id]
   )
 
+  const changeReps = useCallback(
+    async (workingExerciseId: string, reps: number) => {
+      trpcUtils.workout.getWorkout.setData(undefined, workout => {
+        if (!workout) {
+          return workout
+        }
+
+        return {
+          ...workout,
+          exercises: workout.exercises.map(exercise => {
+            if (exercise.id === workingExerciseId) {
+              if (exercise.state === WorkoutExerciseState.pending) {
+                return {
+                  ...exercise,
+                  sets: exercise.sets.map(set => {
+                    if (set.state === WorkingSetState.pending) {
+                      return { ...set, reps }
+                    }
+                    return set
+                  }),
+                }
+              }
+            }
+            return exercise
+          }),
+        }
+      })
+
+      try {
+        await changeRepsMutation({
+          workingExerciseId,
+          workoutId: workout.id,
+          reps,
+        })
+      } catch (error) {
+        await trpcUtils.workout.getWorkout.invalidate()
+        throw error
+      }
+    },
+    [changeRepsMutation, trpcUtils.workout.getWorkout, workout.id]
+  )
+
   const exerciseSetStateChanged = useCallback(
     async (workingExerciseId: string, setId: string, state: WorkingSetState) => {
       // Optimistically update the UI immediately
@@ -386,6 +436,7 @@ export const useCreateWorkoutContext = (
     exerciseSetStateChanged,
     undoFinishExercise,
     changeWeight,
+    changeReps,
     workout,
     lifestyleFeedbackModal,
     onLifestyleFeedbackConfirm,

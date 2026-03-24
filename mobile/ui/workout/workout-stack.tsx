@@ -1,4 +1,4 @@
-import { MicrocycleWorkout, OnboardedUser } from '@/mobile/domain'
+import { MicrocycleWorkout, OnboardedUser, ProgressionMode } from '@/mobile/domain'
 import React, { useCallback, useRef, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import PagerView, { type PagerViewOnPageSelectedEvent } from 'react-native-pager-view'
@@ -18,7 +18,7 @@ import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 
-const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; onboardingInfo: OnboardedUser }) => {
+const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout & { progressionMode: ProgressionMode }; onboardingInfo: OnboardedUser }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const pagerRef = useRef<PagerView>(null)
   const workoutContext = useCreateWorkoutContext(props.workout, props.onboardingInfo, pagerRef)

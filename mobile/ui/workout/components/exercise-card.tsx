@@ -43,7 +43,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   }, [exerciseIndex, workoutContext])
 
   const onMoveNextAfterPending = useCallback(
-    (exerciseAssesment: ExerciseAssesment) => {
+    (exerciseAssesment: ExerciseAssesment | null) => {
       workoutContext.exerciseDone(exerciseIndex, exerciseAssesment)
     },
     [exerciseIndex, workoutContext]
@@ -66,6 +66,13 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
     [workoutContext]
   )
 
+  const onRepsChanged = useCallback(
+    (exerciseId: string, newReps: number) => {
+      workoutContext.changeReps(exerciseId, newReps)
+    },
+    [workoutContext]
+  )
+
   const onSetChanged = useCallback(
     (setId: string, state: WorkingSetState) => {
       workoutContext.exerciseSetStateChanged(exercise.id, setId, state)
@@ -79,6 +86,12 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
       .with({ state: WorkoutExerciseState.testing }, ({ testingWeight }) => testingWeight)
       .with({ state: WorkoutExerciseState.loaded }, ({ sets }) => sets[0]?.weight)
       .with({ state: WorkoutExerciseState.tested }, ({ sets }) => sets[0]?.weight)
+      .otherwise(() => undefined)
+  }, [exercise])
+
+  const currentReps = useMemo(() => {
+    return match(exercise)
+      .with({ state: WorkoutExerciseState.pending }, ({ sets }) => sets[0]?.reps)
       .otherwise(() => undefined)
   }, [exercise])
 
@@ -120,6 +133,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onWeightChanged={onWeightChanged}
             onSetChanged={onSetChanged}
             unit={workoutContext.unit}
+            progressionMode={workoutContext.workout.progressionMode}
           />
         ))
         .with({ state: WorkoutExerciseState.finished }, exercise => (
@@ -159,13 +173,16 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         onCancel={handleExtraActionsCancel}
         exerciseId={exercise.id}
         currentWeight={currentWeight ?? undefined}
+        currentReps={currentReps ?? undefined}
         onWeightChange={onWeightChanged}
+        onRepsChange={onRepsChanged}
         exerciseName={exercise.exercise.name}
         onExerciseReplace={workoutContext.skipExercise}
         canReplaceExercise={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loading].includes(exercise.state)}
         canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)}
         unit={workoutContext.unit}
         loadingType={exercise.exercise.loadingType}
+        progressionMode={workoutContext.workout.progressionMode}
       />
     </ScreenContainer>
   )

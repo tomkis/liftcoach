@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "cleanup-commits": {
+      "source": "apocohq/skills",
+      "sourceType": "github",
+      "computedHash": "ad4f370d5f3c2a68530eeee32b87b26ac55a5dbdf943ac68c89a8a961facb34c"
+    },
+    "design-first-engineering": {
+      "source": "apocohq/skills",
+      "sourceType": "github",
+      "computedHash": "4f98afdac2d1c975ca53b46765af4e475566ad2f3b07d96ad8e298d91f400b65"
+    },
+    "grill-me": {
+      "source": "apocohq/skills",
+      "sourceType": "github",
+      "computedHash": "f8dd31def8f7daedcc038d060fba45d35e729c79ed6867f61b1e3596fc6a1e20"
+    },
+    "ralph-it": {
+      "source": "apocohq/skills",
+      "sourceType": "github",
+      "computedHash": "c75f3ffd7f894ff4c0911a5240d9dd00b15fc5b40bf5372f6afadd47ff56b9f3"
+    },
+    "skill-creator": {
+      "source": "apocohq/skills",
+      "sourceType": "github",
+      "computedHash": "4a13f78be642cb5ded6abcc095b0d6bf59145697ffb11d518ff46f652bd0b0a3"
+    }
+  }
+}

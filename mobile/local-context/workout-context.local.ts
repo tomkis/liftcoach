@@ -8,6 +8,7 @@ import {
   getUserCoefficient,
   MesocycleAggregateRoot,
   MicrocycleGenerator,
+  ProgressionMode,
   systemConfig,
   toDateTime,
 } from '@/mobile/domain'
@@ -90,12 +91,13 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         finishedAt: undefined,
         isConfirmed: false,
         unit: onboardedUser.unit,
+        progressionMode: ProgressionMode.LiftCoach,
         microcycles: [],
       },
       getUserCoefficient(session)
     )
 
-    mesocycle.initializeMesocycle(microcycle, mesocycle.isConfirmed())
+    mesocycle.initializeMesocycle(microcycle, mesocycle.isConfirmed(), ProgressionMode.LiftCoach)
     await mesocycleDao.updateMesocycle(mesocycle.events)
 
     return microcycle
@@ -131,12 +133,13 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
             finishedAt: undefined,
             isConfirmed: true,
             unit: mesocycleDto.unit,
+            progressionMode: mesocycleDto.progressionMode,
             microcycles: [],
           },
           getUserCoefficient(session)
         )
 
-        newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed())
+        newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed(), mesocycleDto.progressionMode)
         await mesocycleDao.updateMesocycle(mesocycle.events)
         await mesocycleDao.updateMesocycle(newMesocycle.events)
 
@@ -283,7 +286,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
 
-  const changeMicrocycle: WorkoutContext['changeMicrocycle'] = async (session, template) => {
+  const changeMicrocycle: WorkoutContext['changeMicrocycle'] = async (session, template, progressionMode) => {
     const mesocycleId = await mesocycleDao.getCurrentMesocycleId()
     if (!mesocycleId) throw new Error('No active mesocycle')
 
@@ -303,15 +306,16 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
 
     const newMesocycleId = v4()
     const microcycleId = v4()
-    const finishedExercises = await mesocycleDao.getAllRecentlyFinishedExercises(90)
 
-    const newMicrocycle = await microcycleGenerator.createMicrocycle(
-      newMesocycleId,
-      microcycleId,
-      template,
-      finishedExercises,
-      getUserCoefficient(session)
-    )
+    const newMicrocycle = progressionMode === ProgressionMode.Custom
+      ? microcycleGenerator.createCustomMicrocycle(newMesocycleId, microcycleId, template)
+      : microcycleGenerator.createMicrocycle(
+          newMesocycleId,
+          microcycleId,
+          template,
+          await mesocycleDao.getAllRecentlyFinishedExercises(90),
+          getUserCoefficient(session)
+        )
 
     const newMesocycle = new MesocycleAggregateRoot(
       {
@@ -321,11 +325,12 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
         microcycles: [],
         isConfirmed: true,
         unit: onboardedUser.unit,
+        progressionMode,
       },
       getUserCoefficient(session)
     )
 
-    newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed())
+    newMesocycle.initializeMesocycle(newMicrocycle, newMesocycle.isConfirmed(), progressionMode)
     await mesocycleDao.updateMesocycle(newMesocycle.events)
 
     return newMicrocycle

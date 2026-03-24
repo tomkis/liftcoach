@@ -19,7 +19,9 @@ import { toDateTime } from '../utils/date'
 import {
   FinishedWorkingExercise,
   LoadedWorkingExercise,
+  ProgressionType,
   TestedWorkingExercise,
+  WorkingSetState,
   WorkoutExerciseState,
 } from '../working-exercise'
 import { calculateWeightFromLoadedExercise } from './calculate-weight-from-loaded-exercise'
@@ -165,6 +167,46 @@ export class MicrocycleGenerator {
       createdAt: toDateTime(new Date()),
     }
     return generatedMicrocycle
+  }
+
+  createCustomMicrocycle(
+    mesocycleId: string,
+    microcycleId: string,
+    template: MicrocycleWorkoutsTemplateWithExercises
+  ) {
+    const microcycleWorkouts: MicrocycleWorkout[] = template.map((workout, index) => ({
+      id: v4(),
+      state: WorkoutState.pending,
+      microcycleId,
+      index,
+      orderIndex: index,
+      active: false,
+      exercises: workout.exercises.map((exercise, exerciseIndex) => ({
+        id: v4(),
+        createdAt: toDateTime(new Date()),
+        state: WorkoutExerciseState.pending as const,
+        progressionType: ProgressionType.CustomUserProvided,
+        exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, loadingType: exercise.exercise.loadingType },
+        targetSets: exercise.sets,
+        targetReps: exercise.targetReps,
+        orderIndex: exerciseIndex,
+        sets: Array.from({ length: exercise.sets }).map((_, setIndex) => ({
+          id: v4(),
+          state: WorkingSetState.pending as const,
+          orderIndex: setIndex,
+          weight: null,
+          reps: null,
+        })),
+      })),
+    }))
+
+    return {
+      mesocycleId,
+      workouts: microcycleWorkouts,
+      id: microcycleId,
+      index: 0,
+      createdAt: toDateTime(new Date()),
+    }
   }
 
   async generateMicrocycle(

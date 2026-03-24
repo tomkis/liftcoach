@@ -3,6 +3,7 @@ import {
   LifestyleFeedback,
   LoadingSet,
   Microcycle,
+  ProgressionMode,
   WorkingExercise,
   WorkingSet,
   WorkingSetState,
@@ -56,6 +57,7 @@ export interface MesocycleInitialized {
     mesocycleId: string
     when: string
     isConfirmed: boolean
+    progressionMode: ProgressionMode
   }
 }
 

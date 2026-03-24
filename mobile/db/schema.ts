@@ -55,6 +55,7 @@ export const mesocycle = sqliteTable(
       .notNull()
       .references(() => user.id),
     isConfirmed: integer('is_confirmed').notNull(),
+    progressionMode: text('progression_mode').notNull().default('liftcoach'),
     finishedAt: integer('finished_at'),
     createdAt: integer('created_at').notNull(),
   },
@@ -130,8 +131,8 @@ export const workoutExerciseSet = sqliteTable(
       .references(() => workoutExercise.id),
     state: text('state').notNull(),
     orderIndex: integer('order_index').notNull(),
-    reps: integer('reps').notNull(),
-    weight: real('weight').notNull(),
+    reps: integer('reps'),
+    weight: real('weight'),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },

@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProvidedExercise } from '@/mobile/domain'
+import { MicrocycleWorkoutsTemplateWithExercises, MuscleGroup, ProgressionMode, ProvidedExercise } from '@/mobile/domain'
 import React, { useState } from 'react'
 import {
   KeyboardAvoidingView,
@@ -165,12 +165,13 @@ const ExerciseSelectionModal = ({
 type ExerciseSelectionScreenContentProps = {
   exerciseDatabase: ProvidedExercise[]
   proposedExercises: MicrocycleWorkoutsTemplateWithExercises
-  route: RouteProp<MesocyclePlannerStackParamList, 'ExerciseSelection'>
+  progressionMode: ProgressionMode
 }
 
 const ExerciseSelectionScreenContent = ({
   exerciseDatabase,
   proposedExercises,
+  progressionMode,
 }: ExerciseSelectionScreenContentProps) => {
   const [selectedDay, setSelectedDay] = useState(1)
   const [selectedExercises, setSelectedExercises] = useState<MicrocycleWorkoutsTemplateWithExercises>(proposedExercises)
@@ -216,7 +217,7 @@ const ExerciseSelectionScreenContent = ({
 
     try {
       setIsSubmitting(true)
-      await changeMicrocycle({ template: selectedExercises })
+      await changeMicrocycle({ template: selectedExercises, progressionMode })
       resetToHome()
     } catch (error) {
       console.error('Failed to change microcycle:', error)
@@ -313,7 +314,7 @@ export const ExerciseSelectionScreen = ({ route }: ExerciseSelectionScreenProps)
   }
 
   return (
-    <ExerciseSelectionScreenContent exerciseDatabase={exercises} proposedExercises={proposedExercises} route={route} />
+    <ExerciseSelectionScreenContent exerciseDatabase={exercises} proposedExercises={proposedExercises} progressionMode={route.params.progressionMode} />
   )
 }
 

@@ -172,6 +172,7 @@ export const SplitTypeSelectionScreen = ({ navigation, route }: SplitTypeSelecti
     navigation.navigate('SplitSelection', {
       trainingDays: route.params.trainingDays,
       muscleGroupPreference: route.params.muscleGroupPreference,
+      progressionMode: route.params.progressionMode,
       volumePreferences: route.params.volumePreferences,
       splitType: split.id,
       splitByDay,

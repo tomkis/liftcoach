@@ -30,6 +30,11 @@ export enum HardAssesmentTag {
   Other = 'other',
 }
 
+export enum ProgressionMode {
+  LiftCoach = 'liftcoach',
+  Custom = 'custom',
+}
+
 export enum ProgressionType {
   KeepProgressSuboptimalLifestyle = 'keep_progress_suboptimal_lifestyle',
   ProgressedReps = 'progressed_reps',
@@ -38,6 +43,7 @@ export enum ProgressionType {
   LoweredWeightBadForm = 'lowered_weight_bad_form',
   LoweredWeightTooManyFailures = 'lowered_weight_too_many_failures',
   RegressTooMuchVolume = 'regress_too_much_volume',
+  CustomUserProvided = 'custom_user_provided',
 }
 
 const progressionTypeSchema = z.nativeEnum(ProgressionType)
@@ -60,8 +66,8 @@ const pendingSetSchema = z.object({
   id: z.string().uuid(),
   state: z.literal(WorkingSetState.pending),
   orderIndex: z.number(),
-  weight: z.number(),
-  reps: z.number(),
+  weight: z.number().nullable(),
+  reps: z.number().nullable(),
 })
 export const exerciseSchema = z.object({
   id: z.string().uuid(),

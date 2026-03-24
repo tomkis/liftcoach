@@ -39,7 +39,7 @@ const ExerciseItem = ({ exercise, unit }: { exercise: WorkingExercise; unit: Uni
 
             return (
               <BodyText style={styles.exerciseDetails}>
-                {exercise.sets.length} sets × {firstSet.reps} reps × {formatWeight(firstSet.weight)}{' '}
+                {exercise.sets.length} sets × {firstSet.reps ?? '–'} reps × {formatWeight(firstSet.weight)}{' '}
                 {unit === Unit.Metric ? 'kg' : 'lbs'}
               </BodyText>
             )

@@ -154,7 +154,7 @@ export const ExerciseFinished = (props: {
                     },
                   ]}
                 >
-                  {set.reps} reps × {formatWeight(set.weight)} {unit === 'metric' ? 'kg' : 'lbs'}
+                  {set.reps ?? '–'} reps × {formatWeight(set.weight)} {unit === 'metric' ? 'kg' : 'lbs'}
                 </Text>
               </View>
               <View style={styles.checkboxContainer}>

@@ -42,6 +42,7 @@ import {
   LoadedWorkingExercise,
   LoadingSet,
   PendingWorkingExercise,
+  ProgressionMode,
   ProgressionType,
   TestedWorkingExercise,
   WorkingExercise,
@@ -324,6 +325,10 @@ export class MesocycleAggregateRoot {
   }
 
   extendMicrocycle() {
+    if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
+      throw new Error('Custom progression mesocycles do not support automated microcycle extension')
+    }
+
     const activeMicrocycle = this.getActiveMicrocycle()
     if (activeMicrocycle.finishedAt) {
       throw new Error('Microcycle has already been finished, cant extend it.')
@@ -391,8 +396,9 @@ export class MesocycleAggregateRoot {
           state: WorkoutExerciseState.pending,
           progressionType,
           sets: exercise.sets.map(set => {
-            const lastReps = pastExerciseResults[pastExerciseResults.length - 1].exercise.sets[0].reps
-            const progressionResult = applySetProgression(progressionType, lastReps, set, exercise.exercise.loadingType, this.unit)
+            const lastSetReps = pastExerciseResults[pastExerciseResults.length - 1].exercise.sets[0].reps
+            if (lastSetReps === null || set.weight === null || set.reps === null) throw new Error('Cannot apply progression to sets with null weight/reps')
+            const progressionResult = applySetProgression(progressionType, lastSetReps, { reps: set.reps, weight: set.weight }, exercise.exercise.loadingType, this.unit)
 
             return {
               id: v4(),
@@ -557,25 +563,25 @@ export class MesocycleAggregateRoot {
             exerciseStatus: null,
           }
         })
-        .with({ state: WorkoutExerciseState.pending }, () => {
-          const historicalResult = historicalResults.find(result => result.exercise.id === exercise.exercise.id)
+        .with({ state: WorkoutExerciseState.pending }, pendingExercise => {
+          const historicalResult = historicalResults.find(result => result.exercise.id === pendingExercise.exercise.id)
           if (!historicalResult) {
             throw new Error('Historical result not found')
           }
 
-          const firstSet = exercise.sets[0]
+          const firstSet = pendingExercise.sets[0]
           if (!firstSet) {
             throw new Error('First set not found')
           }
 
           return {
-            exercise: exercise.exercise,
-            sets: exercise.targetSets,
+            exercise: pendingExercise.exercise,
+            sets: pendingExercise.targetSets,
             reps: firstSet.reps,
             weight: firstSet.weight,
             lastTested1Rm: calculate1RMEplay(historicalResult.loadingSet.weight, historicalResult.loadingSet.reps),
-            projected1Rm: calculate1RMEplay(firstSet.weight, firstSet.reps),
-            exerciseStatus: ProgressionType.ProgressedReps,
+            projected1Rm: firstSet.weight !== null && firstSet.reps !== null ? calculate1RMEplay(firstSet.weight, firstSet.reps) : null,
+            exerciseStatus: pendingExercise.progressionType,
           }
         })
         .otherwise(exercise => {
@@ -650,10 +656,10 @@ export class MesocycleAggregateRoot {
     this.apply({ type: 'MesocycleTerminated', payload: { id: this.mesocycleDTO.id, when: toDateTime(new Date()) } })
   }
 
-  initializeMesocycle(microcycle: Microcycle, isConfirmed: boolean) {
+  initializeMesocycle(microcycle: Microcycle, isConfirmed: boolean, progressionMode: ProgressionMode) {
     this.apply({
       type: 'MesocycleInitialized',
-      payload: { microcycle, mesocycleId: microcycle.mesocycleId, when: this.mesocycleDTO.createdAt, isConfirmed },
+      payload: { microcycle, mesocycleId: microcycle.mesocycleId, when: this.mesocycleDTO.createdAt, isConfirmed, progressionMode },
     })
   }
 
@@ -1106,7 +1112,7 @@ export class MesocycleAggregateRoot {
           .filter(e => [WorkoutExerciseState.finished, WorkoutExerciseState.pending].includes(e.state))
           .flatMap(exercise => exercise.sets)
       )
-      .reduce((acc, set) => acc + set.weight * set.reps, 0)
+      .reduce((acc, set) => acc + (set.weight ?? 0) * (set.reps ?? 0), 0)
 
     const liftedWeight = microcycle.workouts
       .flatMap(workout =>
@@ -1114,7 +1120,7 @@ export class MesocycleAggregateRoot {
           .filter(e => [WorkoutExerciseState.finished, WorkoutExerciseState.pending].includes(e.state))
           .flatMap(exercise => exercise.sets.filter(set => set.state === WorkingSetState.done))
       )
-      .reduce((acc, set) => acc + set.weight * set.reps, 0)
+      .reduce((acc, set) => acc + (set.weight ?? 0) * (set.reps ?? 0), 0)
 
     return {
       type: 'LIFTED_WEIGHT',
@@ -1394,6 +1400,7 @@ export class MesocycleAggregateRoot {
         this.mesocycleDTO.id = event.payload.mesocycleId
         this.mesocycleDTO.createdAt = event.payload.when
         this.mesocycleDTO.finishedAt = undefined
+        this.mesocycleDTO.progressionMode = event.payload.progressionMode
         this.mesocycleDTO.microcycles = [event.payload.microcycle]
       })
       .with({ type: 'MesocycleFinished' }, event => {

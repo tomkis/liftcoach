@@ -197,6 +197,9 @@ const progressionMessages = {
     'Let’s give your body time to recharge.',
     'The last phase was more than enough stimulus.',
   ],
+  [ProgressionType.CustomUserProvided]: [
+    'Your weights, your programming.',
+  ],
 }
 
 const getChartData = (projected1Rm: number, lastTested1Rm: number) => {
@@ -470,6 +473,10 @@ export const WorkoutStartWithCompleteStats = (props: { exercises: CompleteWorkou
                   .with(
                     ProgressionType.KeepProgressSuboptimalLifestyle,
                     () => 'LiftCoach is holding off progression for now.'
+                  )
+                  .with(
+                    ProgressionType.CustomUserProvided,
+                    () => 'You are managing your own progression.'
                   )
                   .exhaustive()}
               </Text>

@@ -1,5 +1,6 @@
 import {
   LoadingType,
+  ProgressionMode,
   exerciseAssesment,
   lifestyleFeedbackSchema,
   loadingSetSchema,
@@ -157,9 +158,9 @@ const workout = trpcInstance.router({
       return await ctx.workout.exerciseChangeWeight(ctx.session, input.workoutId, input.workingExerciseId, input.weight)
     }),
   changeMicrocycle: trpcProcedureAuthProcedure
-    .input(z.object({ template: microcycleWorkoutsTemplateWithExercisesSchema }))
+    .input(z.object({ template: microcycleWorkoutsTemplateWithExercisesSchema, progressionMode: z.nativeEnum(ProgressionMode) }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.workout.changeMicrocycle(ctx.session, input.template)
+      return await ctx.workout.changeMicrocycle(ctx.session, input.template, input.progressionMode)
     }),
 })
 

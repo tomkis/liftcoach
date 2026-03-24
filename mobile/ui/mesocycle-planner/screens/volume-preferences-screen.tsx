@@ -181,6 +181,7 @@ export const VolumePreferencesScreen = ({ navigation, route }: VolumePreferences
     navigation.navigate('SplitTypeSelection', {
       trainingDays: route.params.trainingDays,
       muscleGroupPreference: route.params.muscleGroupPreference,
+      progressionMode: route.params.progressionMode,
       volumePreferences: Object.entries(data).map(([muscleGroup, sets]) => ({
         muscleGroup: muscleGroup as MuscleGroup,
         sets: parseInt(sets as string) || 0,

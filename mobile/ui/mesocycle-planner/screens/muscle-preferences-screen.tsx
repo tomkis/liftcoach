@@ -175,6 +175,7 @@ export const MusclePreferencesScreen = ({ navigation, route }: MusclePreferences
     navigation.navigate('VolumePreferences', {
       trainingDays: route.params.trainingDays,
       muscleGroupPreference,
+      progressionMode: route.params.progressionMode,
     })
   })
 

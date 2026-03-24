@@ -1,4 +1,5 @@
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm'
+import { z } from 'zod'
 import {
   ExerciseAssesmentScore,
   FinishedWorkingExercise,
@@ -7,6 +8,7 @@ import {
   Mesocycle as MesocycleType,
   MesocycleEvent,
   Microcycle as MicrocycleType,
+  ProgressionMode,
   TestedWorkingExercise,
   toDateTime,
   Unit,
@@ -52,7 +54,7 @@ const mapWorkoutExerciseToDTO = (
     id: set.id,
     state: set.state as WorkingSet['state'],
     reps: set.reps,
-    weight: set.weight ?? 0,
+    weight: set.weight,
     orderIndex: set.orderIndex,
   })
 
@@ -233,6 +235,7 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     createdAt: toDateTime(new Date(meso.createdAt)),
     isConfirmed: meso.isConfirmed === 1,
     unit,
+    progressionMode: z.nativeEnum(ProgressionMode).parse(meso.progressionMode),
     microcycles: microcycles
       .map(mc => {
         const mcWorkouts = workouts.filter(w => w.microcycleId === mc.id)
@@ -448,6 +451,7 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           userId: LOCAL_USER_ID,
           createdAt: new Date(event.payload.when).getTime(),
           isConfirmed: event.payload.isConfirmed ? 1 : 0,
+          progressionMode: event.payload.progressionMode,
         })
         await insertMicrocycle(event.payload.microcycle)
       })

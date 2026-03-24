@@ -29,6 +29,13 @@
       "when": 1772895220723,
       "tag": "0003_rename_equipment_type_to_loading_type",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1774357437623,
+      "tag": "0004_thick_mimic",
+      "breakpoints": true
     }
   ]
 }

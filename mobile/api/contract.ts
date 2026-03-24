@@ -14,6 +14,7 @@ import {
   MuscleGroup,
   MuscleGroupPreference,
   OnboardedUser,
+  ProgressionMode,
   ProvidedExercise,
   StrengthTest,
   VolumePerMuscleGroup,
@@ -55,7 +56,7 @@ export interface WorkoutContext {
   startWorkout: (session: Session) => Promise<void>
   confirmMesocycle: (session: Session) => Promise<void>
   getCycleProgress: (session: Session, exerciseId: string) => Promise<CycleProgress>
-  changeMicrocycle: (session: Session, template: MicrocycleWorkoutsTemplateWithExercises) => Promise<Microcycle>
+  changeMicrocycle: (session: Session, template: MicrocycleWorkoutsTemplateWithExercises, progressionMode: ProgressionMode) => Promise<Microcycle>
   finishWorkout: (
     session: Session,
     workoutId: string,

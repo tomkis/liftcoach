@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { MuscleGroup } from './muscle-group'
 import { Unit } from './onboarding'
-import { exerciseSchema, ProgressionType, workingExerciseSchema } from './working-exercise'
+import { exerciseSchema, ProgressionMode, ProgressionType, workingExerciseSchema } from './working-exercise'
 
 export enum WorkoutState {
   pending = 'pending',
@@ -29,7 +29,7 @@ export type MicrocycleWorkout = z.infer<typeof workoutSchema>
 export const workoutStatsExerciseSchema = z.object({
   exercise: exerciseSchema,
   sets: z.number(),
-  reps: z.number(),
+  reps: z.number().nullable(),
   weight: z.number().nullable(),
   projected1Rm: z.number().nullable(),
   lastTested1Rm: z.number().nullable(),
@@ -61,6 +61,7 @@ export const mesocycleSchema = z.object({
   createdAt: z.string(),
   isConfirmed: z.boolean(),
   unit: z.nativeEnum(Unit),
+  progressionMode: z.nativeEnum(ProgressionMode),
   microcycles: z.array(microcycleSchema),
   finishedAt: z.string().optional(),
 })

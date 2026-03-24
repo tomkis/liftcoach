@@ -307,6 +307,7 @@ export const WorkoutSplitScreen = ({ navigation, route }: SplitSelectionScreenPr
     navigation.navigate('ExerciseSelection', {
       trainingDays: route.params.trainingDays,
       muscleGroupPreference: route.params.muscleGroupPreference,
+      progressionMode: route.params.progressionMode,
       volumePreferences: route.params.volumePreferences,
       splitType: route.params.splitType,
       splitByDay,

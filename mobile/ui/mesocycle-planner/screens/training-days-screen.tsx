@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
@@ -11,6 +12,7 @@ import { OutlineButton } from '@/mobile/ui/ds/buttons'
 
 type TrainingDaysScreenProps = {
   navigation: NativeStackNavigationProp<MesocyclePlannerStackParamList, 'TrainingDays'>
+  route: RouteProp<MesocyclePlannerStackParamList, 'TrainingDays'>
 }
 
 const styles = StyleSheet.create({
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export const TrainingDaysScreen = ({ navigation }: TrainingDaysScreenProps) => {
+export const TrainingDaysScreen = ({ navigation, route }: TrainingDaysScreenProps) => {
   const insets = useSafeAreaInsets()
   const days = [2, 3, 4, 5, 6]
 
@@ -69,7 +71,7 @@ export const TrainingDaysScreen = ({ navigation }: TrainingDaysScreenProps) => {
             <PrimaryButton
               key={day}
               title={`${day} days per week`}
-              onPress={() => navigation.navigate('MusclePreferences', { trainingDays: day })}
+              onPress={() => navigation.navigate('MusclePreferences', { trainingDays: day, progressionMode: route.params.progressionMode })}
             />
           ))}
         </View>

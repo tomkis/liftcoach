@@ -39,7 +39,7 @@ export const PlanHubScreen = () => {
 
   const onBuildNewPlan = () => {
     tracking.newTrainingPlan()
-    navigation.navigate('TrainingDays')
+    navigation.navigate('ProgressionModeSelection')
   }
 
   if (isPending) {

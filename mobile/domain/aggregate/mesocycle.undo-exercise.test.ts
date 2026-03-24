@@ -8,6 +8,7 @@ import { LoadingType } from '../weight-snapping'
 import {
   ExerciseAssesmentScore,
   HardAssesmentTag,
+  ProgressionMode,
   ProgressionType,
   WorkingExercise,
   WorkingSetState,
@@ -147,6 +148,7 @@ const makeMesocycleWithAggregate = (exercises: WorkingExercise[], workoutOverrid
     createdAt: '2026-01-01T00:00:00Z',
     isConfirmed: true,
     unit: Unit.Metric,
+    progressionMode: ProgressionMode.LiftCoach,
     microcycles: [
       {
         id: microcycleId,

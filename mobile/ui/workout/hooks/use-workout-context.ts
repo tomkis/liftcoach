@@ -335,12 +335,12 @@ export const useCreateWorkoutContext = (
                 ...exercise,
                 sets: exercise.sets.map(set => {
                   if (set.id === setId) {
-                    return { ...set, state } as const
+                    return { ...set, state }
                   }
 
                   return set
                 }),
-              }
+              } as typeof exercise
             }
 
             return exercise

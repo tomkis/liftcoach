@@ -1,19 +1,25 @@
-import { MuscleGroup, MuscleGroupPreference } from '@/mobile/domain'
+import { MuscleGroup, MuscleGroupPreference, ProgressionMode } from '@/mobile/domain'
 
 export type MesocyclePlannerStackParamList = {
   PlanningHome: undefined
   ActivePlanDetail: undefined
-  TrainingDays: undefined
+  ProgressionModeSelection: undefined
+  TrainingDays: {
+    progressionMode: ProgressionMode
+  }
   MusclePreferences: {
     trainingDays: number
+    progressionMode: ProgressionMode
   }
   VolumePreferences: {
     trainingDays: number
     muscleGroupPreference: MuscleGroupPreference
+    progressionMode: ProgressionMode
   }
   SplitTypeSelection: {
     trainingDays: number
     muscleGroupPreference: MuscleGroupPreference
+    progressionMode: ProgressionMode
     volumePreferences: Array<{
       muscleGroup: MuscleGroup
       sets: number
@@ -22,6 +28,7 @@ export type MesocyclePlannerStackParamList = {
   SplitSelection: {
     trainingDays: number
     muscleGroupPreference: MuscleGroupPreference
+    progressionMode: ProgressionMode
     volumePreferences: Array<{
       muscleGroup: MuscleGroup
       sets: number
@@ -37,6 +44,7 @@ export type MesocyclePlannerStackParamList = {
   ExerciseSelection: {
     trainingDays: number
     muscleGroupPreference: MuscleGroupPreference
+    progressionMode: ProgressionMode
     volumePreferences: Array<{
       muscleGroup: MuscleGroup
       sets: number

@@ -123,6 +123,24 @@ export class MesocycleAggregateRoot {
       if (workout.state === WorkoutState.completed && !allExercisesFinished) {
         throw new Error('Workout is completed but not all exercises are finished')
       }
+
+      workout.exercises.forEach(exercise => {
+        if (exercise.state !== WorkoutExerciseState.pending) {
+          return
+        }
+
+        if (exercise.progressionType === ProgressionType.CustomUserProvided) {
+          return
+        }
+
+        const hasNullSet = exercise.sets.some(
+          set => set.state === WorkingSetState.pending && (set.weight === null || set.reps === null)
+        )
+
+        if (hasNullSet) {
+          throw new Error('LiftCoach progression exercise has pending sets with null weight or reps')
+        }
+      })
     })
   }
 

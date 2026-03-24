@@ -565,13 +565,18 @@ export class MesocycleAggregateRoot {
         })
         .with({ state: WorkoutExerciseState.pending }, pendingExercise => {
           const historicalResult = historicalResults.find(result => result.exercise.id === pendingExercise.exercise.id)
-          if (!historicalResult) {
-            throw new Error('Historical result not found')
-          }
-
           const firstSet = pendingExercise.sets[0]
-          if (!firstSet) {
-            throw new Error('First set not found')
+
+          if (!historicalResult || !firstSet) {
+            return {
+              exercise: pendingExercise.exercise,
+              sets: pendingExercise.targetSets,
+              reps: firstSet?.reps ?? null,
+              weight: firstSet?.weight ?? null,
+              lastTested1Rm: null,
+              projected1Rm: null,
+              exerciseStatus: pendingExercise.progressionType,
+            }
           }
 
           return {

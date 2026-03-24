@@ -1,4 +1,5 @@
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm'
+import { z } from 'zod'
 import {
   ExerciseAssesmentScore,
   FinishedWorkingExercise,
@@ -234,7 +235,7 @@ export const getMesocycleById = async (id: string): Promise<MesocycleType> => {
     createdAt: toDateTime(new Date(meso.createdAt)),
     isConfirmed: meso.isConfirmed === 1,
     unit,
-    progressionMode: meso.progressionMode as ProgressionMode,
+    progressionMode: z.nativeEnum(ProgressionMode).parse(meso.progressionMode),
     microcycles: microcycles
       .map(mc => {
         const mcWorkouts = workouts.filter(w => w.microcycleId === mc.id)

@@ -16,6 +16,8 @@
 		66C19649F4784CA1ACA005E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FBCD755DCE4C81AF6339C6 /* ContentView.swift */; };
 		6C0CC6A06C6E4053BD62BFE8 /* DEVLiftCoach.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		78B4B1F2B9257C30EF408077 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 73A52B2DB19304854B5F7596 /* PrivacyInfo.xcprivacy */; };
+		A1B2C3D401234567AABBCC06 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D401234567AABBCC05 /* WatchConnectivityService.swift */; };
+		B1C2D3E401234567AABBCC08 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C2D3E401234567AABBCC07 /* WatchConnectivity.framework */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D184E3F6642B3DA9C80CF6D1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 73A52B2DB19304854B5F7596 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
@@ -54,7 +56,9 @@
 		72FBCD755DCE4C81AF6339C6 /* ContentView.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		73A52B2DB19304854B5F7596 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = DEVLiftCoach/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A0448647D30E5C31CEECFC0B /* libPods-DEVLiftCoach.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DEVLiftCoach.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D401234567AABBCC05 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = DEVLiftCoach/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B1C2D3E401234567AABBCC07 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 9; includeInIndex = 0; path = DEVLiftCoach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D46BEFA4B89CD9C82255675F /* Pods-DEVLiftCoach.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DEVLiftCoach.release.xcconfig"; path = "Target Support Files/Pods-DEVLiftCoach/Pods-DEVLiftCoach.release.xcconfig"; sourceTree = "<group>"; };
@@ -71,6 +75,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				05D4692E23A162BFF5DAAF07 /* libPods-DEVLiftCoach.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1C2D3E401234567AABBCC09 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1C2D3E401234567AABBCC08 /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +157,7 @@
 			children = (
 				D4DEAB01D9B3499A8A2088A8 /* LiftCoachWatchApp.swift */,
 				72FBCD755DCE4C81AF6339C6 /* ContentView.swift */,
+				A1B2C3D401234567AABBCC05 /* WatchConnectivityService.swift */,
 				1424C24C735B4D8083C35363 /* Assets.xcassets */,
 			);
 			name = LiftCoachWatch;
@@ -185,6 +198,7 @@
 			buildConfigurationList = 2BF78A88372243EA8F258DB8 /* Build configuration list for PBXNativeTarget "LiftCoachWatch" */;
 			buildPhases = (
 				A0B7BA1CE87D40A2B57324A2 /* Sources */,
+				B1C2D3E401234567AABBCC09 /* Frameworks */,
 				4D35680EF2454F538BDB79C5 /* Resources */,
 			);
 			buildRules = (
@@ -430,6 +444,7 @@
 			files = (
 				527D306C06274099AA3693CB /* LiftCoachWatchApp.swift in Sources */,
 				66C19649F4784CA1ACA005E2 /* ContentView.swift in Sources */,
+				A1B2C3D401234567AABBCC06 /* WatchConnectivityService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +532,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -527,6 +543,7 @@
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;
@@ -661,6 +678,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -670,6 +688,7 @@
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;

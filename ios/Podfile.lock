@@ -63,6 +63,8 @@ PODS:
     - ExpoModulesCore
   - ExpoSystemUI (6.0.9):
     - ExpoModulesCore
+  - ExpoWatchConnectivity (1.0.0):
+    - ExpoModulesCore
   - FBLazyVector (0.81.5)
   - hermes-engine (0.81.5):
     - hermes-engine/Pre-built (= 0.81.5)
@@ -1992,6 +1994,7 @@ DEPENDENCIES:
   - "ExpoModulesCore (from `../node_modules/.pnpm/expo-modules-core@3.0.29_react-native@0.81.5_@babel+core@7.29.0_@react-native-community+cli@1_nj65655d3s7a2jfp6ix7o4n6fu/node_modules/expo-modules-core`)"
   - "ExpoSQLite (from `../node_modules/.pnpm/expo-sqlite@16.0.10_expo@54.0.33_@babel+core@7.29.0_graphql@15.8.0_react-native@0.81.5_@babel_thucmqvoicegnkfpr5gzn3owx4/node_modules/expo-sqlite/ios`)"
   - "ExpoSystemUI (from `../node_modules/.pnpm/expo-system-ui@6.0.9_expo@54.0.33_@babel+core@7.29.0_graphql@15.8.0_react-native@0.81.5_@babe_x74eyaygawvzaa6mm3gksz4j5q/node_modules/expo-system-ui/ios`)"
+  - ExpoWatchConnectivity (from `../modules/watch-connectivity/ios`)
   - "FBLazyVector (from `../node_modules/.pnpm/react-native@0.81.5_@babel+core@7.29.0_@react-native-community+cli@13.6.9_@types+react@19.1.17_react@19.1.0/node_modules/react-native/Libraries/FBLazyVector`)"
   - "hermes-engine (from `../node_modules/.pnpm/react-native@0.81.5_@babel+core@7.29.0_@react-native-community+cli@13.6.9_@types+react@19.1.17_react@19.1.0/node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)"
   - "MixpanelReactNative (from `../node_modules/.pnpm/mixpanel-react-native@3.3.0_@react-native-async-storage+async-storage@2.2.0_react-native@0.81_sdcy72iigx3jbty444qakete7e/node_modules/mixpanel-react-native`)"
@@ -2096,6 +2099,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/.pnpm/expo-sqlite@16.0.10_expo@54.0.33_@babel+core@7.29.0_graphql@15.8.0_react-native@0.81.5_@babel_thucmqvoicegnkfpr5gzn3owx4/node_modules/expo-sqlite/ios"
   ExpoSystemUI:
     :path: "../node_modules/.pnpm/expo-system-ui@6.0.9_expo@54.0.33_@babel+core@7.29.0_graphql@15.8.0_react-native@0.81.5_@babe_x74eyaygawvzaa6mm3gksz4j5q/node_modules/expo-system-ui/ios"
+  ExpoWatchConnectivity:
+    :path: "../modules/watch-connectivity/ios"
   FBLazyVector:
     :path: "../node_modules/.pnpm/react-native@0.81.5_@babel+core@7.29.0_@react-native-community+cli@13.6.9_@types+react@19.1.17_react@19.1.0/node_modules/react-native/Libraries/FBLazyVector"
   hermes-engine:
@@ -2261,6 +2266,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: f3da4f1ab5a8375d0beafab763739dbee8446583
   ExpoSQLite: 7eedbe476870a5f18d6b89c817c4ac6f299830ad
   ExpoSystemUI: 2ad325f361a2fcd96a464e8574e19935c461c9cc
+  ExpoWatchConnectivity: d339af89c3d8c90d0b270f1aacc5cc8330de3f4d
   FBLazyVector: e95a291ad2dadb88e42b06e0c5fb8262de53ec12
   hermes-engine: 9f4dfe93326146a1c99eb535b1cb0b857a3cd172
   Mixpanel-swift: de454db5987bf6f601106520a44663fc556e8cfa
@@ -2340,6 +2346,6 @@ SPEC CHECKSUMS:
   Sentry: b3ec44d01708fce73f99b544beb57e890eca4406
   Yoga: 5934998fbeaef7845dbf698f698518695ab4cd1a
 
-PODFILE CHECKSUM: aeaa591a162d1820fbcb2cc327e4be01f2a1ce4a
+PODFILE CHECKSUM: 4ba7548558b441b93d3e667583adb712f95ac3b6
 
 COCOAPODS: 1.16.2

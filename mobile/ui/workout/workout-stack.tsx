@@ -17,6 +17,7 @@ import {
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
+import { sendWorkoutStartedToWatch } from '@/mobile/watch/watch-bridge'
 
 const WorkoutSwiperWithFetchedWorkout = (props: { workout: MicrocycleWorkout; onboardingInfo: OnboardedUser }) => {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -68,6 +69,7 @@ export const WorkoutStack = () => {
   const onStartWorkout = async () => {
     tracking.workoutStarted()
     await startWorkout()
+    sendWorkoutStartedToWatch()
     await trpcUtils.workout.getWorkout.invalidate()
   }
 

@@ -19,8 +19,8 @@ Work through these steps **in order**. Complete and confirm each step with the u
 
 List the core requirements — what the system must accomplish from the user's perspective. Stay at the "what", not the "how". No implementation details, no technology choices, no component names.
 
-Good: "Users can search exercises by muscle group"
-Bad: "ElasticSearch index for exercise lookup via REST API"
+Good: "Users can search authors by creation date"
+Bad: "ElasticSearch index for authors lookup via REST API"
 
 Ask the user to confirm the capabilities list is complete and correct before proceeding. Push back if implementation details creep in — they belong in later steps.
 

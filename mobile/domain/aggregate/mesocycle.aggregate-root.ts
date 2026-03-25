@@ -949,34 +949,36 @@ export class MesocycleAggregateRoot {
     })
 
     if (exercise.state === WorkoutExerciseState.pending) {
-      if (!historicalResults) {
-        throw new Error('Historical result not found')
-      }
-      const newReps = calculateRepsFromLoadedExercise(
-        {
-          loadingSet: {
-            weight: historicalResults.loadedWeight,
-            reps: historicalResults.loadedReps,
+      if (this.mesocycleDTO.progressionMode !== ProgressionMode.Custom) {
+        if (!historicalResults) {
+          throw new Error('Historical result not found')
+        }
+        const newReps = calculateRepsFromLoadedExercise(
+          {
+            loadingSet: {
+              weight: historicalResults.loadedWeight,
+              reps: historicalResults.loadedReps,
+            },
+            targetWeight: snappedWeight,
           },
-          targetWeight: snappedWeight,
-        },
-        this.getCurrentRpe()
-      )
+          this.getCurrentRpe()
+        )
 
-      if (newReps === null) {
-        throw new Error("Couldn't resolve new rep count.")
-      }
+        if (newReps === null) {
+          throw new Error("Couldn't resolve new rep count.")
+        }
 
-      if (newReps !== exercise.sets[0].reps) {
-        this.apply({
-          type: 'ExerciseRepsChangedDueToWeightChange',
-          payload: {
-            workoutExerciseId,
-            newReps,
-            workoutId: activeWorkout.id,
-            microcycleId: activeWorkout.microcycleId,
-          },
-        })
+        if (newReps !== exercise.sets[0].reps) {
+          this.apply({
+            type: 'ExerciseRepsChangedDueToWeightChange',
+            payload: {
+              workoutExerciseId,
+              newReps,
+              workoutId: activeWorkout.id,
+              microcycleId: activeWorkout.microcycleId,
+            },
+          })
+        }
       }
 
       this.apply({

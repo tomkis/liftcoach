@@ -89,12 +89,6 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
       .otherwise(() => undefined)
   }, [exercise])
 
-  const currentReps = useMemo(() => {
-    return match(exercise)
-      .with({ state: WorkoutExerciseState.pending }, ({ sets }) => sets[0]?.reps)
-      .otherwise(() => undefined)
-  }, [exercise])
-
   return (
     <ScreenContainer
       style={{
@@ -131,6 +125,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onExtraActions={onExtraActions}
             hasMoreExercises={hasMoreExercises}
             onWeightChanged={onWeightChanged}
+            onRepsChanged={onRepsChanged}
             onSetChanged={onSetChanged}
             unit={workoutContext.unit}
             progressionMode={workoutContext.workout.progressionMode}
@@ -173,16 +168,13 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         onCancel={handleExtraActionsCancel}
         exerciseId={exercise.id}
         currentWeight={currentWeight ?? undefined}
-        currentReps={currentReps ?? undefined}
         onWeightChange={onWeightChanged}
-        onRepsChange={onRepsChanged}
         exerciseName={exercise.exercise.name}
         onExerciseReplace={workoutContext.skipExercise}
         canReplaceExercise={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loading].includes(exercise.state)}
         canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)}
         unit={workoutContext.unit}
         loadingType={exercise.exercise.loadingType}
-        progressionMode={workoutContext.workout.progressionMode}
       />
     </ScreenContainer>
   )

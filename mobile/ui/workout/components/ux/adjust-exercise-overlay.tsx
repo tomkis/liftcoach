@@ -1,5 +1,5 @@
 import Slider from '@react-native-community/slider'
-import { LoadingType, ProgressionMode, Unit } from '@/mobile/domain'
+import { LoadingType, Unit } from '@/mobile/domain'
 import { getIncrement, snapWeight } from '@/mobile/domain/weight-snapping'
 import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
@@ -7,7 +7,6 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { formatWeight } from '@/mobile/domain/utils/format-weight'
 import { AddExerciseModal } from '@/mobile/ui/exercise-library/add-exercise-modal/add-exercise-modal'
 import { PrimaryButton, OutlineButton } from '@/mobile/ui/ds/buttons'
-import { NumericalInput } from '@/mobile/ui/ds/inputs'
 import { ModalShell } from '@/mobile/ui/ds/modals'
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
@@ -100,16 +99,13 @@ interface SomethingWentWrongOverlayProps {
   onCancel: () => void
   exerciseId: string
   currentWeight?: number
-  currentReps?: number
   onWeightChange?: (exerciseId: string, newWeight: number) => void
-  onRepsChange?: (exerciseId: string, newReps: number) => void
   exerciseName?: string
   onExerciseReplace?: (exerciseId: string, replacementExerciseId: string) => void
   canReplaceExercise: boolean
   canChangeWeight?: boolean
   unit: Unit
   loadingType: LoadingType
-  progressionMode: ProgressionMode
 }
 
 export const ProposeExerciseReplacementModal = ({
@@ -252,30 +248,22 @@ export const ProposeExerciseReplacementModal = ({
   )
 }
 
-const parseDecimal = (value: string) => parseFloat(value.replace(',', '.'))
-
 export const AdjustExerciseOverlay = ({
   visible,
   onCancel,
   exerciseId,
   currentWeight,
-  currentReps,
   onWeightChange,
-  onRepsChange,
   exerciseName,
   onExerciseReplace,
   canReplaceExercise,
   canChangeWeight,
   unit,
   loadingType,
-  progressionMode,
 }: SomethingWentWrongOverlayProps) => {
-  const isCustomMode = progressionMode === ProgressionMode.Custom
   const [showWeightInput, setShowWeightInput] = useState(false)
   const [showReplaceExercise, setShowReplaceExercise] = useState(false)
   const [adjustedWeight, setAdjustedWeight] = useState(currentWeight || 0)
-  const [customWeight, setCustomWeight] = useState(currentWeight?.toString() ?? '')
-  const [customReps, setCustomReps] = useState(currentReps?.toString() ?? '')
 
   const handleCancel = () => {
     onCancel()
@@ -301,20 +289,6 @@ export const AdjustExerciseOverlay = ({
   const handleWeightChangeCancel = () => {
     setShowWeightInput(false)
     setAdjustedWeight(currentWeight || 0)
-  }
-
-  const handleCustomConfirm = () => {
-    const parsedWeight = parseDecimal(customWeight)
-    const parsedReps = parseInt(customReps, 10)
-    if (exerciseId) {
-      if (!isNaN(parsedWeight) && parsedWeight > 0 && onWeightChange) {
-        onWeightChange(exerciseId, parsedWeight)
-      }
-      if (!isNaN(parsedReps) && parsedReps > 0 && onRepsChange) {
-        onRepsChange(exerciseId, parsedReps)
-      }
-      onCancel()
-    }
   }
 
   const handleReplaceExerciseCancel = () => {
@@ -382,41 +356,6 @@ export const AdjustExerciseOverlay = ({
     )
   }
 
-  const renderCustomModeInputs = () => {
-    const unitLabel = unit === 'metric' ? 'kg' : 'lbs'
-
-    return (
-      <>
-        <View style={styles.weightInputContainer}>
-          <Text style={[styles.weightInputLabel, { textTransform: 'uppercase' }]}>
-            Weight ({unitLabel})
-          </Text>
-          <NumericalInput
-            value={customWeight}
-            keyboardType="decimal-pad"
-            onChange={setCustomWeight}
-            placeholder="Weight"
-          />
-        </View>
-        <View style={styles.weightInputContainer}>
-          <Text style={[styles.weightInputLabel, { textTransform: 'uppercase' }]}>
-            Reps
-          </Text>
-          <NumericalInput
-            value={customReps}
-            keyboardType="number-pad"
-            onChange={setCustomReps}
-            placeholder="Reps"
-          />
-        </View>
-        <View style={styles.weightInputButtons}>
-          <OutlineButton title="Cancel" onPress={handleCancel} style={{ flex: 1 }} />
-          <PrimaryButton title="Confirm" onPress={handleCustomConfirm} style={{ flex: 1 }} />
-        </View>
-      </>
-    )
-  }
-
   const renderMainContent = () => {
     if (showReplaceExercise) {
       return (
@@ -427,17 +366,6 @@ export const AdjustExerciseOverlay = ({
           onCancel={handleCancel}
           handleReplaceExerciseCancel={handleReplaceExerciseCancel}
         />
-      )
-    }
-
-    if (isCustomMode) {
-      return (
-        <>
-          {renderCustomModeInputs()}
-          {canReplaceExercise && (
-            <PrimaryButton title="Replace Exercise" onPress={handleReplaceExercisePress} style={{ marginTop: 16 }} />
-          )}
-        </>
       )
     }
 

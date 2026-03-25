@@ -118,6 +118,22 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaBold,
     color: theme.colors.primary.main,
   },
+  inputWrapper: {
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.23)',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    flex: 1,
+  },
+  inputLabel: {
+    color: theme.colors.text.primary,
+    lineHeight: 24,
+    letterSpacing: 0.15,
+    fontSize: 16,
+    fontFamily: theme.font.sairaRegular,
+  },
 })
 
 export const ExercisePending = (props: {
@@ -279,32 +295,28 @@ export const ExercisePending = (props: {
           </View>
           {showCustomInputs ? (
             <>
-              <View style={styles.setsCard}>
-                <View style={{ padding: CARD_PADDING }}>
-                  <Text style={[styles.setDetails, { color: theme.colors.text.primary, marginBottom: 12 }]}>
-                    {pendingExercise.sets.length} SETS
-                  </Text>
-                  <View style={{ marginBottom: 16 }}>
-                    <Text style={[styles.setDetails, { color: theme.colors.gray.light, marginBottom: 4, textTransform: 'uppercase' }]}>
-                      Weight ({props.unit === 'metric' ? 'kg' : 'lbs'})
-                    </Text>
+              <View style={{ marginTop: CARD_PADDING }}>
+                <Text style={[styles.setDetails, { color: theme.colors.text.primary, marginBottom: 12 }]}>
+                  {pendingExercise.sets.length} SETS — ENTER YOUR WEIGHT AND REPS
+                </Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <View style={styles.inputWrapper}>
                     <NumericalInput
                       value={customWeight}
                       keyboardType="decimal-pad"
                       onChange={setCustomWeight}
                       placeholder="Weight"
                     />
+                    <Text style={styles.inputLabel}>{props.unit === 'metric' ? 'kg' : 'lbs'}</Text>
                   </View>
-                  <View>
-                    <Text style={[styles.setDetails, { color: theme.colors.gray.light, marginBottom: 4, textTransform: 'uppercase' }]}>
-                      Reps
-                    </Text>
+                  <View style={styles.inputWrapper}>
                     <NumericalInput
                       value={customReps}
                       keyboardType="number-pad"
                       onChange={setCustomReps}
                       placeholder="Reps"
                     />
+                    <Text style={styles.inputLabel}>reps</Text>
                   </View>
                 </View>
               </View>

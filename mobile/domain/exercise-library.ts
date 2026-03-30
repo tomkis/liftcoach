@@ -7,6 +7,7 @@ export type ExerciseLibraryData = {
   name: string
   muscleGroup: MuscleGroup
   loadingHistory: Array<{ weight: number; reps: number }>
+  workingSetHistory: Array<{ weight: number; reps: number }>
 }
 
 type ExerciseLibraryItemBase = {

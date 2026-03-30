@@ -11,18 +11,31 @@ export class ExerciseAggregateRoot {
       muscleGroup: this.data.muscleGroup,
     }
 
-    const history = this.data.loadingHistory
-    if (history.length === 0) {
+    const activeHistory = this.selectBestHistory()
+    if (!activeHistory) {
       return { ...base, doneInPast: false }
     }
 
-    const latest = history[0]
+    const latest = activeHistory[0]
     return {
       ...base,
       doneInPast: true,
       estimatedOneRepMax: Math.round(calculate1RMEplay(latest.weight, latest.reps)),
-      progressState: this.calculateProgressState(history),
+      progressState: this.calculateProgressState(activeHistory),
     }
+  }
+
+  private selectBestHistory(): Array<{ weight: number; reps: number }> | null {
+    const loading = this.data.loadingHistory
+    const working = this.data.workingSetHistory
+
+    if (loading.length === 0 && working.length === 0) return null
+    if (loading.length === 0) return working
+    if (working.length === 0) return loading
+
+    const loadingE1rm = calculate1RMEplay(loading[0].weight, loading[0].reps)
+    const workingE1rm = calculate1RMEplay(working[0].weight, working[0].reps)
+    return workingE1rm > loadingE1rm ? working : loading
   }
 
   private calculateProgressState(

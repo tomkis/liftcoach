@@ -172,6 +172,56 @@ export const getExerciseLibraryData = async () => {
     historyByExercise.set(h.exerciseId, arr)
   }
 
+  const customSets = await db
+    .select({
+      exerciseId: schema.workoutExercise.exerciseId,
+      microcycleId: schema.microcycle.id,
+      microcycleCreatedAt: schema.microcycle.createdAt,
+      weight: schema.workoutExerciseSet.weight,
+      reps: schema.workoutExerciseSet.reps,
+    })
+    .from(schema.workoutExerciseSet)
+    .innerJoin(schema.workoutExercise, eq(schema.workoutExerciseSet.workoutExerciseId, schema.workoutExercise.id))
+    .innerJoin(schema.microcycleWorkout, eq(schema.workoutExercise.workoutId, schema.microcycleWorkout.id))
+    .innerJoin(schema.microcycle, eq(schema.microcycleWorkout.microcycleId, schema.microcycle.id))
+    .innerJoin(schema.mesocycle, eq(schema.microcycle.mesocycleId, schema.mesocycle.id))
+    .where(
+      and(
+        eq(schema.mesocycle.progressionMode, 'custom'),
+        eq(schema.workoutExerciseSet.state, WorkingSetState.done),
+        sql`${schema.workoutExerciseSet.weight} IS NOT NULL`,
+        sql`${schema.workoutExerciseSet.reps} IS NOT NULL`,
+        gte(schema.microcycle.createdAt, cutoff)
+      )
+    )
+    .orderBy(desc(schema.microcycle.createdAt))
+
+  const workingSetHistoryByExercise = new Map<string, Array<{ weight: number; reps: number }>>()
+  const seenMicrocyclePerExercise = new Map<string, Set<string>>()
+  const bestSetPerWeek = new Map<string, { weight: number; reps: number; e1rm: number }>()
+
+  for (const row of customSets) {
+    if (row.weight === null || row.reps === null) continue
+    const key = `${row.exerciseId}:${row.microcycleId}`
+    const e1rm = row.weight * (1 + row.reps / 30)
+    const existing = bestSetPerWeek.get(key)
+    if (!existing || e1rm > existing.e1rm) {
+      bestSetPerWeek.set(key, { weight: row.weight, reps: row.reps, e1rm })
+    }
+    const seenMicros = seenMicrocyclePerExercise.get(row.exerciseId) ?? new Set()
+    seenMicros.add(row.microcycleId)
+    seenMicrocyclePerExercise.set(row.exerciseId, seenMicros)
+  }
+
+  for (const [exerciseId, microcycleIds] of seenMicrocyclePerExercise) {
+    const weekBests: Array<{ weight: number; reps: number }> = []
+    for (const microcycleId of microcycleIds) {
+      const best = bestSetPerWeek.get(`${exerciseId}:${microcycleId}`)
+      if (best) weekBests.push({ weight: best.weight, reps: best.reps })
+    }
+    workingSetHistoryByExercise.set(exerciseId, weekBests)
+  }
+
   const rows = await db
     .select()
     .from(schema.exercise)
@@ -182,6 +232,7 @@ export const getExerciseLibraryData = async () => {
     name: r.name,
     muscleGroup: muscleGroupSchema.parse(r.muscleGroup),
     loadingHistory: historyByExercise.get(r.id) ?? [],
+    workingSetHistory: workingSetHistoryByExercise.get(r.id) ?? [],
   }))
 }
 

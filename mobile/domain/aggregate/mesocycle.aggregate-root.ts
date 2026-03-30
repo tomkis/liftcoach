@@ -343,21 +343,65 @@ export class MesocycleAggregateRoot {
   }
 
   extendMicrocycle() {
-    if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
-      throw new Error('Custom progression mesocycles do not support automated microcycle extension')
-    }
-
     const activeMicrocycle = this.getActiveMicrocycle()
     if (activeMicrocycle.finishedAt) {
       throw new Error('Microcycle has already been finished, cant extend it.')
     }
 
-    const currentCycleIndex = this.getCurrentCycleIndex()
-
     this.apply({
       type: 'MicrocycleFinished',
       payload: { microcycleId: activeMicrocycle.id, when: toDateTime(new Date()) },
     })
+
+    if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
+      const newMicrocycleId = v4()
+
+      const carryForward = (exercise: WorkingExercise): WorkingExercise => {
+        if (exercise.state !== WorkoutExerciseState.finished) {
+          throw new Error('Exercise is not finished, carry-forward cannot be applied')
+        }
+
+        const weight = exercise.sets.find(s => s.weight !== null)?.weight ?? null
+        const reps = exercise.sets.find(s => s.reps !== null)?.reps ?? null
+
+        return {
+          ...exercise,
+          createdAt: toDateTime(new Date()),
+          state: WorkoutExerciseState.pending,
+          progressionType: ProgressionType.CustomUserProvided,
+          sets: Array.from({ length: exercise.targetSets }).map((_, index) => ({
+            id: v4(),
+            state: WorkingSetState.pending,
+            orderIndex: index,
+            weight,
+            reps,
+          })),
+        }
+      }
+
+      const newMicrocycle: Microcycle = {
+        id: newMicrocycleId,
+        mesocycleId: activeMicrocycle.mesocycleId,
+        createdAt: toDateTime(new Date()),
+        index: activeMicrocycle.index + 1,
+        workouts: activeMicrocycle.workouts.map(workout => ({
+          id: v4(),
+          active: false,
+          microcycleId: newMicrocycleId,
+          state: WorkoutState.pending,
+          index: workout.index,
+          exercises: workout.exercises.map(e => ({
+            ...carryForward(e),
+            id: v4(),
+          })),
+        })),
+      }
+
+      this.apply({ type: 'MicrocycleExtended', payload: { newMicrocycle } })
+      return
+    }
+
+    const currentCycleIndex = this.getCurrentCycleIndex()
 
     const applyProgression = (
       exercise: WorkingExercise,

@@ -39,6 +39,7 @@ export const getProgressionType = (
   }
 
   if (
+    lastPastExercise.exerciseAssesment &&
     lastPastExercise.exerciseAssesment.assesment === ExerciseAssesmentScore.Hard &&
     lastPastExercise.exerciseAssesment.assesmentTag === HardAssesmentTag.TooHeavy
   ) {

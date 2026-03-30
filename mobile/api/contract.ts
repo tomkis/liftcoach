@@ -51,7 +51,7 @@ export interface UserContext {
 export interface WorkoutContext {
   getCurrentMicrocycle: (session: Session) => Promise<Microcycle | null>
   getActivePlanSummary: (session: Session) => Promise<ActivePlanSummary | null>
-  getWorkout: (session: Session) => Promise<MicrocycleWorkout | null>
+  getWorkout: (session: Session) => Promise<(MicrocycleWorkout & { progressionMode: ProgressionMode }) | null>
   getWorkoutStats: (session: Session) => Promise<WorkoutStats | null>
   startWorkout: (session: Session) => Promise<void>
   confirmMesocycle: (session: Session) => Promise<void>
@@ -91,7 +91,7 @@ export interface WorkoutContext {
     session: Session,
     workoutId: string,
     workingExerciseId: string,
-    exerciseAssesment: ExerciseAssesment
+    exerciseAssesment: ExerciseAssesment | null
   ) => Promise<void>
   undoExercise: (session: Session, workoutId: string, workingExerciseId: string) => Promise<void>
   exerciseSetStateChanged: (
@@ -106,6 +106,12 @@ export interface WorkoutContext {
     workoutId: string,
     workingExerciseId: string,
     weight: number
+  ) => Promise<void>
+  exerciseChangeReps: (
+    session: Session,
+    workoutId: string,
+    workingExerciseId: string,
+    reps: number
   ) => Promise<void>
 }
 

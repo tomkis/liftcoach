@@ -57,7 +57,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
 
     if (mesocycle.hasActiveWorkout()) {
-      return mesocycle.getActiveWorkout()
+      return { ...mesocycle.getActiveWorkout(), progressionMode: mesocycleDto.progressionMode }
     }
     return null
   }
@@ -234,6 +234,19 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     await mesocycleDao.updateMesocycle(mesocycle.events)
   }
 
+  const exerciseChangeReps: WorkoutContext['exerciseChangeReps'] = async (
+    session,
+    workoutId,
+    workoutExerciseId,
+    reps
+  ) => {
+    const mesocycleId = await mesocycleDao.getMesocycleIdByWorkoutId(workoutId)
+    const mesocycleDto = await mesocycleDao.getMesocycleById(mesocycleId)
+    const mesocycle = new MesocycleAggregateRoot(mesocycleDto, getUserCoefficient(session))
+    mesocycle.changeReps(workoutExerciseId, reps)
+    await mesocycleDao.updateMesocycle(mesocycle.events)
+  }
+
   const exerciseFinished: WorkoutContext['exerciseFinished'] = async (
     session,
     workoutId,
@@ -376,6 +389,7 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     replaceExercise,
     exerciseSetStateChanged,
     exerciseChangeWeight,
+    exerciseChangeReps,
     exerciseFinished,
     undoExercise,
     exerciseLoaded,

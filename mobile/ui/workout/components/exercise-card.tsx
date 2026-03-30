@@ -43,7 +43,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   }, [exerciseIndex, workoutContext])
 
   const onMoveNextAfterPending = useCallback(
-    (exerciseAssesment: ExerciseAssesment) => {
+    (exerciseAssesment: ExerciseAssesment | null) => {
       workoutContext.exerciseDone(exerciseIndex, exerciseAssesment)
     },
     [exerciseIndex, workoutContext]
@@ -62,6 +62,13 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   const onWeightChanged = useCallback(
     (exerciseId: string, newWeight: number) => {
       workoutContext.changeWeight(exerciseId, newWeight)
+    },
+    [workoutContext]
+  )
+
+  const onRepsChanged = useCallback(
+    (exerciseId: string, newReps: number) => {
+      workoutContext.changeReps(exerciseId, newReps)
     },
     [workoutContext]
   )
@@ -118,8 +125,10 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             onExtraActions={onExtraActions}
             hasMoreExercises={hasMoreExercises}
             onWeightChanged={onWeightChanged}
+            onRepsChanged={onRepsChanged}
             onSetChanged={onSetChanged}
             unit={workoutContext.unit}
+            progressionMode={workoutContext.workout.progressionMode}
           />
         ))
         .with({ state: WorkoutExerciseState.finished }, exercise => (

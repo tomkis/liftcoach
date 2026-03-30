@@ -134,7 +134,7 @@ export type ExerciseAssesment = z.infer<typeof exerciseAssesment>
 export const finishedWorkingExerciseSchema = workingExerciseBaseSchema.extend({
   state: z.literal(WorkoutExerciseState.finished),
   sets: z.array(workingSetSchema),
-  exerciseAssesment,
+  exerciseAssesment: exerciseAssesment.nullable(),
 })
 export type FinishedWorkingExercise = z.infer<typeof finishedWorkingExerciseSchema>
 

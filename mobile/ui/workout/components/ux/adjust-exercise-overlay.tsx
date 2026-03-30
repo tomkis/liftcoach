@@ -357,10 +357,6 @@ export const AdjustExerciseOverlay = ({
   }
 
   const renderMainContent = () => {
-    if (showWeightInput) {
-      return renderWeightAdjustment()
-    }
-
     if (showReplaceExercise) {
       return (
         <ProposeExerciseReplacementModal
@@ -371,6 +367,10 @@ export const AdjustExerciseOverlay = ({
           handleReplaceExerciseCancel={handleReplaceExerciseCancel}
         />
       )
+    }
+
+    if (showWeightInput) {
+      return renderWeightAdjustment()
     }
 
     return (

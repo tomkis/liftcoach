@@ -77,6 +77,7 @@ const mapWorkoutExerciseToDTO = (
     if (row.assesment === ExerciseAssesmentScore.Hard && row.hardAssesmentTag) {
       return { assesment: ExerciseAssesmentScore.Hard, assesmentTag: row.hardAssesmentTag } as const
     }
+    if (row.assesment === null) return null
     throw new Error('Exercise is missing assesment')
   }
 
@@ -519,16 +520,18 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           .where(eq(schema.workoutExercise.id, event.payload.exerciseId))
       })
       .with({ type: 'ExerciseFinished' }, async event => {
-        const assessmentData = match(event.payload.exerciseAssesment)
-          .with({ assesment: ExerciseAssesmentScore.Hard }, assessment => ({
-            assesment: assessment.assesment as string,
-            hardAssesmentTag: assessment.assesmentTag as string,
-          }))
-          .with({ assesment: ExerciseAssesmentScore.Ideal }, assessment => ({
-            assesment: assessment.assesment as string,
-            hardAssesmentTag: null,
-          }))
-          .exhaustive()
+        const assessmentData = event.payload.exerciseAssesment
+          ? match(event.payload.exerciseAssesment)
+            .with({ assesment: ExerciseAssesmentScore.Hard }, assessment => ({
+              assesment: assessment.assesment as string,
+              hardAssesmentTag: assessment.assesmentTag as string,
+            }))
+            .with({ assesment: ExerciseAssesmentScore.Ideal }, assessment => ({
+              assesment: assessment.assesment as string,
+              hardAssesmentTag: null,
+            }))
+            .exhaustive()
+          : { assesment: null, hardAssesmentTag: null }
 
         await db
           .update(schema.workoutExercise)
@@ -601,6 +604,17 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
           .update(schema.workoutExercise)
           .set({ testingWeight: event.payload.weight })
           .where(eq(schema.workoutExercise.id, event.payload.workoutExerciseId))
+      })
+      .with({ type: 'ExerciseRepsChanged' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ reps: event.payload.reps })
+          .where(
+            and(
+              eq(schema.workoutExerciseSet.workoutExerciseId, event.payload.workoutExerciseId),
+              eq(schema.workoutExerciseSet.state, WorkingSetState.pending)
+            )
+          )
       })
       .with({ type: 'ExerciseRepsChangedDueToWeightChange' }, async event => {
         await db

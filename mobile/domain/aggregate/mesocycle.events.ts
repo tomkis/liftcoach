@@ -96,7 +96,7 @@ export interface ExerciseFinished {
     workoutId: string
     exerciseId: string
     when: string
-    exerciseAssesment: ExerciseAssesment
+    exerciseAssesment: ExerciseAssesment | null
   }
 }
 
@@ -145,6 +145,16 @@ export interface ExerciseWeightChangedCalibration {
   payload: {
     workoutExerciseId: string
     weight: number
+    workoutId: string
+    microcycleId: string
+  }
+}
+
+export interface ExerciseRepsChanged {
+  type: 'ExerciseRepsChanged'
+  payload: {
+    workoutExerciseId: string
+    reps: number
     workoutId: string
     microcycleId: string
   }
@@ -237,6 +247,7 @@ export type MesocycleEvent =
   | ExerciseWeightChangedTesting
   | ExerciseWeightChangedPending
   | ExerciseWeightChangedCalibration
+  | ExerciseRepsChanged
   | ExerciseRepsChangedDueToWeightChange
   | WorkoutStarted
   | ExerciseUpdated

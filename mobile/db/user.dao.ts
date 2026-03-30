@@ -309,12 +309,12 @@ export const getPastTrainingResults = async () => {
 
     const workoutExercises = exercisesByWorkout.get(workout.id) ?? []
     const finishedExercises = workoutExercises.filter(e => e.state === WorkoutExerciseState.finished)
+    const assessedExercises = finishedExercises.filter(e => e.assesment !== null)
 
     const exercisesFeelingAvg =
-      finishedExercises.reduce((acc, exercise) => {
-        if (!exercise.assesment) throw new Error('Illegal State')
+      assessedExercises.reduce((acc, exercise) => {
         return acc + assesmentTable[exercise.assesment as ExerciseAssesmentScore]
-      }, 0) / finishedExercises.length
+      }, 0) / assessedExercises.length
 
     const successRate =
       finishedExercises.reduce((acc, exercise) => {

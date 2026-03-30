@@ -77,6 +77,7 @@ const mapWorkoutExerciseToDTO = (
     if (row.assesment === ExerciseAssesmentScore.Hard && row.hardAssesmentTag) {
       return { assesment: ExerciseAssesmentScore.Hard, assesmentTag: row.hardAssesmentTag } as const
     }
+    if (row.assesment === null) return null
     throw new Error('Exercise is missing assesment')
   }
 

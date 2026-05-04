@@ -29,6 +29,7 @@ import {
 import { ExerciseProvider } from '../microcycle-generator/exercise/exercise-provider'
 import { ProvidedExercise } from '../muscle-group'
 import { applySetProgression, getRepsForCycle } from '../progression/apply-set-progression'
+import { carryForwardCustomSets } from '../progression/custom-carry-forward'
 import { getProgressionType } from '../progression/get-progression-type'
 import { Unit } from '../onboarding'
 import { snapWeight } from '../weight-snapping'
@@ -361,20 +362,19 @@ export class MesocycleAggregateRoot {
           throw new Error('Exercise is not finished, carry-forward cannot be applied')
         }
 
-        const weight = exercise.sets.find(s => s.weight !== null)?.weight ?? null
-        const reps = exercise.sets.find(s => s.reps !== null)?.reps ?? null
+        const carriedSets = carryForwardCustomSets(exercise.sets, exercise.targetSets)
 
         return {
           ...exercise,
           createdAt: toDateTime(new Date()),
           state: WorkoutExerciseState.pending,
           progressionType: ProgressionType.CustomUserProvided,
-          sets: Array.from({ length: exercise.targetSets }).map((_, index) => ({
+          sets: carriedSets.map((carried, index) => ({
             id: v4(),
             state: WorkingSetState.pending,
             orderIndex: index,
-            weight,
-            reps,
+            weight: carried.weight,
+            reps: carried.reps,
           })),
         }
       }

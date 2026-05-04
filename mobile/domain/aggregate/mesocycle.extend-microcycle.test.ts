@@ -131,6 +131,38 @@ describe('extendMicrocycle (custom progression)', () => {
     expect(eventTypes).toContain('MicrocycleExtended')
   })
 
+  it('per-set carry-forward: distinct weights/reps preserved by position', () => {
+    const exercise: WorkingExercise = {
+      id: v4(),
+      createdAt: '2026-02-01T00:00:00Z',
+      exercise: makeExercise(),
+      orderIndex: 0,
+      targetSets: 3,
+      targetReps: 10,
+      state: WorkoutExerciseState.finished,
+      exerciseAssesment: null,
+      sets: [
+        { id: v4(), state: WorkingSetState.done, orderIndex: 0, weight: 100, reps: 5 },
+        { id: v4(), state: WorkingSetState.done, orderIndex: 1, weight: 80, reps: 8 },
+        { id: v4(), state: WorkingSetState.done, orderIndex: 2, weight: 70, reps: 10 },
+      ],
+    }
+    const { aggregate, dto } = makeCustomMesocycle([exercise])
+
+    aggregate.extendMicrocycle()
+
+    const newMicrocycle = dto.microcycles.find(m => m.finishedAt === undefined)!
+    const sets = newMicrocycle.workouts[0].exercises[0].sets
+
+    expect(sets).toHaveLength(3)
+    expect(sets[0].weight).toBe(100)
+    expect(sets[0].reps).toBe(5)
+    expect(sets[1].weight).toBe(80)
+    expect(sets[1].reps).toBe(8)
+    expect(sets[2].weight).toBe(70)
+    expect(sets[2].reps).toBe(10)
+  })
+
   it('increments microcycle index', () => {
     const { aggregate, dto } = makeCustomMesocycle([makeFinishedCustomExercise()], 2)
 

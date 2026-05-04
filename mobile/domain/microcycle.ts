@@ -110,8 +110,8 @@ export type CycleProgress = z.infer<typeof cycleProgressSchema>
 export type ActivePlanSummary = {
   splitType: string
   currentWeek: number
-  totalWeeks: number
+  totalWeeks: number | null
   trainingDaysPerWeek: number
   workoutsCompleted: number
-  totalWorkouts: number
+  totalWorkouts: number | null
 }

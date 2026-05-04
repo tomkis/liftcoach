@@ -39,7 +39,10 @@ export const ActivePlanDetailScreen = () => {
     )
   }
 
-  const progress = Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100)
+  const progress =
+    activePlan.totalWorkouts !== null
+      ? Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100)
+      : null
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 8 }]}>
@@ -52,18 +55,22 @@ export const ActivePlanDetailScreen = () => {
             <View>
               <Text style={styles.headerTitle}>{activePlan.splitType}</Text>
               <Text style={styles.headerSub}>
-                WEEK {activePlan.currentWeek} OF {activePlan.totalWeeks}
+                {activePlan.totalWeeks !== null
+                  ? `WEEK ${activePlan.currentWeek} OF ${activePlan.totalWeeks}`
+                  : `WEEK ${activePlan.currentWeek}`}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.progressBar}>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progress}%` }]} />
+        {progress !== null && (
+          <View style={styles.progressBar}>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${progress}%` }]} />
+            </View>
+            <Text style={styles.progressText}>{progress}%</Text>
           </View>
-          <Text style={styles.progressText}>{progress}%</Text>
-        </View>
+        )}
 
         {microcycle.workouts.map((w, wi) => {
           const workoutState: DerivedState = w.state === 'completed' ? 'completed' : w.active ? 'active' : 'pending'

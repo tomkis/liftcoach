@@ -5,6 +5,7 @@ import { trpc } from '@/mobile/trpc'
 import { EmptyWrapper } from '@/mobile/ui/components/empty-wrapper'
 import { RootStack } from '@/mobile/ui/root/root-stack'
 import { TrackingProvider } from '@/mobile/ui/tracking/tracking'
+import { ExercisePendingCustomMockup } from '@/mobile/ui/workout/components/exercise-pending-custom-mockup'
 import { NavigationContainer } from '@react-navigation/native'
 import * as Sentry from '@sentry/react-native'
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -13,6 +14,8 @@ import * as Font from 'expo-font'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+
+const DESIGN_PREVIEW_CUSTOM_TRACKING = false
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
@@ -78,6 +81,15 @@ const AppComponent = () => {
 
   if (!ready) {
     return <EmptyWrapper />
+  }
+
+  if (DESIGN_PREVIEW_CUSTOM_TRACKING) {
+    return (
+      <SafeAreaProvider>
+        <ExercisePendingCustomMockup />
+        <StatusBar style="light" />
+      </SafeAreaProvider>
+    )
   }
 
   return (

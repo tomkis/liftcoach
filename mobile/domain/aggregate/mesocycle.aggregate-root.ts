@@ -511,6 +511,10 @@ export class MesocycleAggregateRoot {
   }
 
   isMesocycleFinished() {
+    if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
+      return false
+    }
+
     const activeMicrocycle = this.getActiveMicrocycle()
     const activeMicrocycleIndex = this.mesocycleDTO.microcycles
       .sort((a, b) => a.index - b.index)
@@ -670,14 +674,15 @@ export class MesocycleAggregateRoot {
     const completedInCurrentMicrocycle = activeMicrocycle.workouts.filter(
       w => w.state === WorkoutState.completed
     ).length
+    const isCustom = this.mesocycleDTO.progressionMode === ProgressionMode.Custom
 
     return {
       splitType: `${workoutsPerWeek}-Day Split`,
       currentWeek: cycleIndex + 1,
-      totalWeeks: TRAINING_WEEKS + 1,
+      totalWeeks: isCustom ? null : TRAINING_WEEKS + 1,
       trainingDaysPerWeek: workoutsPerWeek,
       workoutsCompleted: cycleIndex * workoutsPerWeek + completedInCurrentMicrocycle,
-      totalWorkouts: (TRAINING_WEEKS + 1) * workoutsPerWeek,
+      totalWorkouts: isCustom ? null : (TRAINING_WEEKS + 1) * workoutsPerWeek,
     }
   }
 
@@ -1331,10 +1336,15 @@ export class MesocycleAggregateRoot {
   }
 
   getCurrentCycleIndex() {
-    return Math.min(
-      TRAINING_WEEKS,
-      this.mesocycleDTO.microcycles.findIndex(microcycle => microcycle.id === this.getActiveMicrocycle().id)
+    const activeIndex = this.mesocycleDTO.microcycles.findIndex(
+      microcycle => microcycle.id === this.getActiveMicrocycle().id
     )
+
+    if (this.mesocycleDTO.progressionMode === ProgressionMode.Custom) {
+      return activeIndex
+    }
+
+    return Math.min(TRAINING_WEEKS, activeIndex)
   }
 
   getCurrentRpe() {
@@ -1348,7 +1358,10 @@ export class MesocycleAggregateRoot {
 
   getCycleProgressForExercise(exerciseId: string): CycleProgress {
     const results = this.getExerciseResultInMesocycle(exerciseId)
-    const cycleLength = TRAINING_WEEKS + 1
+    const cycleLength =
+      this.mesocycleDTO.progressionMode === ProgressionMode.Custom
+        ? Math.max(this.mesocycleDTO.microcycles.length, results.length)
+        : TRAINING_WEEKS + 1
 
     const firstResult = results[0]
     if (!firstResult) {

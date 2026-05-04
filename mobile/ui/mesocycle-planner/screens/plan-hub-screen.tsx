@@ -50,7 +50,11 @@ export const PlanHubScreen = () => {
     )
   }
 
-  const completionPct = activePlan ? Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100) : 0
+  const isOpenEnded = activePlan && activePlan.totalWorkouts === null
+  const completionPct =
+    activePlan && activePlan.totalWorkouts !== null
+      ? Math.round((activePlan.workoutsCompleted / activePlan.totalWorkouts) * 100)
+      : null
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
@@ -70,21 +74,36 @@ export const PlanHubScreen = () => {
                 <Text style={styles.cardLabel}>ACTIVE PLAN</Text>
                 <Text style={styles.splitName}>{activePlan.splitType}</Text>
               </View>
-              <View style={styles.pctContainer}>
-                <Text style={styles.pctValue}>{completionPct}</Text>
-                <Text style={styles.pctSign}>%</Text>
-              </View>
+              {completionPct !== null && (
+                <View style={styles.pctContainer}>
+                  <Text style={styles.pctValue}>{completionPct}</Text>
+                  <Text style={styles.pctSign}>%</Text>
+                </View>
+              )}
             </View>
 
             <View style={styles.cardDivider} />
 
             <View style={styles.statsGrid}>
-              <KeyValue label="WEEK" value={`${activePlan.currentWeek}/${activePlan.totalWeeks}`} accent />
+              <KeyValue
+                label="WEEK"
+                value={isOpenEnded ? `${activePlan.currentWeek}` : `${activePlan.currentWeek}/${activePlan.totalWeeks}`}
+                accent
+              />
               <KeyValue label="FREQ" value={`${activePlan.trainingDaysPerWeek} days`} />
-              <KeyValue label="DONE" value={`${activePlan.workoutsCompleted}/${activePlan.totalWorkouts}`} />
+              <KeyValue
+                label="DONE"
+                value={
+                  isOpenEnded
+                    ? `${activePlan.workoutsCompleted}`
+                    : `${activePlan.workoutsCompleted}/${activePlan.totalWorkouts}`
+                }
+              />
             </View>
 
-            <DotGrid completed={activePlan.workoutsCompleted} total={activePlan.totalWorkouts} />
+            {!isOpenEnded && activePlan.totalWorkouts !== null && (
+              <DotGrid completed={activePlan.workoutsCompleted} total={activePlan.totalWorkouts} />
+            )}
 
             <View style={styles.cardFooter}>
               <View style={styles.cardFooterLine} />

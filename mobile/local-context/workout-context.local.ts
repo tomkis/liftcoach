@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 import { Session, WorkoutContext } from '@/mobile/api'
 import {
   AuditTrail,
+  buildCustomMicrocycleSeed,
   getBalancedMuscleGroupPreferenceFemale,
   getBalancedMuscleGroupPreferenceMale,
   getUserCoefficient,
@@ -320,8 +321,17 @@ export const createLocalWorkoutContext = (): WorkoutContext => {
     const newMesocycleId = v4()
     const microcycleId = v4()
 
+    const priorLastMicrocycle = mesocycleDto.microcycles.length > 0
+      ? [...mesocycleDto.microcycles].sort((a, b) => b.index - a.index)[0]
+      : null
+
     const newMicrocycle = progressionMode === ProgressionMode.Custom
-      ? microcycleGenerator.createCustomMicrocycle(newMesocycleId, microcycleId, template)
+      ? microcycleGenerator.createCustomMicrocycle(
+          newMesocycleId,
+          microcycleId,
+          template,
+          priorLastMicrocycle ? buildCustomMicrocycleSeed(priorLastMicrocycle) : undefined
+        )
       : microcycleGenerator.createMicrocycle(
           newMesocycleId,
           microcycleId,

@@ -17,7 +17,6 @@ import { formatLabel } from '@/mobile/ui/exercise-library/add-exercise-modal/sha
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
-import { IncompleteSetsModal } from '@/mobile/ui/workout/components/ux/incomplete-sets-modal'
 
 const CARD_PADDING = 18
 
@@ -39,7 +38,6 @@ type Props = {
 
 export const ExercisePendingCustom = (props: Props) => {
   const { pendingExercise } = props
-  const [showIncompleteSetsModal, setShowIncompleteSetsModal] = React.useState(false)
 
   const unitLabel = props.unit === 'metric' ? 'kg' : 'lbs'
 
@@ -51,7 +49,12 @@ export const ExercisePendingCustom = (props: Props) => {
   const completedSetsCount = pendingExercise.sets.filter(
     set => set.state === WorkingSetState.done || set.state === WorkingSetState.failed
   ).length
-  const allSetsAnswered = completedSetsCount === pendingExercise.sets.length
+  const allSetsCompleted = pendingExercise.sets.every(
+    set =>
+      (set.state === WorkingSetState.done || set.state === WorkingSetState.failed) &&
+      set.weight !== null &&
+      set.reps !== null
+  )
   const currentWeek = cycleProgress?.length ?? null
 
   const handleWeightSubmit = (setId: string, value: string) => {
@@ -103,11 +106,7 @@ export const ExercisePendingCustom = (props: Props) => {
   }
 
   const handleNextPress = () => {
-    if (allSetsAnswered) {
-      props.onNext()
-    } else {
-      setShowIncompleteSetsModal(true)
-    }
+    props.onNext()
   }
 
   return (
@@ -170,18 +169,11 @@ export const ExercisePendingCustom = (props: Props) => {
               title={props.hasMoreExercises ? 'Next Exercise' : 'Finish Workout!'}
               style={{ flex: 1 }}
               onPress={handleNextPress}
+              disabled={!allSetsCompleted}
             />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-
-      <IncompleteSetsModal
-        visible={showIncompleteSetsModal}
-        onConfirm={() => {
-          setShowIncompleteSetsModal(false)
-        }}
-        onCancel={() => setShowIncompleteSetsModal(false)}
-      />
     </>
   )
 }

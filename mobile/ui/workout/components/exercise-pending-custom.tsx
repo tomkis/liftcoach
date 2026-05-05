@@ -15,6 +15,7 @@ import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
 import { formatLabel } from '@/mobile/ui/exercise-library/add-exercise-modal/shared'
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
+import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
 import { IncompleteSetsModal } from '@/mobile/ui/workout/components/ux/incomplete-sets-modal'
 
@@ -125,7 +126,7 @@ export const ExercisePendingCustom = (props: Props) => {
         >
           <View style={styles.headerRow}>
             <View style={styles.headerTitleBlock}>
-              <Text style={styles.exerciseTitle}>{pendingExercise.exercise.name.toUpperCase()}</Text>
+              <CardTitle>{pendingExercise.exercise.name}</CardTitle>
               <Text style={styles.exerciseSubtitle}>{formatLabel(pendingExercise.exercise.muscleGroup)}</Text>
             </View>
             <TouchableOpacity style={styles.cogBtn} onPress={props.onExtraActions}>
@@ -310,13 +311,6 @@ const styles = StyleSheet.create({
   },
   headerTitleBlock: {
     flex: 1,
-  },
-  exerciseTitle: {
-    color: theme.colors.text.primary,
-    fontFamily: theme.font.sairaBold,
-    fontSize: 26,
-    letterSpacing: 0.5,
-    fontStyle: 'italic',
   },
   exerciseSubtitle: {
     color: theme.colors.text.tertiary,

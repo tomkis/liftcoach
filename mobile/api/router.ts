@@ -162,6 +162,42 @@ const workout = trpcInstance.router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.workout.exerciseChangeReps(ctx.session, input.workoutId, input.workingExerciseId, input.reps)
     }),
+  exerciseSetWeightChanged: trpcProcedureAuthProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+        workoutExerciseId: z.string(),
+        setId: z.string(),
+        weight: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.workout.exerciseSetWeightChanged(
+        ctx.session,
+        input.workoutId,
+        input.workoutExerciseId,
+        input.setId,
+        input.weight
+      )
+    }),
+  exerciseSetRepsChanged: trpcProcedureAuthProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+        workoutExerciseId: z.string(),
+        setId: z.string(),
+        reps: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.workout.exerciseSetRepsChanged(
+        ctx.session,
+        input.workoutId,
+        input.workoutExerciseId,
+        input.setId,
+        input.reps
+      )
+    }),
   changeMicrocycle: trpcProcedureAuthProcedure
     .input(z.object({ template: microcycleWorkoutsTemplateWithExercisesSchema, progressionMode: z.nativeEnum(ProgressionMode) }))
     .mutation(async ({ ctx, input }) => {

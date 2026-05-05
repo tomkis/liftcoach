@@ -1,4 +1,4 @@
-import { ExerciseAssesment, LoadingSet, WorkingSetState, WorkoutExerciseState } from '@/mobile/domain'
+import { ExerciseAssesment, LoadingSet, ProgressionMode, WorkingSetState, WorkoutExerciseState } from '@/mobile/domain'
 import { useCallback, useMemo, useState } from 'react'
 import { match } from 'ts-pattern'
 
@@ -7,6 +7,7 @@ import { ExerciseFinished } from '@/mobile/ui/workout/components/exercise-finish
 import { ExerciseLoadTesting } from '@/mobile/ui/workout/components/exercise-load-testing'
 import { ExerciseLoadedAndTested } from '@/mobile/ui/workout/components/exercise-loaded-and-tested'
 import { ExercisePending } from '@/mobile/ui/workout/components/exercise-pending'
+import { ExercisePendingCustom } from '@/mobile/ui/workout/components/exercise-pending-custom'
 import { ExerciseTesting } from '@/mobile/ui/workout/components/exercise-testing'
 import { AdjustExerciseOverlay } from '@/mobile/ui/workout/components/ux/adjust-exercise-overlay'
 import { useWorkoutContext } from '@/mobile/ui/workout/hooks/use-workout-context'
@@ -66,16 +67,23 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
     [workoutContext]
   )
 
-  const onRepsChanged = useCallback(
-    (exerciseId: string, newReps: number) => {
-      workoutContext.changeReps(exerciseId, newReps)
-    },
-    [workoutContext]
-  )
-
   const onSetChanged = useCallback(
     (setId: string, state: WorkingSetState) => {
       workoutContext.exerciseSetStateChanged(exercise.id, setId, state)
+    },
+    [exercise.id, workoutContext]
+  )
+
+  const onSetWeightChanged = useCallback(
+    (setId: string, weight: number) => {
+      workoutContext.changeSetWeight(exercise.id, setId, weight)
+    },
+    [exercise.id, workoutContext]
+  )
+
+  const onSetRepsChanged = useCallback(
+    (setId: string, reps: number) => {
+      workoutContext.changeSetReps(exercise.id, setId, reps)
     },
     [exercise.id, workoutContext]
   )
@@ -116,21 +124,32 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             unit={workoutContext.unit}
           />
         ))
-        .with({ state: WorkoutExerciseState.pending }, exercise => (
-          <ExercisePending
-            active={active}
-            pendingExercise={exercise}
-            onSkipped={() => {}}
-            onNext={onMoveNextAfterPending}
-            onExtraActions={onExtraActions}
-            hasMoreExercises={hasMoreExercises}
-            onWeightChanged={onWeightChanged}
-            onRepsChanged={onRepsChanged}
-            onSetChanged={onSetChanged}
-            unit={workoutContext.unit}
-            progressionMode={workoutContext.workout.progressionMode}
-          />
-        ))
+        .with({ state: WorkoutExerciseState.pending }, exercise =>
+          workoutContext.workout.progressionMode === ProgressionMode.Custom ? (
+            <ExercisePendingCustom
+              active={active}
+              pendingExercise={exercise}
+              hasMoreExercises={hasMoreExercises}
+              onNext={() => onMoveNextAfterPending(null)}
+              onExtraActions={onExtraActions}
+              onSetStateChanged={onSetChanged}
+              onSetWeightChanged={onSetWeightChanged}
+              onSetRepsChanged={onSetRepsChanged}
+              unit={workoutContext.unit}
+            />
+          ) : (
+            <ExercisePending
+              active={active}
+              pendingExercise={exercise}
+              onSkipped={() => {}}
+              onNext={onMoveNextAfterPending}
+              onExtraActions={onExtraActions}
+              hasMoreExercises={hasMoreExercises}
+              onSetChanged={onSetChanged}
+              unit={workoutContext.unit}
+            />
+          )
+        )
         .with({ state: WorkoutExerciseState.finished }, exercise => (
           <ExerciseFinished
             active={active}
@@ -172,7 +191,13 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
         exerciseName={exercise.exercise.name}
         onExerciseReplace={workoutContext.skipExercise}
         canReplaceExercise={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loading].includes(exercise.state)}
-        canChangeWeight={[WorkoutExerciseState.pending, WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)}
+        canChangeWeight={
+          [WorkoutExerciseState.testing, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(
+            exercise.state
+          ) ||
+          (exercise.state === WorkoutExerciseState.pending &&
+            workoutContext.workout.progressionMode !== ProgressionMode.Custom)
+        }
         unit={workoutContext.unit}
         loadingType={exercise.exercise.loadingType}
       />

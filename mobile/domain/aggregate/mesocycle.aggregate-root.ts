@@ -1104,8 +1104,8 @@ export class MesocycleAggregateRoot {
     if (!exercise) {
       throw new Error('Exercise not found in the workout')
     }
-    if (exercise.state !== WorkoutExerciseState.pending) {
-      throw new Error('Cant change set weight of non-pending exercise')
+    if (exercise.state !== WorkoutExerciseState.pending && exercise.state !== WorkoutExerciseState.finished) {
+      throw new Error('Cant change set weight of non-pending or non-finished exercise')
     }
 
     const set = exercise.sets.find(set => set.id === setId)
@@ -1141,8 +1141,8 @@ export class MesocycleAggregateRoot {
     if (!exercise) {
       throw new Error('Exercise not found in the workout')
     }
-    if (exercise.state !== WorkoutExerciseState.pending) {
-      throw new Error('Cant change set reps of non-pending exercise')
+    if (exercise.state !== WorkoutExerciseState.pending && exercise.state !== WorkoutExerciseState.finished) {
+      throw new Error('Cant change set reps of non-pending or non-finished exercise')
     }
 
     const set = exercise.sets.find(set => set.id === setId)
@@ -1199,9 +1199,14 @@ export class MesocycleAggregateRoot {
       throw new Error('Exercise not found in the workout')
     }
 
-    if (
-      ![WorkoutExerciseState.pending, WorkoutExerciseState.loaded, WorkoutExerciseState.tested].includes(exercise.state)
-    ) {
+    const isCustom = this.mesocycleDTO.progressionMode === ProgressionMode.Custom
+    const allowedStates = [
+      WorkoutExerciseState.pending,
+      WorkoutExerciseState.loaded,
+      WorkoutExerciseState.tested,
+      ...(isCustom ? [WorkoutExerciseState.finished] : []),
+    ]
+    if (!allowedStates.includes(exercise.state)) {
       throw new Error('Cant set state of non-pending or loaded exercise')
     }
 

@@ -13,10 +13,9 @@ import {
 
 import { theme } from '@/mobile/theme/theme'
 import { trpc } from '@/mobile/trpc'
+import { formatLabel } from '@/mobile/ui/exercise-library/add-exercise-modal/shared'
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
-import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
-import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
 import { IncompleteSetsModal } from '@/mobile/ui/workout/components/ux/incomplete-sets-modal'
 
 const CARD_PADDING = 18
@@ -48,9 +47,11 @@ export const ExercisePendingCustom = (props: Props) => {
     { enabled: props.active }
   )
 
-  const allSetsAnswered = pendingExercise.sets.every(
+  const completedSetsCount = pendingExercise.sets.filter(
     set => set.state === WorkingSetState.done || set.state === WorkingSetState.failed
-  )
+  ).length
+  const allSetsAnswered = completedSetsCount === pendingExercise.sets.length
+  const currentWeek = cycleProgress?.length ?? null
 
   const handleWeightSubmit = (setId: string, value: string) => {
     const parsed = parseDecimal(value)
@@ -122,39 +123,27 @@ export const ExercisePendingCustom = (props: Props) => {
             paddingBottom: 100,
           }}
         >
-          <View style={styles.headerCard}>
-            <View style={styles.headerContent}>
-              <View style={styles.titleRow}>
-                <CardTitle>{pendingExercise.exercise.name}</CardTitle>
-                <TouchableOpacity style={styles.cogBtn} onPress={props.onExtraActions}>
-                  <CogwheelFilled color={theme.colors.primary.main} />
-                </TouchableOpacity>
-              </View>
+          <View style={styles.headerRow}>
+            <View style={styles.headerTitleBlock}>
+              <Text style={styles.exerciseTitle}>{pendingExercise.exercise.name.toUpperCase()}</Text>
+              <Text style={styles.exerciseSubtitle}>{formatLabel(pendingExercise.exercise.muscleGroup)}</Text>
             </View>
+            <TouchableOpacity style={styles.cogBtn} onPress={props.onExtraActions}>
+              <CogwheelFilled color={theme.colors.primary.main} />
+            </TouchableOpacity>
+          </View>
 
-            <View style={styles.progressContainer}>
-              {cycleProgress && (
-                <CycleProgressCircle
-                  animate={props.active}
-                  lastWeek={pendingExercise.sets.map(set => {
-                    switch (set.state) {
-                      case WorkingSetState.done:
-                        return 'completed'
-                      case WorkingSetState.failed:
-                        return 'failed'
-                      case WorkingSetState.pending:
-                        return 'pending'
-                      default:
-                        throw new Error('Illegal State')
-                    }
-                  })}
-                  weeks={cycleProgress.map((progress, index) => ({
-                    title: progress.isTesting ? 'Testing' : `Cycle ${index + 1}`,
-                    testing: progress.isTesting,
-                    sets: progress.sets,
-                  }))}
-                />
-              )}
+          <View style={styles.summaryStrip}>
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryLabel}>SETS</Text>
+              <Text style={styles.summaryValue}>
+                {completedSetsCount}/{pendingExercise.sets.length}
+              </Text>
+            </View>
+            <View style={styles.summaryDivider} />
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryLabel}>WEEK</Text>
+              <Text style={styles.summaryValue}>{currentWeek ?? '—'}</Text>
             </View>
           </View>
 
@@ -313,31 +302,65 @@ const SetRow = ({
 }
 
 const styles = StyleSheet.create({
-  headerCard: {
-    backgroundColor: theme.colors.backgroundLight,
-    borderRadius: theme.borderRadius.medium,
-  },
-  headerContent: {
-    paddingTop: CARD_PADDING,
-    paddingLeft: CARD_PADDING,
-    paddingRight: CARD_PADDING,
-  },
-  titleRow: {
+  headerRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  headerTitleBlock: {
+    flex: 1,
+  },
+  exerciseTitle: {
+    color: theme.colors.text.primary,
+    fontFamily: theme.font.sairaBold,
+    fontSize: 26,
+    letterSpacing: 0.5,
+    fontStyle: 'italic',
+  },
+  exerciseSubtitle: {
+    color: theme.colors.text.tertiary,
+    fontFamily: theme.font.sairaRegular,
+    fontSize: 13,
+    marginTop: 2,
+    letterSpacing: 0.4,
   },
   cogBtn: {
-    paddingHorizontal: 8,
-    marginTop: -5,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
   },
-  progressContainer: {
-    marginTop: 16,
-    paddingHorizontal: CARD_PADDING,
-    paddingBottom: CARD_PADDING,
+  summaryStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.backgroundLight,
+    borderRadius: theme.borderRadius.medium,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  summaryItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  summaryDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: theme.colors.border.light,
+  },
+  summaryLabel: {
+    color: theme.colors.text.tertiary,
+    fontFamily: theme.font.sairaCondensedSemiBold,
+    fontSize: 10,
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  summaryValue: {
+    color: theme.colors.text.primary,
+    fontFamily: theme.font.sairaBold,
+    fontSize: 16,
+    letterSpacing: 0.5,
   },
   setsContainer: {
-    marginTop: CARD_PADDING,
     gap: 10,
   },
   footer: {

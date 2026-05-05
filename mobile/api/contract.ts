@@ -107,6 +107,20 @@ export interface WorkoutContext {
     workingExerciseId: string,
     weight: number
   ) => Promise<void>
+  exerciseSetWeightChanged: (
+    session: Session,
+    workoutId: string,
+    workoutExerciseId: string,
+    setId: string,
+    weight: number
+  ) => Promise<void>
+  exerciseSetRepsChanged: (
+    session: Session,
+    workoutId: string,
+    workoutExerciseId: string,
+    setId: string,
+    reps: number
+  ) => Promise<void>
   exerciseChangeReps: (
     session: Session,
     workoutId: string,

@@ -160,6 +160,28 @@ export interface ExerciseRepsChanged {
   }
 }
 
+export interface ExerciseSetWeightChanged {
+  type: 'ExerciseSetWeightChanged'
+  payload: {
+    workoutExerciseId: string
+    setId: string
+    weight: number
+    workoutId: string
+    microcycleId: string
+  }
+}
+
+export interface ExerciseSetRepsChanged {
+  type: 'ExerciseSetRepsChanged'
+  payload: {
+    workoutExerciseId: string
+    setId: string
+    reps: number
+    workoutId: string
+    microcycleId: string
+  }
+}
+
 export interface ExerciseRepsChangedDueToWeightChange {
   type: 'ExerciseRepsChangedDueToWeightChange'
   payload: {
@@ -249,6 +271,8 @@ export type MesocycleEvent =
   | ExerciseWeightChangedCalibration
   | ExerciseRepsChanged
   | ExerciseRepsChangedDueToWeightChange
+  | ExerciseSetWeightChanged
+  | ExerciseSetRepsChanged
   | WorkoutStarted
   | ExerciseUpdated
   | MesocycleConfirmed

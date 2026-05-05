@@ -616,6 +616,18 @@ export const updateMesocycle = async (events: MesocycleEvent[]) => {
             )
           )
       })
+      .with({ type: 'ExerciseSetWeightChanged' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ weight: event.payload.weight })
+          .where(eq(schema.workoutExerciseSet.id, event.payload.setId))
+      })
+      .with({ type: 'ExerciseSetRepsChanged' }, async event => {
+        await db
+          .update(schema.workoutExerciseSet)
+          .set({ reps: event.payload.reps })
+          .where(eq(schema.workoutExerciseSet.id, event.payload.setId))
+      })
       .with({ type: 'ExerciseRepsChangedDueToWeightChange' }, async event => {
         await db
           .update(schema.workoutExerciseSet)

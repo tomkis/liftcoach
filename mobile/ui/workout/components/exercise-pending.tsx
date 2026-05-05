@@ -3,7 +3,6 @@ import {
   ExerciseAssesmentScore,
   HardAssesmentTag,
   PendingWorkingExercise,
-  ProgressionMode,
   Unit,
   WorkingSetState,
 } from '@/mobile/domain'
@@ -20,7 +19,6 @@ import {
 } from 'react-native'
 
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
-import { NumericalInput } from '@/mobile/ui/ds/inputs'
 import { CycleProgressCircle } from '@/mobile/ui/workout/components/ux/cycle-progress-circle'
 import { HardAssessmentModal } from '@/mobile/ui/workout/components/ux/hard-assessment-modal'
 import { IncompleteSetsModal } from '@/mobile/ui/workout/components/ux/incomplete-sets-modal'
@@ -29,8 +27,6 @@ import { trpc } from '@/mobile/trpc'
 import { Checkbox } from '@/mobile/ui/ds/controls'
 import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
-
-const parseDecimal = (value: string) => parseFloat(value.replace(',', '.'))
 
 const CARD_PADDING = 18
 
@@ -118,22 +114,6 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.sairaBold,
     color: theme.colors.primary.main,
   },
-  inputWrapper: {
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.23)',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    flex: 1,
-  },
-  inputLabel: {
-    color: theme.colors.text.primary,
-    lineHeight: 24,
-    letterSpacing: 0.15,
-    fontSize: 16,
-    fontFamily: theme.font.sairaRegular,
-  },
 })
 
 export const ExercisePending = (props: {
@@ -144,31 +124,11 @@ export const ExercisePending = (props: {
   onNext: (exerciseAssesment: ExerciseAssesment | null) => void
   onExtraActions: () => void
   onSetChanged: (setId: string, state: WorkingSetState) => void
-  onWeightChanged: (exerciseId: string, newWeight: number) => void
-  onRepsChanged: (exerciseId: string, newReps: number) => void
   unit: Unit
-  progressionMode: ProgressionMode
 }) => {
   const { pendingExercise } = props
   const [showIncompleteSetsModal, setShowIncompleteSetsModal] = useState(false)
   const [showHardAssessmentModal, setShowHardAssessmentModal] = useState(false)
-  const [customWeight, setCustomWeight] = useState('')
-  const [customReps, setCustomReps] = useState('')
-
-  const isCustomMode = props.progressionMode === ProgressionMode.Custom
-  const hasBlankSets = pendingExercise.sets.some(set => set.state === WorkingSetState.pending && (set.weight === null || set.reps === null))
-  const showCustomInputs = isCustomMode && hasBlankSets
-
-  const handleCustomConfirm = () => {
-    const parsedWeight = parseDecimal(customWeight)
-    const parsedReps = parseInt(customReps, 10)
-    if (!isNaN(parsedWeight) && parsedWeight > 0) {
-      props.onWeightChanged(pendingExercise.id, parsedWeight)
-    }
-    if (!isNaN(parsedReps) && parsedReps > 0) {
-      props.onRepsChanged(pendingExercise.id, parsedReps)
-    }
-  }
 
   const { data: cycleProgress } = trpc.workout.getCycleProgress.useQuery(
     {
@@ -207,11 +167,6 @@ export const ExercisePending = (props: {
   const hasFailedSets = failedSets.length > 0
 
   const handleNextButtonPress = () => {
-    if (props.progressionMode === ProgressionMode.Custom) {
-      props.onNext(null)
-      return
-    }
-
     if (allSetsCompleted) {
       if (hasFailedSets) {
         setShowHardAssessmentModal(true)
@@ -293,118 +248,70 @@ export const ExercisePending = (props: {
               )}
             </View>
           </View>
-          {showCustomInputs ? (
-            <>
-              <View style={{ marginTop: CARD_PADDING }}>
-                <Text style={[styles.setDetails, { color: theme.colors.text.primary, marginBottom: 12 }]}>
-                  {pendingExercise.sets.length} SETS — ENTER YOUR WEIGHT AND REPS
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  <View style={styles.inputWrapper}>
-                    <NumericalInput
-                      value={customWeight}
-                      keyboardType="decimal-pad"
-                      onChange={setCustomWeight}
-                      placeholder="Weight"
-                    />
-                    <Text style={styles.inputLabel}>{props.unit === 'metric' ? 'kg' : 'lbs'}</Text>
+          <View style={styles.setsCard}>
+            {pendingExercise.sets.map((set, index) => {
+              const textStyle = set.state !== 'pending' ? styles.completedSetText : undefined
+
+              return (
+                <View
+                  key={set.id}
+                  style={[styles.setRow, index === pendingExercise.sets.length - 1 && { borderBottomWidth: 0 }]}
+                >
+                  <View style={styles.setInfo}>
+                    <Text
+                      style={[
+                        styles.setDetails,
+                        textStyle,
+                        {
+                          color: theme.colors.text.primary,
+                        },
+                      ]}
+                    >
+                      {set.reps ?? '–'} reps × {formatWeight(set.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
+                    </Text>
                   </View>
-                  <View style={styles.inputWrapper}>
-                    <NumericalInput
-                      value={customReps}
-                      keyboardType="number-pad"
-                      onChange={setCustomReps}
-                      placeholder="Reps"
+                  <View style={styles.checkboxContainer}>
+                    <Checkbox
+                      checked={set.state === 'failed'}
+                      onPress={() => handleSetFailed(set.id)}
+                      label="Failed"
+                      color={
+                        set.state === WorkingSetState.pending
+                          ? theme.colors.primary.main
+                          : theme.colors.text.primary
+                      }
                     />
-                    <Text style={styles.inputLabel}>reps</Text>
+                    <Checkbox
+                      checked={set.state === 'done'}
+                      onPress={() => handleSetDone(set.id)}
+                      label="Done"
+                      color={
+                        set.state === WorkingSetState.pending
+                          ? theme.colors.primary.main
+                          : theme.colors.text.primary
+                      }
+                    />
                   </View>
                 </View>
-              </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  flexDirection: 'column',
-                  gap: 16,
-                }}
-              >
-                <PrimaryButton
-                  title="Confirm"
-                  style={{ flex: 1 }}
-                  onPress={handleCustomConfirm}
-                />
-              </View>
-            </>
-          ) : (
-            <>
-              <View style={styles.setsCard}>
-                {pendingExercise.sets.map((set, index) => {
-                  const textStyle = set.state !== 'pending' ? styles.completedSetText : undefined
-
-                  return (
-                    <View
-                      key={set.id}
-                      style={[styles.setRow, index === pendingExercise.sets.length - 1 && { borderBottomWidth: 0 }]}
-                    >
-                      <View style={styles.setInfo}>
-                        <Text
-                          style={[
-                            styles.setDetails,
-                            textStyle,
-                            {
-                              color: theme.colors.text.primary,
-                            },
-                          ]}
-                        >
-                          {set.reps ?? '–'} reps × {formatWeight(set.weight)} {props.unit === 'metric' ? 'kg' : 'lbs'}
-                        </Text>
-                      </View>
-                      <View style={styles.checkboxContainer}>
-                        <Checkbox
-                          checked={set.state === 'failed'}
-                          onPress={() => handleSetFailed(set.id)}
-                          label="Failed"
-                          color={
-                            set.state === WorkingSetState.pending
-                              ? theme.colors.primary.main
-                              : theme.colors.text.primary
-                          }
-                        />
-                        <Checkbox
-                          checked={set.state === 'done'}
-                          onPress={() => handleSetDone(set.id)}
-                          label="Done"
-                          color={
-                            set.state === WorkingSetState.pending
-                              ? theme.colors.primary.main
-                              : theme.colors.text.primary
-                          }
-                        />
-                      </View>
-                    </View>
-                  )
-                })}
-              </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  flexDirection: 'column',
-                  gap: 16,
-                }}
-              >
-                <PrimaryButton
-                  title={props.hasMoreExercises ? 'Next Exercise' : 'Finish Workout!'}
-                  style={{ flex: 1 }}
-                  onPress={handleNextButtonPress}
-                />
-              </View>
-            </>
-          )}
+              )
+            })}
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              flexDirection: 'column',
+              gap: 16,
+            }}
+          >
+            <PrimaryButton
+              title={props.hasMoreExercises ? 'Next Exercise' : 'Finish Workout!'}
+              style={{ flex: 1 }}
+              onPress={handleNextButtonPress}
+            />
+          </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
 

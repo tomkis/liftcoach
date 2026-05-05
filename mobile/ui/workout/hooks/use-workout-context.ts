@@ -37,6 +37,8 @@ interface WorkoutContextType {
   finishWorkout: () => void
   changeWeight: (exerciseId: string, newWeight: number) => void
   changeReps: (exerciseId: string, newReps: number) => void
+  changeSetWeight: (workingExerciseId: string, setId: string, weight: number) => Promise<void>
+  changeSetReps: (workingExerciseId: string, setId: string, reps: number) => Promise<void>
   exerciseSetStateChanged: (workingExerciseId: string, setId: string, state: WorkingSetState) => void
   undoFinishExercise: (exerciseId: string) => void
   isWorkoutFinished: boolean
@@ -56,6 +58,8 @@ export const useCreateWorkoutContext = (
   const { mutateAsync: exerciseSetStateChangedMutation } = trpc.workout.exerciseSetStateChanged.useMutation()
   const { mutateAsync: changeWeightMutation } = trpc.workout.exerciseChangeWeight.useMutation()
   const { mutateAsync: changeRepsMutation } = trpc.workout.exerciseChangeReps.useMutation()
+  const { mutateAsync: changeSetWeightMutation } = trpc.workout.exerciseSetWeightChanged.useMutation()
+  const { mutateAsync: changeSetRepsMutation } = trpc.workout.exerciseSetRepsChanged.useMutation()
   const { mutateAsync: exerciseFinishedMutation } = trpc.workout.exerciseFinished.useMutation()
   const { mutateAsync: replaceExerciseMutation } = trpc.workout.replaceExercise.useMutation()
   const { mutateAsync: finishWorkoutMutation } = trpc.workout.finishWorkout.useMutation()
@@ -353,6 +357,78 @@ export const useCreateWorkoutContext = (
     [changeRepsMutation, trpcUtils.workout.getWorkout, workout.id]
   )
 
+  const changeSetWeight = useCallback(
+    async (workingExerciseId: string, setId: string, weight: number) => {
+      trpcUtils.workout.getWorkout.setData(undefined, workout => {
+        if (!workout) {
+          return workout
+        }
+
+        return {
+          ...workout,
+          exercises: workout.exercises.map(exercise => {
+            if (exercise.id === workingExerciseId && exercise.state === WorkoutExerciseState.pending) {
+              return {
+                ...exercise,
+                sets: exercise.sets.map(set => (set.id === setId ? { ...set, weight } : set)),
+              }
+            }
+            return exercise
+          }),
+        }
+      })
+
+      try {
+        await changeSetWeightMutation({
+          workoutId: workout.id,
+          workoutExerciseId: workingExerciseId,
+          setId,
+          weight,
+        })
+      } catch (error) {
+        await trpcUtils.workout.getWorkout.invalidate()
+        throw error
+      }
+    },
+    [changeSetWeightMutation, trpcUtils.workout.getWorkout, workout.id]
+  )
+
+  const changeSetReps = useCallback(
+    async (workingExerciseId: string, setId: string, reps: number) => {
+      trpcUtils.workout.getWorkout.setData(undefined, workout => {
+        if (!workout) {
+          return workout
+        }
+
+        return {
+          ...workout,
+          exercises: workout.exercises.map(exercise => {
+            if (exercise.id === workingExerciseId && exercise.state === WorkoutExerciseState.pending) {
+              return {
+                ...exercise,
+                sets: exercise.sets.map(set => (set.id === setId ? { ...set, reps } : set)),
+              }
+            }
+            return exercise
+          }),
+        }
+      })
+
+      try {
+        await changeSetRepsMutation({
+          workoutId: workout.id,
+          workoutExerciseId: workingExerciseId,
+          setId,
+          reps,
+        })
+      } catch (error) {
+        await trpcUtils.workout.getWorkout.invalidate()
+        throw error
+      }
+    },
+    [changeSetRepsMutation, trpcUtils.workout.getWorkout, workout.id]
+  )
+
   const exerciseSetStateChanged = useCallback(
     async (workingExerciseId: string, setId: string, state: WorkingSetState) => {
       // Optimistically update the UI immediately
@@ -437,6 +513,8 @@ export const useCreateWorkoutContext = (
     undoFinishExercise,
     changeWeight,
     changeReps,
+    changeSetWeight,
+    changeSetReps,
     workout,
     lifestyleFeedbackModal,
     onLifestyleFeedbackConfirm,

@@ -29,6 +29,8 @@ import { ExercisePicker } from './exercise/exercise-picker'
 import { ExerciseProvider } from './exercise/exercise-provider'
 import { splitSelector } from './split/split-selector'
 import { UserVolumeCalculator } from './user-volume-calculator'
+import { carryForwardCustomSets } from '../progression/custom-carry-forward'
+import { CustomMicrocycleSeed } from '../progression/seed-custom-microcycle'
 
 class MicrocycleIdGenerated {
   public readonly type = 'MicrocycleIdGenerated'
@@ -172,7 +174,8 @@ export class MicrocycleGenerator {
   createCustomMicrocycle(
     mesocycleId: string,
     microcycleId: string,
-    template: MicrocycleWorkoutsTemplateWithExercises
+    template: MicrocycleWorkoutsTemplateWithExercises,
+    seed?: CustomMicrocycleSeed
   ) {
     const microcycleWorkouts: MicrocycleWorkout[] = template.map((workout, index) => ({
       id: v4(),
@@ -181,23 +184,31 @@ export class MicrocycleGenerator {
       index,
       orderIndex: index,
       active: false,
-      exercises: workout.exercises.map((exercise, exerciseIndex) => ({
-        id: v4(),
-        createdAt: toDateTime(new Date()),
-        state: WorkoutExerciseState.pending as const,
-        progressionType: ProgressionType.CustomUserProvided,
-        exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, loadingType: exercise.exercise.loadingType },
-        targetSets: exercise.sets,
-        targetReps: exercise.targetReps,
-        orderIndex: exerciseIndex,
-        sets: Array.from({ length: exercise.sets }).map((_, setIndex) => ({
+      exercises: workout.exercises.map((exercise, exerciseIndex) => {
+        const priorSets = seed?.get(exercise.exercise.id)
+        const seededSets = priorSets ? carryForwardCustomSets(priorSets, exercise.sets) : null
+
+        return {
           id: v4(),
-          state: WorkingSetState.pending as const,
-          orderIndex: setIndex,
-          weight: null,
-          reps: null,
-        })),
-      })),
+          createdAt: toDateTime(new Date()),
+          state: WorkoutExerciseState.pending as const,
+          progressionType: ProgressionType.CustomUserProvided,
+          exercise: { id: exercise.exercise.id, name: exercise.exercise.name, muscleGroup: exercise.muscleGroup, loadingType: exercise.exercise.loadingType },
+          targetSets: exercise.sets,
+          targetReps: exercise.targetReps,
+          orderIndex: exerciseIndex,
+          sets: Array.from({ length: exercise.sets }).map((_, setIndex) => {
+            const seededSet = seededSets?.[setIndex]
+            return {
+              id: v4(),
+              state: WorkingSetState.pending as const,
+              orderIndex: setIndex,
+              weight: seededSet ? seededSet.weight : null,
+              reps: seededSet ? seededSet.reps : null,
+            }
+          }),
+        }
+      }),
     }))
 
     return {

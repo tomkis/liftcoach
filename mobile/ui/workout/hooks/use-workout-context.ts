@@ -1,6 +1,7 @@
 import {
   ExerciseAssesment,
   ExerciseAssesmentScore,
+  FinishedWorkingExercise,
   LifestyleFeedback,
   LoadedWorkingExercise,
   LoadingSet,
@@ -209,13 +210,15 @@ export const useCreateWorkoutContext = (
     async (exerciseIndex: number, exerciseAssesment: ExerciseAssesment | null) => {
       const workingExercise = workout.exercises[exerciseIndex]
 
-      await exerciseFinishedMutation({
-        workoutId: workout.id,
-        workingExerciseId: workingExercise.id,
-        exerciseAssesment,
-      })
-      tracking.workout.exerciseFinished(workingExercise.exercise.name)
-      trpcUtils.workout.getWorkout.invalidate()
+      if (workingExercise.state !== WorkoutExerciseState.finished) {
+        await exerciseFinishedMutation({
+          workoutId: workout.id,
+          workingExerciseId: workingExercise.id,
+          exerciseAssesment,
+        })
+        tracking.workout.exerciseFinished(workingExercise.exercise.name)
+        trpcUtils.workout.getWorkout.invalidate()
+      }
       goToNextExercise(workingExercise.id)
     },
     [exerciseFinishedMutation, goToNextExercise, trpcUtils.workout.getWorkout, workout.exercises, workout.id, tracking]
@@ -367,7 +370,11 @@ export const useCreateWorkoutContext = (
         return {
           ...workout,
           exercises: workout.exercises.map(exercise => {
-            if (exercise.id === workingExerciseId && exercise.state === WorkoutExerciseState.pending) {
+            if (
+              exercise.id === workingExerciseId &&
+              (exercise.state === WorkoutExerciseState.pending ||
+                exercise.state === WorkoutExerciseState.finished)
+            ) {
               return {
                 ...exercise,
                 sets: exercise.sets.map(set => (set.id === setId ? { ...set, weight } : set)),
@@ -403,7 +410,11 @@ export const useCreateWorkoutContext = (
         return {
           ...workout,
           exercises: workout.exercises.map(exercise => {
-            if (exercise.id === workingExerciseId && exercise.state === WorkoutExerciseState.pending) {
+            if (
+              exercise.id === workingExerciseId &&
+              (exercise.state === WorkoutExerciseState.pending ||
+                exercise.state === WorkoutExerciseState.finished)
+            ) {
               return {
                 ...exercise,
                 sets: exercise.sets.map(set => (set.id === setId ? { ...set, reps } : set)),
@@ -441,13 +452,19 @@ export const useCreateWorkoutContext = (
           ...workout,
           exercises: workout.exercises.map(exercise => {
             if (exercise.id === workingExerciseId) {
+              const isCustom = workout.progressionMode === ProgressionMode.Custom
               const isAllowed = (
                 workoutExercise: WorkingExercise
-              ): workoutExercise is PendingWorkingExercise | LoadedWorkingExercise | TestedWorkingExercise => {
+              ): workoutExercise is
+                | PendingWorkingExercise
+                | LoadedWorkingExercise
+                | TestedWorkingExercise
+                | FinishedWorkingExercise => {
                 const allowedStates = [
                   WorkoutExerciseState.loaded,
                   WorkoutExerciseState.tested,
                   WorkoutExerciseState.pending,
+                  ...(isCustom ? [WorkoutExerciseState.finished] : []),
                 ]
 
                 return allowedStates.includes(workoutExercise.state)

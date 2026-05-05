@@ -114,7 +114,7 @@ describe('setWeightChanged', () => {
     expect(() => aggregate.setWeightChanged(exerciseId, 'unknown-set', 80)).toThrow(/Set not found/)
   })
 
-  it('throws when exercise is finished', () => {
+  it('allows changes when exercise is finished in Custom mode', () => {
     const finishedExercise: WorkingExercise = {
       id: v4(),
       createdAt: '2026-02-01T00:00:00Z',
@@ -133,7 +133,12 @@ describe('setWeightChanged', () => {
     }
     const { aggregate, exerciseId } = makeMesocycle(ProgressionMode.Custom, finishedExercise)
 
-    expect(() => aggregate.setWeightChanged(exerciseId, 'set-1', 80)).toThrow(/non-pending/)
+    aggregate.setWeightChanged(exerciseId, 'set-1', 90)
+
+    const event = aggregate.events.find(e => e.type === 'ExerciseSetWeightChanged')
+    expect(event).toBeDefined()
+    if (event?.type !== 'ExerciseSetWeightChanged') throw new Error('wrong event')
+    expect(event.payload.weight).toBe(90)
   })
 
   it('updates only the targeted set in aggregate state', () => {

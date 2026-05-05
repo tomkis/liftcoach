@@ -1,4 +1,4 @@
-import { PendingWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
+import { FinishedWorkingExercise, PendingWorkingExercise, Unit, WorkingSetState } from '@/mobile/domain'
 import React from 'react'
 import {
   Keyboard,
@@ -17,6 +17,7 @@ import { formatLabel } from '@/mobile/ui/exercise-library/add-exercise-modal/sha
 import { PrimaryButton } from '@/mobile/ui/ds/buttons'
 import { CardTitle } from '@/mobile/ui/ds/typography'
 import CogwheelFilled from '@/mobile/ui/icons/cogwheel-filled'
+import { MissingSetsModal } from '@/mobile/ui/workout/components/ux/missing-sets-modal'
 
 const CARD_PADDING = 18
 
@@ -26,8 +27,9 @@ const formatNumber = (n: number | null) => (n === null ? '' : String(n))
 
 type Props = {
   active: boolean
-  pendingExercise: PendingWorkingExercise
+  pendingExercise: PendingWorkingExercise | FinishedWorkingExercise
   hasMoreExercises: boolean
+  incompleteExerciseNames: string[]
   onNext: () => void
   onExtraActions: () => void
   onSetStateChanged: (setId: string, state: WorkingSetState) => void
@@ -71,25 +73,37 @@ export const ExercisePendingCustom = (props: Props) => {
     }
   }
 
-  const handleToggleDone = (setId: string) => {
+  const handleToggleDone = (setId: string, draftWeight: number | null, draftReps: number | null) => {
     const set = pendingExercise.sets.find(s => s.id === setId)
     if (!set) {
       throw new Error('Set not found')
     }
     const next = set.state === WorkingSetState.done ? WorkingSetState.pending : WorkingSetState.done
+
+    if (next === WorkingSetState.done) {
+      if (draftWeight !== null && draftWeight !== set.weight) {
+        props.onSetWeightChanged(setId, draftWeight)
+      }
+      if (draftReps !== null && draftReps !== set.reps) {
+        props.onSetRepsChanged(setId, draftReps)
+      }
+    }
+
     props.onSetStateChanged(setId, next)
 
     if (next === WorkingSetState.done) {
       const isFirst = pendingExercise.sets[0]?.id === setId
-      if (isFirst && set.weight !== null && set.reps !== null) {
+      const weightToCarry = draftWeight ?? set.weight
+      const repsToCarry = draftReps ?? set.reps
+      if (isFirst && weightToCarry !== null && repsToCarry !== null) {
         pendingExercise.sets.forEach(other => {
           if (other.id === setId) return
           if (other.state !== WorkingSetState.pending) return
           if (other.weight === null) {
-            props.onSetWeightChanged(other.id, set.weight as number)
+            props.onSetWeightChanged(other.id, weightToCarry)
           }
           if (other.reps === null) {
-            props.onSetRepsChanged(other.id, set.reps as number)
+            props.onSetRepsChanged(other.id, repsToCarry)
           }
         })
       }
@@ -105,7 +119,13 @@ export const ExercisePendingCustom = (props: Props) => {
     props.onSetStateChanged(setId, next)
   }
 
+  const [showMissingSetsModal, setShowMissingSetsModal] = React.useState(false)
+
   const handleNextPress = () => {
+    if (!props.hasMoreExercises && props.incompleteExerciseNames.length > 0) {
+      setShowMissingSetsModal(true)
+      return
+    }
     props.onNext()
   }
 
@@ -158,7 +178,7 @@ export const ExercisePendingCustom = (props: Props) => {
                 unitLabel={unitLabel}
                 onWeightSubmit={value => handleWeightSubmit(set.id, value)}
                 onRepsSubmit={value => handleRepsSubmit(set.id, value)}
-                onToggleDone={() => handleToggleDone(set.id)}
+                onToggleDone={(draftWeight, draftReps) => handleToggleDone(set.id, draftWeight, draftReps)}
                 onToggleFailed={() => handleToggleFailed(set.id)}
               />
             ))}
@@ -169,11 +189,16 @@ export const ExercisePendingCustom = (props: Props) => {
               title={props.hasMoreExercises ? 'Next Exercise' : 'Finish Workout!'}
               style={{ flex: 1 }}
               onPress={handleNextPress}
-              disabled={!allSetsCompleted}
+              disabled={props.hasMoreExercises && !allSetsCompleted}
             />
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
+      <MissingSetsModal
+        visible={showMissingSetsModal}
+        exerciseNames={props.incompleteExerciseNames}
+        onClose={() => setShowMissingSetsModal(false)}
+      />
     </>
   )
 }
@@ -196,7 +221,7 @@ const SetRow = ({
   unitLabel: string
   onWeightSubmit: (value: string) => void
   onRepsSubmit: (value: string) => void
-  onToggleDone: () => void
+  onToggleDone: (draftWeight: number | null, draftReps: number | null) => void
   onToggleFailed: () => void
 }) => {
   const [weightDraft, setWeightDraft] = React.useState(formatNumber(weight))
@@ -214,6 +239,18 @@ const SetRow = ({
   const isFailed = state === WorkingSetState.failed
 
   const canConfirm = weightDraft.trim() !== '' && repsDraft.trim() !== ''
+
+  const handleConfirmPress = () => {
+    if (isDone) {
+      onToggleDone(null, null)
+      return
+    }
+    const parsedWeight = parseDecimal(weightDraft)
+    const parsedReps = parseInt(repsDraft, 10)
+    const validWeight = !isNaN(parsedWeight) && parsedWeight > 0 ? parsedWeight : null
+    const validReps = !isNaN(parsedReps) && parsedReps > 0 ? parsedReps : null
+    onToggleDone(validWeight, validReps)
+  }
 
   const accentColor = isFailed
     ? theme.colors.primary.negative
@@ -270,7 +307,7 @@ const SetRow = ({
         )}
         {!isFailed && (
           <TouchableOpacity
-            onPress={onToggleDone}
+            onPress={handleConfirmPress}
             disabled={!isDone && !canConfirm}
             style={[
               rowStyles.iconBtn,

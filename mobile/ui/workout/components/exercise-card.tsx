@@ -1,4 +1,11 @@
-import { ExerciseAssesment, LoadingSet, ProgressionMode, WorkingSetState, WorkoutExerciseState } from '@/mobile/domain'
+import {
+  ExerciseAssesment,
+  LoadingSet,
+  ProgressionMode,
+  WorkingSet,
+  WorkingSetState,
+  WorkoutExerciseState,
+} from '@/mobile/domain'
 import { useCallback, useMemo, useState } from 'react'
 import { match } from 'ts-pattern'
 
@@ -21,9 +28,20 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
   const tracking = useTracking()
 
   const hasMoreExercises =
-    workoutContext.workout.exercises.filter(e =>
-      [WorkoutExerciseState.testing, WorkoutExerciseState.loading, WorkoutExerciseState.pending].includes(e.state)
+    workoutContext.workout.exercises.filter(
+      (e, i) =>
+        i !== exerciseIndex &&
+        [WorkoutExerciseState.testing, WorkoutExerciseState.loading, WorkoutExerciseState.pending].includes(e.state)
     ).length >= 1
+
+  const isSetFullyLogged = (set: WorkingSet) =>
+    (set.state === WorkingSetState.done || set.state === WorkingSetState.failed) &&
+    set.weight !== null &&
+    set.reps !== null
+
+  const incompleteExerciseNames = workoutContext.workout.exercises
+    .filter(e => !e.sets.every(isSetFullyLogged))
+    .map(e => e.exercise.name)
 
   const onLoaded = useCallback(
     (loadingSet: LoadingSet, reachedFailure: boolean) => {
@@ -130,6 +148,7 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
               active={active}
               pendingExercise={exercise}
               hasMoreExercises={hasMoreExercises}
+              incompleteExerciseNames={incompleteExerciseNames}
               onNext={() => onMoveNextAfterPending(null)}
               onExtraActions={onExtraActions}
               onSetStateChanged={onSetChanged}
@@ -150,14 +169,29 @@ export const ExerciseCard = ({ exerciseIndex, active }: { exerciseIndex: number;
             />
           )
         )
-        .with({ state: WorkoutExerciseState.finished }, exercise => (
-          <ExerciseFinished
-            active={active}
-            finishedExercise={exercise}
-            unit={workoutContext.unit}
-            onUndo={() => workoutContext.undoFinishExercise(exercise.id)}
-          />
-        ))
+        .with({ state: WorkoutExerciseState.finished }, exercise =>
+          workoutContext.workout.progressionMode === ProgressionMode.Custom ? (
+            <ExercisePendingCustom
+              active={active}
+              pendingExercise={exercise}
+              hasMoreExercises={hasMoreExercises}
+              incompleteExerciseNames={incompleteExerciseNames}
+              onNext={() => onMoveNextAfterPending(null)}
+              onExtraActions={onExtraActions}
+              onSetStateChanged={onSetChanged}
+              onSetWeightChanged={onSetWeightChanged}
+              onSetRepsChanged={onSetRepsChanged}
+              unit={workoutContext.unit}
+            />
+          ) : (
+            <ExerciseFinished
+              active={active}
+              finishedExercise={exercise}
+              unit={workoutContext.unit}
+              onUndo={() => workoutContext.undoFinishExercise(exercise.id)}
+            />
+          )
+        )
         .with({ state: WorkoutExerciseState.loaded }, exercise => (
           <ExerciseLoadedAndTested
             exercise={exercise}

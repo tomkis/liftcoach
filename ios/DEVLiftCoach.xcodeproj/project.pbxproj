@@ -14,7 +14,7 @@
 		43B46C18EE711DDC3F21351D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8B3D9B7F04F1C4335C9F69 /* ExpoModulesProvider.swift */; };
 		527D306C06274099AA3693CB /* LiftCoachWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DEAB01D9B3499A8A2088A8 /* LiftCoachWatchApp.swift */; };
 		66C19649F4784CA1ACA005E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FBCD755DCE4C81AF6339C6 /* ContentView.swift */; };
-		6C0CC6A06C6E4053BD62BFE8 /* DEVLiftCoach.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6C0CC6A06C6E4053BD62BFE8 /* LiftCoachWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CF8A9392F7A2402B809D3F28 /* LiftCoachWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		78B4B1F2B9257C30EF408077 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 73A52B2DB19304854B5F7596 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D184E3F6642B3DA9C80CF6D1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 73A52B2DB19304854B5F7596 /* PrivacyInfo.xcprivacy */; };
@@ -38,7 +38,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				6C0CC6A06C6E4053BD62BFE8 /* DEVLiftCoach.app in Embed Watch Content */,
+				6C0CC6A06C6E4053BD62BFE8 /* LiftCoachWatch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,9 +56,10 @@
 		A0448647D30E5C31CEECFC0B /* libPods-DEVLiftCoach.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DEVLiftCoach.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = DEVLiftCoach/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 9; includeInIndex = 0; path = DEVLiftCoach.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF8A9392F7A2402B809D3F28 /* LiftCoachWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 9; includeInIndex = 0; path = LiftCoachWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D46BEFA4B89CD9C82255675F /* Pods-DEVLiftCoach.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DEVLiftCoach.release.xcconfig"; path = "Target Support Files/Pods-DEVLiftCoach/Pods-DEVLiftCoach.release.xcconfig"; sourceTree = "<group>"; };
 		D4DEAB01D9B3499A8A2088A8 /* LiftCoachWatchApp.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = LiftCoachWatchApp.swift; sourceTree = "<group>"; };
+		B19F0E4D5DCE4C81AF6339AA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB190BEA826304741002BDD1 /* Pods-DEVLiftCoach.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DEVLiftCoach.debug.xcconfig"; path = "Target Support Files/Pods-DEVLiftCoach/Pods-DEVLiftCoach.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = DEVLiftCoach/AppDelegate.swift; sourceTree = "<group>"; };
@@ -135,7 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* DEVLiftCoach.app */,
-				CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */,
+				CF8A9392F7A2402B809D3F28 /* LiftCoachWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -146,6 +147,7 @@
 				D4DEAB01D9B3499A8A2088A8 /* LiftCoachWatchApp.swift */,
 				72FBCD755DCE4C81AF6339C6 /* ContentView.swift */,
 				1424C24C735B4D8083C35363 /* Assets.xcassets */,
+				B19F0E4D5DCE4C81AF6339AA /* Info.plist */,
 			);
 			name = LiftCoachWatch;
 			path = LiftCoachWatch;
@@ -193,7 +195,7 @@
 			);
 			name = LiftCoachWatch;
 			productName = LiftCoachWatch;
-			productReference = CF8A9392F7A2402B809D3F28 /* DEVLiftCoach.app */;
+			productReference = CF8A9392F7A2402B809D3F28 /* LiftCoachWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 		13B07F861A680F5B00A75B9A /* DEVLiftCoach */ = {
@@ -207,14 +209,12 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				1DA1373702F8471E9586F138 /* Embed Watch Content */,
 				0FA188A7AC6A41A4874F3FEF /* Upload Debug Symbols to Sentry */,
 				F967628390A922475FCA4EF8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				67307832147E49D1B23D535B /* PBXTargetDependency */,
 			);
 			name = DEVLiftCoach;
 			productName = DEVLiftCoach;
@@ -503,7 +503,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app;
 				PRODUCT_NAME = DEVLiftCoach;
 				SWIFT_OBJC_BRIDGING_HEADER = "DEVLiftCoach/DEVLiftCoach-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -522,15 +522,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = NHA8NL9BKR;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
-				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiftCoachWatch/Info.plist;
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -666,15 +665,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = NHA8NL9BKR;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.liftcoach.app.dev;
-				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiftCoachWatch/Info.plist;
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.liftcoach.app.dev.watchkitapp;
 				PRODUCT_NAME = LiftCoachWatch;
 				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
